@@ -14,6 +14,8 @@ public class Driver {
     @BeforeSuite
     public void initializeDriver(){
         webDriver = DriverFactory.getDriver();
+        //TODO setup to read a csv for elements
+
     }
 
     // Close the webDriver instance

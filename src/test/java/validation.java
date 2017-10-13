@@ -2,11 +2,21 @@ import com.thoughtworks.gauge.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import java.util.List;
 import utils.driver.Driver;
 
 import static org.junit.Assert.assertTrue;
 
-public class LogIn {
+public class validation {
+
+    @Step ("Verify <value> results")
+    public void verifyResults (int value) {
+        WebDriver webDriver = Driver.webDriver;
+        List<WebElement> resultData = webDriver.findElements(By.className("atsSearchResultsData"));
+        int resultsFound = resultData.size()/3;
+        assertTrue(resultsFound == value);
+    }
+
     @Step("Give an option to Log In")
     public void giveAnOptionToLogIn() {
         WebDriver webDriver = Driver.webDriver;
