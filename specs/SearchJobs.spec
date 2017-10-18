@@ -1,16 +1,22 @@
 Search For Jobs
 ================
 
-     |jobFunction   |location       |keyword|
-     |--------------|---------------|-------|
-     |Office        |Atlanta, GA    |Trial1 |
-     |DevOps        |Portland, OR   |Trial2 |
+     |jobFunction   |location       |keyword|results|
+     |--------------|---------------|-------|-------|
+     |Office        |Atlanta, GA    |Trial1 |0      |
+     |DevOps        |Portland, OR   |Trial2 |0      |
+     |DevOps        |               |       |2      |
 
 * Go to swat solutions website
 * Navigate to "WORK HERE" tab
 * Click "VIEW OPEN POSITIONS" button
 
-Search For Jobs With No Results
---------------------------------
+Search For Jobs
+----------------
 * Search openings <jobFunction> <location> <keyword>
-* Verify "0" results
+* Verify <results> results
+
+Sample Second Run
+----------------
+* Search openings "" "" ""
+* Verify "8" results

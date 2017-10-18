@@ -20,10 +20,10 @@ public class DriverFactory {
 
         //TODO short circuit to test on a local remote hub
 
-        DesiredCapabilities capability = DesiredCapabilities.chrome();
-        capability.setBrowserName("chrome");
+//        DesiredCapabilities capability = DesiredCapabilities.chrome();
+//        capability.setBrowserName("chrome");
         try {
-            return new RemoteWebDriver(new URL("http://the-hub-selenium.192.168.99.100.nip.io/wd/hub"), capability);
+//            return new RemoteWebDriver(new URL("http://the-hub-selenium.192.168.99.100.nip.io/wd/hub"), capability);
         } catch (Exception e){}
 
         String browser = System.getenv("BROWSER");

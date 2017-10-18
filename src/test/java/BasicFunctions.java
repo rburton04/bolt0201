@@ -51,6 +51,7 @@ public class BasicFunctions extends Driver {
         WebDriver webDriver = Driver.webDriver;
         List<WebElement> fields = webDriver.findElements(By.name("j_id0:j_id1:atsForm:j_id77"));
 
+        fields.get(index - 1).clear();
         fields.get(index - 1).sendKeys(text);
     }
 
