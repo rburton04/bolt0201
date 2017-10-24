@@ -1,4 +1,4 @@
-package utils.driver;
+package selenium;
 
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
@@ -7,11 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import java.net.URL;
 
-public class DriverFactory {
+public class SeleniumSetup {
 
     // Get a new WebDriver Instance.
     // There are various implementations for this depending on browser. The required browser can be set as an environment variable.
@@ -24,15 +21,15 @@ public class DriverFactory {
 //        capability.setBrowserName("chrome");
         try {
 //            return new RemoteWebDriver(new URL("http://the-hub-selenium.192.168.99.100.nip.io/wd/hub"), capability);
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         String browser = System.getenv("BROWSER");
         if (browser == null) {
             ChromeDriverManager.getInstance().setup();
             return new ChromeDriver();
         }
-        switch (browser)
-        {
+        switch (browser) {
             case "IE":
                 InternetExplorerDriverManager.getInstance().setup();
                 return new InternetExplorerDriver();

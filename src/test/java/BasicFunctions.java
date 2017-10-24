@@ -2,9 +2,11 @@ import com.thoughtworks.gauge.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import utils.driver.Driver;
+import selenium.Driver;
+
 import java.util.List;
 import org.openqa.selenium.support.ui.Select;
+
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;

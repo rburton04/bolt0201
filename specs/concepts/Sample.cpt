@@ -1,0 +1,13 @@
+Created by aenoksen on 10/23/17
+
+These both need to be revised and helped. This is just an initial writeup
+# Enter Birthday <month> <day> <year>
+* Enter text <month> in field "0"
+* Enter text <day> in field "1"
+* Enter text <year> in field "2"
+
+#Register with the BBC <email> <password> <country> <spam>
+* Enter text <email> in field "0"
+* Enter text <password> in field "1"
+* Select value <country> on dropdown "0"
+* Click <spam> button

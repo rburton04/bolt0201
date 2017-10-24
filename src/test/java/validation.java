@@ -3,7 +3,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import java.util.List;
-import utils.driver.Driver;
+
+import selenium.Driver;
 
 import static org.junit.Assert.assertTrue;
 

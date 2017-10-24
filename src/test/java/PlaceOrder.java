@@ -2,7 +2,7 @@ import com.thoughtworks.gauge.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import utils.driver.Driver;
+import selenium.Driver;
 
 import java.util.List;
 
