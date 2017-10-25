@@ -7,39 +7,62 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.net.URL;
 
 public class SeleniumSetup {
 
-    // Get a new WebDriver Instance.
-    // There are various implementations for this depending on browser. The required browser can be set as an environment variable.
-    // Refer http://getgauge.io/documentation/user/current/managing_environments/README.html
     public static WebDriver getDriver() {
 
-        //TODO short circuit to test on a local remote hub
-
-//        DesiredCapabilities capability = DesiredCapabilities.chrome();
-//        capability.setBrowserName("chrome");
-        try {
-//            return new RemoteWebDriver(new URL("http://the-hub-selenium.192.168.99.100.nip.io/wd/hub"), capability);
-        } catch (Exception e) {
-        }
-
+        String remote = System.getenv("REMOTE");
+        String remoteURL = System.getenv("REMOTEURL");
         String browser = System.getenv("BROWSER");
-        if (browser == null) {
-            ChromeDriverManager.getInstance().setup();
-            return new ChromeDriver();
-        }
-        switch (browser) {
-            case "IE":
-                InternetExplorerDriverManager.getInstance().setup();
-                return new InternetExplorerDriver();
-            case "FIREFOX":
-                FirefoxDriverManager.getInstance().setup();
-                return new FirefoxDriver();
-            default:
+
+        if (remote.toUpperCase().equals("TRUE")) {
+            DesiredCapabilities capability;
+            switch(browser){
+                case "IE": capability = DesiredCapabilities.internetExplorer();
+                    break;
+                case "CHROME": capability = DesiredCapabilities.chrome();
+                    break;
+                case "FIREFOX": capability = DesiredCapabilities.firefox();
+                    break;
+                case "SAFARI":capability = DesiredCapabilities.safari();
+                    break;
+                case "EDGE":capability = DesiredCapabilities.edge();
+                    break;
+                default: capability = DesiredCapabilities.chrome();
+                    browser = "CHROME";
+                    break;
+            }
+
+            capability.setBrowserName(browser);
+            try {
+                return new RemoteWebDriver(new URL(remoteURL), capability);
+            } catch (Exception e) {
                 ChromeDriverManager.getInstance().setup();
                 return new ChromeDriver();
+            }
 
+        } else {
+            if (browser == null) {
+                ChromeDriverManager.getInstance().setup();
+                return new ChromeDriver();
+            }
+            switch (browser) {
+                case "IE":
+                    InternetExplorerDriverManager.getInstance().setup();
+                    return new InternetExplorerDriver();
+                case "FIREFOX":
+                    FirefoxDriverManager.getInstance().setup();
+                    return new FirefoxDriver();
+                default:
+                    ChromeDriverManager.getInstance().setup();
+                    return new ChromeDriver();
+
+            }
         }
     }
 }
