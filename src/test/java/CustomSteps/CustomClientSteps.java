@@ -1,4 +1,9 @@
-package selenium;
+package CustomSteps;
 
-public class CustomClientSteps {
+import selenium.GeneralSteps;
+
+public class CustomClientSteps extends GeneralSteps {
+
+
+
 }
