@@ -2,63 +2,98 @@ package selenium;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import utils.library;
+import static org.junit.Assert.assertTrue;
+
 
 public class SeleniumActions extends Driver{
 
 
-    protected void click(){
+    protected void click(String elementDef){
+        getElement(elementDef).click();
+    }
+    protected void rightClick(String elementDef){
+        //TODO future expantion due to using the mouse for this action
+    }
+    protected void enterText(String elementDef, String text) {
+        getElement(elementDef).sendKeys(text);
+    }
+    //TODO create index version
+    protected void selectDropdown(String elementDef, String desiredOption){
+        Select dropdown = new Select(getElement(elementDef));
+        selectDropdown(desiredOption, dropdown, true);
+        assertTrue(dropdown.getFirstSelectedOption().getText().toUpperCase().equals(desiredOption));
+    }
+
+    protected void selectDropdown(String desiredOption, Select dropdown, boolean clearSelections){
+        desiredOption = desiredOption.toUpperCase();
+
+        if(library.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption)){
+            dropdown.selectByValue(desiredOption);
+        } else{
+            //TODO error
+        }
+    }
+    protected void multiSelectDropdown(String elementDef, List<String> desiredOptions){
+        Select dropdown = new Select(getElement(elementDef));
+        desiredOptions.replaceAll(String::toUpperCase);
+
+        dropdown.deselectAll();
+        for(String desiredOption:desiredOptions){
+            selectDropdown(desiredOption, dropdown, false);
+        }
+
+        assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
+    }
+    protected void clickCheckbox(String elementDef){
+        getElement(elementDef).click();
+    }
+    protected boolean getCheckboxStatus(String elementDef){
+        return getElement(elementDef).isSelected();
+    }
+    protected void setCheckboxToValue(String elementDef, boolean value){
+        if(value =! getCheckboxStatus(elementDef)) {
+            clickCheckbox(elementDef);
+            assertTrue(getCheckboxStatus(elementDef) == value);
+        }
+    }
+    protected void selectRadial(String elementDef){
 
     }
-    protected void rightClick(){
+    protected void multiSelectRadial(String elementDef){
 
     }
-    protected void enterText() {
+    protected void dragAndDrop(String elementDef){
 
     }
-    protected void slectDropdown(){
-
-    }
-    protected void multiSelectDropdown(){
-
-    }
-    protected void clickCheckbox(){
-
-    }
-    protected void selectRadial(){
-
-    }
-    protected void multiSelectRadial(){
-
-    }
-    protected void dragAndDrop(){
-
-    }
-    protected void verifyCurrentPage(){
-
+    protected void verifyCurrentPage(String expectedURL){
+        assertTrue(webDriver.getCurrentUrl().toUpperCase().equals(expectedURL.toUpperCase()));
     }
     protected String getText(){
         String elementText = "";
 
         return elementText;
     }
-    protected void getAttribute(){
-
+    protected String getAttribute(String elementDef, String attribute){
+        return getElement(elementDef).getAttribute(attribute);
     }
     protected void scroll(){
 
     }
-    protected void handlePopUp(){
+    protected void handlePopUp(String elementDef){
 
     }
     protected void selectCalendarDate(){
 
     }
+
     protected WebElement getElement(String elementDefinition){
-        //use 'getElements' and return the first object
         return getElements(elementDefinition).get(0);
+        //TODO handle nulls and add focus to the element?
     }
 
     /**
@@ -73,7 +108,7 @@ public class SeleniumActions extends Driver{
             elementData = elementDefinitions.get(elementDefinition).split(":");
             if(elementData.length == 2){
                 elements = getElementsByTypeAndValue(elementData[0].toUpperCase(), elementData[1]);
-
+                //TODO check for null
 
             } else{
                 //TODO error
@@ -86,6 +121,7 @@ public class SeleniumActions extends Driver{
 
     protected List<WebElement> getElementsByTypeAndValue(String type, String value){
         List<WebElement> elements = new ArrayList<WebElement>();
+        //TODO add wait for the element and possibly loop a couple times
         try {
             switch (type) {
                 case "CLASS":
@@ -114,9 +150,4 @@ public class SeleniumActions extends Driver{
 
         return elements;
     }
-    protected void getElementDefinition(){
-
-    }
-
-
 }

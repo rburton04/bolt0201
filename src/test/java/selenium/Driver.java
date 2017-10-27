@@ -24,6 +24,11 @@ public class Driver extends SeleniumSetup{
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
     }
 
+    @BeforeScenario
+    public void beforeScenario(ExecutionContext context){
+        String spec = context.getCurrentSpecification().getName();
+        String scenario = context.getCurrentScenario().getName();
+    }
     // Close the webDriver instance
     @AfterSuite
     public void closeDriver(){
@@ -32,18 +37,11 @@ public class Driver extends SeleniumSetup{
 
     @Step("Go to swat solutions website")
     public void launchSwatApplication() {
-        //TODO see if this actually works
-        Map<String,String> tri = System.getenv();
-        String test = new Scenario().getName();
-        String trial = "";
-        String scenario = Scenario.class.getName();
-        String scenario2 = Scenario.class.getName();
-        System.out.println(Scenario.class.getName());
-
         Driver.webDriver.get(SWAT_URL);
     }
     @Step("Go to bbc website")
     public void launchBBCApplication() {
         Driver.webDriver.get(BBC_URL);
     }
+
 }
