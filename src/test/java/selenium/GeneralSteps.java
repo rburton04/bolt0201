@@ -2,7 +2,7 @@ package selenium;
 
 import com.thoughtworks.gauge.Step;
 
-public class GeneralSteps extends SeleniumActions {
+public class GeneralSteps extends CustomActions {
     //protected String spec = Var.spec;
     /*
     navigate to..
