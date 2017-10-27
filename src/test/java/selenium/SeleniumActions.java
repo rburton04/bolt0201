@@ -204,4 +204,11 @@ public class SeleniumActions extends Driver{
 
         return elements;
     }
+
+    //CUSTOM
+    protected void validateResults(int value){
+        List<WebElement> resultData = webDriver.findElements(By.className("atsSearchResultsData"));
+        int resultsFound = resultData.size()/3;
+        assertTrue(resultsFound == value);
+    }
 }

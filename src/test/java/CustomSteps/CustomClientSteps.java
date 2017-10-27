@@ -14,5 +14,9 @@ public class CustomClientSteps extends GeneralSteps {
     public void clickSearchButton (){
         click(spec + ":searchButton");
     }
+    @Step ("Verify <value> results")
+    public void verifyResults (int value) {
+        validateResults(value);
+    }
 
 }
