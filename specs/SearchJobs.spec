@@ -1,4 +1,4 @@
-Search For Jobs
+SearchPage
 ================
 
      |jobFunction   |location       |keyword|results|
@@ -9,7 +9,7 @@ Search For Jobs
 
 * Go to swat solutions website
 * Navigate to "WORK HERE" tab
-* Click "VIEW OPEN POSITIONS" button
+* Click "View Open Positions" button
 
 Search For Jobs
 ----------------

@@ -1,38 +1,58 @@
 package selenium;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
+import utils.library;
 
+import java.awt.*;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
-import utils.library;
+
 import static org.junit.Assert.assertTrue;
 
 
 public class SeleniumActions extends Driver{
 
-
+    protected void goToSite(String url){
+        webDriver.get(url);
+    }
     protected void click(String elementDef){
         getElement(elementDef).click();
+    }
+    protected void clickByText(String elementDef, String text){
+        getElementByText(elementDef, text).click();
+    }
+    protected void clickByLinkedText(String text){
+        getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
     }
     protected void rightClick(String elementDef){
         //TODO future expantion due to using the mouse for this action
     }
     protected void enterText(String elementDef, String text) {
-        getElement(elementDef).sendKeys(text);
+        WebElement element = getElement(elementDef);
+        element.clear();
+        element.sendKeys(text);
     }
-    //TODO create index version
+    protected void enterTextByIndex(String elementDef, String text, int index){
+        WebElement element = getElements(elementDef).get(index);
+        element.clear();
+        element.sendKeys(text);
+    }
     protected void selectDropdown(String elementDef, String desiredOption){
-        Select dropdown = new Select(getElement(elementDef));
-        selectDropdown(desiredOption, dropdown, true);
-        assertTrue(dropdown.getFirstSelectedOption().getText().toUpperCase().equals(desiredOption));
+        selectDropdownByIndex(elementDef, desiredOption, 0);
     }
-
+    protected void selectDropdownByIndex(String elementDef, String desiredOption, int index){
+        Select dropdown = new Select(getElements(elementDef).get(index));
+        selectDropdown(desiredOption, dropdown, true);
+        if(!desiredOption.isEmpty())
+            assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+    }
     protected void selectDropdown(String desiredOption, Select dropdown, boolean clearSelections){
-        desiredOption = desiredOption.toUpperCase();
-
-        if(library.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption)){
+        if(library.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption.toUpperCase())){
             dropdown.selectByValue(desiredOption);
         } else{
             //TODO error
@@ -67,22 +87,43 @@ public class SeleniumActions extends Driver{
     protected void multiSelectRadial(String elementDef){
 
     }
-    protected void dragAndDrop(String elementDef){
-
+    protected void dragAndDrop(String elementStartDef, String elementEndDef){
+        Actions action = new Actions(webDriver);
+        action.dragAndDrop(getElement(elementStartDef), getElement(elementEndDef));
+    }
+    protected void dragAndDrop(int x1, int y1, int x2, int y2){
+        try {
+            Robot robo = new Robot();
+            robo.mouseMove(x1, y1);
+            robo.mousePress(InputEvent.BUTTON1_MASK);
+            robo.mouseMove(x2, y2);
+            robo.mouseRelease(InputEvent.BUTTON1_MASK);
+        } catch (Exception e){
+            //TODO error
+        }
+    }
+    protected void dragAndDrop(String elementDef, int x, int y){
+        Actions action = new Actions(webDriver);
+        action.dragAndDropBy(getElement(elementDef), x, y);
     }
     protected void verifyCurrentPage(String expectedURL){
         assertTrue(webDriver.getCurrentUrl().toUpperCase().equals(expectedURL.toUpperCase()));
     }
-    protected String getText(){
-        String elementText = "";
-
-        return elementText;
+    protected String getText(String elementDef){
+        return getElement(elementDef).getText();
     }
     protected String getAttribute(String elementDef, String attribute){
         return getElement(elementDef).getAttribute(attribute);
     }
-    protected void scroll(){
-
+    protected void scrollUp(){
+        scroll("250");
+    }
+    protected void scrollDown(){
+        scroll("-250");
+    }
+    protected void scroll(String amount){
+        JavascriptExecutor jse = (JavascriptExecutor) webDriver;
+        jse.executeScript("scroll(0," + amount);
     }
     protected void handlePopUp(String elementDef){
 
@@ -95,6 +136,19 @@ public class SeleniumActions extends Driver{
         return getElements(elementDefinition).get(0);
         //TODO handle nulls and add focus to the element?
     }
+    protected WebElement getElementByText(String elementDefinition, String text){
+        List<WebElement> elements = getElements(elementDefinition);
+        WebElement foundElement = elements.get(0);
+        text = text.toUpperCase();
+
+        for(WebElement tempElement:elements){
+            if(tempElement.getText().toUpperCase().equals(text)){
+                foundElement = tempElement;
+                break;
+            }
+        }
+        return foundElement;
+    }
 
     /**
      * @param elementDefinition page:object
@@ -105,7 +159,7 @@ public class SeleniumActions extends Driver{
         String[] elementData;
 
         if(elementDefinitions.containsKey(elementDefinition)) {
-            elementData = elementDefinitions.get(elementDefinition).split(":");
+            elementData = elementDefinitions.get(elementDefinition).split("~");
             if(elementData.length == 2){
                 elements = getElementsByTypeAndValue(elementData[0].toUpperCase(), elementData[1]);
                 //TODO check for null

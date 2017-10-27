@@ -25,7 +25,7 @@ public class fileReader {
                     if(headerRowFound){
                         if(!csvLine[0].isEmpty())
                             lastPage = csvLine[0];
-                        convertedFile.put(lastPage + ":" + csvLine[1],csvLine[2] + ":" + csvLine[3]);
+                        convertedFile.put(lastPage + ":" + csvLine[1],csvLine[2] + "~" + csvLine[3]);
                     }
                 }
                 headerRowFound = true;
