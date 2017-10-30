@@ -2,6 +2,9 @@ package selenium;
 
 import com.thoughtworks.gauge.Step;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GeneralSteps extends CustomActions {
     //protected String spec = Var.spec;
     /*
@@ -60,8 +63,11 @@ public class GeneralSteps extends CustomActions {
             scrollDown();
     }
 
-    @Step("")
-    public void multiDropdowns(){
-
+    @Step("Select <dropdown1>, <dropdown2> from dropdown")
+    public void multiDropdowns(String dw1, String dw2){
+        List<String> selections = new LinkedList<String>();
+        selections.add(dw1);
+        selections.add(dw2);
+        multiSelectDropdown(spec + ":dropdown",selections);
     }
 }

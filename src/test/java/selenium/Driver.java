@@ -21,6 +21,8 @@ public class Driver extends SeleniumSetup{
     @BeforeSuite
     public void initializeDriver(){
         webDriver = getDriver();
+        webDriver.manage().window().maximize();
+        webDriver.switchTo().window(webDriver.getWindowHandle());
         //TODO setup to read a csv for elements
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
     }

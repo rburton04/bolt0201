@@ -4,7 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.library;
 
 import java.awt.*;
@@ -29,9 +31,13 @@ public class SeleniumActions extends Driver{
     protected void clickByLinkedText(String text){
         getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
     }
+    //TODO click by index?
     protected void rightClick(String elementDef){
         //TODO future expantion due to using the mouse for this action
     }
+
+    //TODO add validation of text entered
+    //TODO add another method that has no validation
     protected void enterText(String elementDef, String text) {
         WebElement element = getElement(elementDef);
         element.clear();
@@ -42,6 +48,7 @@ public class SeleniumActions extends Driver{
         element.clear();
         element.sendKeys(text);
     }
+
     protected void selectDropdown(String elementDef, String desiredOption){
         selectDropdownByIndex(elementDef, desiredOption, 0);
     }
@@ -58,6 +65,8 @@ public class SeleniumActions extends Driver{
             //TODO error
         }
     }
+    //TODO get dropdown value
+    //TODO get disabled or enabled dropdown options
     protected void multiSelectDropdown(String elementDef, List<String> desiredOptions){
         Select dropdown = new Select(getElement(elementDef));
         desiredOptions.replaceAll(String::toUpperCase);
@@ -131,7 +140,24 @@ public class SeleniumActions extends Driver{
     protected void selectCalendarDate(){
 
     }
+    protected void focusOnElement(String elementDef){
+        focusOnElement(elementDef, 0);
+    }
+    protected void focusOnElement(String elementDef, int index){
+        try{
+            new Actions(webDriver).moveToElement(getElements(elementDef).get(index)).perform();
+        } catch (Exception e){
+            //TODO error handling
+        }
+    }
 
+    //TODO wait for navigation/page change
+
+    //TODO check/validate values that are displayed
+
+    protected boolean isEnabled(String elementDefinition){
+        return getElement(elementDefinition).isEnabled();
+    }
     protected WebElement getElement(String elementDefinition){
         return getElements(elementDefinition).get(0);
         //TODO handle nulls and add focus to the element?
@@ -150,6 +176,13 @@ public class SeleniumActions extends Driver{
         return foundElement;
     }
 
+    //TODO get element by any attribute
+
+    //TODO check if element exists
+
+    //TODO check if isVisible
+
+    //TODO work with relative elements
     /**
      * @param elementDefinition page:object
      * @return WebElements of the desired elementDefinition
@@ -175,33 +208,41 @@ public class SeleniumActions extends Driver{
 
     protected List<WebElement> getElementsByTypeAndValue(String type, String value){
         List<WebElement> elements = new ArrayList<WebElement>();
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
         //TODO add wait for the element and possibly loop a couple times
         try {
-            switch (type) {
-                case "CLASS":
-                    elements = webDriver.findElements(By.className(value));
-                    break;
-                case "NAME":
-                    elements = webDriver.findElements(By.name(value));
-                    break;
-                case "ID":
-                    elements = webDriver.findElements(By.id(value));
-                    break;
-                case "XPATH":
-                    elements = webDriver.findElements(By.xpath(value));
-                    break;
-                case "LINKTEXT":
-                    elements = webDriver.findElements(By.linkText(value));
-                    break;
-                case "TAG":
-                    elements = webDriver.findElements(By.tagName(value));
-                    break;
+            //TODO the wait may be enough and not require this while loop
+            //while(elements == null) { //TODO add another limiter here so it will break at a certain point (no infinate loops!!!) also add a delay for each loop beyond the first
+                switch (type) {
+                    case "CLASS":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className(value)));// webDriver.findElements(By.className(value));
+                        break;
+                    case "NAME":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.name(value)));
+                        break;
+                    case "ID":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(value)));
+                        break;
+                    case "XPATH":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(value)));
+                        break;
+                    case "LINKTEXT":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.linkText(value)));
+                        break;
+                    case "TAG":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.tagName(value)));
+                        break;
 
-            }
+                }
+            //}
         } catch (Exception e){
             //TODO error handle how to deal with this type of issue
         }
 
         return elements;
     }
+
+    //TODO get values from local storage??
+    //(String) js.executeScript(String.format("return window.localStorage.getItem('%s');", key));
+
 }
