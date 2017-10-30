@@ -31,13 +31,13 @@ public class SeleniumActions extends Driver{
     protected void clickByLinkedText(String text){
         getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
     }
-    //TODO click by index?
+    protected void clickByIndex(String elementDef, int index){
+        getElements(elementDef).get(index).click();
+    }
     protected void rightClick(String elementDef){
         //TODO future expantion due to using the mouse for this action
     }
 
-    //TODO add validation of text entered
-    //TODO add another method that has no validation
     protected void enterText(String elementDef, String text) {
         WebElement element = getElement(elementDef);
         element.clear();
@@ -45,8 +45,17 @@ public class SeleniumActions extends Driver{
     }
     protected void enterTextByIndex(String elementDef, String text, int index){
         WebElement element = getElements(elementDef).get(index);
+        lastElement = element;
         element.clear();
         element.sendKeys(text);
+    }
+
+    /**
+     * Separate method to validate only when applicable as textareas do not work well
+     * @param expectedText the text that is expected in the last element
+     */
+    protected void validateTextEntry(String expectedText){
+        assertTrue(lastElement.getText().equals(expectedText));
     }
 
     protected void selectDropdown(String elementDef, String desiredOption){
@@ -65,8 +74,25 @@ public class SeleniumActions extends Driver{
             //TODO error
         }
     }
-    //TODO get dropdown value
-    //TODO get disabled or enabled dropdown options
+    protected List<String> getSelectedDropdownValues(String elementDef, int index){
+        Select dropdown = new Select(getElements(elementDef).get(index));
+        return library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
+    }
+    protected List<String> getDropdownOptions(Select dropdown, boolean enabledOptions){
+        List<WebElement> options = dropdown.getOptions();
+        List<String> disiredOptions = new ArrayList<>();
+        for(WebElement tempElement:options){
+            if(tempElement.isEnabled() == enabledOptions){
+                disiredOptions.add(tempElement.getText());
+            }
+        }
+
+        return disiredOptions;
+    }
+    protected List<String> getDropdownOptions(String elementDef, int index, boolean enabledOptions){ //possibly just get select instead
+        return getDropdownOptions(new Select(getElements(elementDef).get(index)), enabledOptions);
+    }
+
     protected void multiSelectDropdown(String elementDef, List<String> desiredOptions){
         Select dropdown = new Select(getElement(elementDef));
         desiredOptions.replaceAll(String::toUpperCase);
@@ -151,7 +177,7 @@ public class SeleniumActions extends Driver{
         }
     }
 
-    //TODO wait for navigation/page change
+    //TODO wait for navigation/page change?? just use get elements?? or get element????????????
 
     //TODO check/validate values that are displayed
 
@@ -159,7 +185,8 @@ public class SeleniumActions extends Driver{
         return getElement(elementDefinition).isEnabled();
     }
     protected WebElement getElement(String elementDefinition){
-        return getElements(elementDefinition).get(0);
+        lastElement = getElements(elementDefinition).get(0);
+        return lastElement;
         //TODO handle nulls and add focus to the element?
     }
     protected WebElement getElementByText(String elementDefinition, String text){
@@ -173,16 +200,80 @@ public class SeleniumActions extends Driver{
                 break;
             }
         }
+        lastElement = foundElement;
         return foundElement;
     }
 
-    //TODO get element by any attribute
+    protected String getElementAttribute(String elementDef, String attribute){
+        return getElementAttribute(getElement(elementDef), attribute);
+    }
+    protected String getElementAttribute(WebElement element, String attribute){
+        return element.getAttribute(attribute);
+    }
 
-    //TODO check if element exists
+    protected boolean elementIsVisible(String elementDefinition){
+        return elementIsVisible(getElement(elementDefinition));
+    }
+    protected boolean elementIsVisible(WebElement element){
+        return element.isDisplayed();
+    }
 
-    //TODO check if isVisible
+    protected WebElement getElementRelative(String elementDefinition, String relationship, String relativeDefinition){
+        WebElement initialElement = getElement(elementDefinition);
+        WebElement desiredElement = initialElement;
+        switch (relationship.toUpperCase()){
+            case "PARENT": desiredElement = initialElement.findElement(By.xpath("./.."));
+                break;
+            case "CHILD": desiredElement = getRelativeElements(initialElement, relativeDefinition).get(0);
+                break;
+            case "SIBLING": desiredElement = getRelativeElements(initialElement.findElement(By.xpath("./..")), relativeDefinition).get(0);
+                break;
+        }
+        //TODO expand to include multiple elements returned
+        return desiredElement;
+    }
+    protected List<WebElement> getRelativeElements(WebElement startingElement, String relativeDefinition){
+        List<WebElement> elements = new ArrayList<WebElement>();
+        String[] elementData;
 
-    //TODO work with relative elements
+        try{
+            if(elementDefinitions.containsKey(relativeDefinition)) {
+                elementData = elementDefinitions.get(relativeDefinition).split("~");
+                if(elementData.length == 2){
+                    switch (elementData[0].toUpperCase()) {
+                        case "CLASS":
+                            elements = startingElement.findElements(By.className(elementData[1]));// webDriver.findElements(By.className(value));
+                            break;
+                        case "NAME":
+                            elements = startingElement.findElements(By.name(elementData[1]));
+                            break;
+                        case "ID":
+                            elements = startingElement.findElements(By.id(elementData[1]));
+                            break;
+                        case "XPATH":
+                            elements = startingElement.findElements(By.xpath(elementData[1]));
+                            break;
+                        case "LINKTEXT":
+                            elements = startingElement.findElements(By.linkText(elementData[1]));
+                            break;
+                        case "TAG":
+                            elements = startingElement.findElements(By.tagName(elementData[1]));
+                            break;
+                    }
+                    //TODO check for null
+
+                } else{
+                    //TODO error
+                }
+            } else{
+                //TODO error
+            }
+        } catch (Exception e){
+
+        }
+        return elements;
+    }
+
     /**
      * @param elementDefinition page:object
      * @return WebElements of the desired elementDefinition
@@ -238,7 +329,7 @@ public class SeleniumActions extends Driver{
         } catch (Exception e){
             //TODO error handle how to deal with this type of issue
         }
-
+        lastElements = elements;
         return elements;
     }
 

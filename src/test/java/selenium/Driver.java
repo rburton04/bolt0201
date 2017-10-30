@@ -2,14 +2,18 @@ package selenium;
 
 import com.thoughtworks.gauge.*;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import utils.fileReader;
 
+import java.util.List;
 import java.util.Map;
 
 public class Driver extends SeleniumSetup{
 
     protected String SWAT_URL = System.getenv("SWAT_URL");
     protected String BBC_URL = System.getenv("BBC_URL");
+    protected WebElement lastElement;
+    protected List<WebElement> lastElements;
 
     // Holds the WebDriver instance
     public static WebDriver webDriver;
