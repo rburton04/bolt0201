@@ -14,6 +14,9 @@ import java.net.URL;
 
 public class SeleniumSetup {
 
+    /**
+     * @return WebDriver driver
+     */
     public static WebDriver getDriver() {
 
         String remote = System.getenv("REMOTE");

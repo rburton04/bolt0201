@@ -1,6 +1,5 @@
 target/
 .gauge/
-reports/
 out/
 logs/
 gauge_bin/
