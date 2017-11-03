@@ -1,0 +1,19 @@
+Long term ideas to add to BOLT:
+
+Complete building the general steps
+Complete building the selenium actions
+Way to connect/read data from a DB for testing
+Enhance Gauge default reporting
+Add support for other ways to run selenium (aka localy, grid, browserstack, etc.)
+Build in browsermob to handle proxies if needed? (doesn't work with grid)
+Handling positive and negative test cases through a data-driven method
+Separate report for automation "health" to ensure it remains heathly and running as efficiently as possible
+Validate downloads/generated documents/reports
+Automate desktop applications (needs investigation, possibly use Sikuli)
+Integrate performance testing
+Support mobile testing (investigate usage of Appium, Selendroid, calabash)
+Integrate system monitoring (needs investigation)
+Integrate with Atlassian (or similar) for automated bug reporting (that would need to be reviewed by QA first, but could speed up the process)
+Run headless for faster execution
+Incorperates tags for organizing tests. Could be used for marking a limited number of tests to run against every pr to find bugs earlier
+Bring in AI???????

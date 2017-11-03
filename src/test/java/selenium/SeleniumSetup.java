@@ -19,13 +19,17 @@ public class SeleniumSetup {
      */
     public static WebDriver getDriver() {
 
+        String remoteSystem = System.getenv("REMOTE_SYSTEM");
         String remote = System.getenv("REMOTE");
         String remoteURL = System.getenv("REMOTEURL");
         String browser = System.getenv("BROWSER");
+        String browserVersion = System.getenv("BROWSER_VERSION");
 
         if (remote.toUpperCase().equals("TRUE")) {
             DesiredCapabilities capability;
-            switch(browser){
+
+
+            switch(browser.toUpperCase()){
                 case "IE": capability = DesiredCapabilities.internetExplorer();
                     break;
                 case "CHROME": capability = DesiredCapabilities.chrome();
@@ -41,7 +45,42 @@ public class SeleniumSetup {
                     break;
             }
 
-            capability.setBrowserName(browser);
+
+            capability.setCapability("browserName", browser);
+            capability.setCapability("version", browserVersion);
+            switch(remoteSystem.toUpperCase()){
+                case "BROWSERSTACK":
+                    //https://www.browserstack.com/automate/capabilities
+                    remoteURL = System.getenv("BROWSERSTACK_URL");
+
+                    capability.setCapability("browserstack.local", "true");
+                    //capability.setCapability("browserstack.localIdentifier", "Test123"); --can be used when having multiple browserstack connections
+                    //version not required. If not provided, runs on latest
+//                    capability.setCapability("browser_version", browserVersion);
+                    capability.setCapability("os", "Windows");
+                    capability.setCapability("os_version", "10");
+                    capability.setCapability("resolution", "1024x768");
+                    capability.setCapability("build", "version1");
+                    capability.setCapability("project", "newintropage");
+                    capability.setCapability("acceptSslCerts", "true");
+                    break;
+                case "SAUCELABS":
+                    //https://wiki.saucelabs.com/display/DOCS/Test+Configuration+Options
+                    remoteURL = System.getenv("SAUCELABS_URL");
+
+                    capability.setCapability("platform", "Windows 10");
+//                    capability.setCapability("version", browserVersion);
+                    capability.setCapability("name", "TESTING SauceLabs");
+                    break;
+                case "OPENSHIFT":
+                    remoteURL = System.getenv("OPENSHIFT_URL");
+
+
+                    break;
+            }
+
+            //Local Testing
+            //capability.setBrowserName(browser);
             try {
                 return new RemoteWebDriver(new URL(remoteURL), capability);
             } catch (Exception e) {
