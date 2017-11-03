@@ -495,7 +495,7 @@ public class SeleniumActions extends Driver{
      */
     protected List<WebElement> getElementsByTypeAndValue(String type, String value){
         List<WebElement> elements = new ArrayList<WebElement>();
-        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+        WebDriverWait wait = new WebDriverWait(webDriver, 5);
         //TODO add wait for the element and possibly loop a couple times
         try {
                 switch (type) {
