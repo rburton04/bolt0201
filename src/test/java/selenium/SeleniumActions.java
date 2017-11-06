@@ -113,7 +113,7 @@ public class SeleniumActions extends Driver{
     protected void selectDropdownByIndex(String elementDef, String desiredOption, int index){
         Select dropdown = new Select(getElements(elementDef).get(index));
         selectDropdown(desiredOption, dropdown, true);
-        if(!desiredOption.isEmpty())
+        if(!desiredOption.isEmpty() && positiveTest)
             assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
     }
 
@@ -128,6 +128,25 @@ public class SeleniumActions extends Driver{
         } else{
             //TODO error
         }
+    }
+
+    /**
+     * @param elementDef String of the reference to identify the element to use
+     * @param option dropdown option to check (case sensitive)
+     * @return true if the option exists, else false
+     */
+    protected boolean checkOptionExistsInDropdown(String elementDef, String option){
+        return getSelectedDropdownValues(elementDef, 0).contains(option);
+    }
+
+    /**
+     * @param elementDef String of the reference to identify the element to use
+     * @param index Index of the element
+     * @param option dropdown option to check (case sensitive)
+     * @return true if the option exists, else false
+     */
+    protected boolean checkOptionExistsInDropdown(String elementDef, int index, String option){
+        return getSelectedDropdownValues(elementDef, index).contains(option);
     }
 
     /**
@@ -180,7 +199,8 @@ public class SeleniumActions extends Driver{
             selectDropdown(desiredOption, dropdown, false);
         }
 
-        assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
+        if(positiveTest)
+            assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
     }
 
     /**
@@ -205,7 +225,8 @@ public class SeleniumActions extends Driver{
     protected void setCheckboxToValue(String elementDef, boolean value){
         if(value =! getCheckboxStatus(elementDef)) {
             clickCheckbox(elementDef);
-            assertTrue(getCheckboxStatus(elementDef) == value);
+            if(positiveTest)
+                assertTrue(getCheckboxStatus(elementDef) == value);
         }
     }
 

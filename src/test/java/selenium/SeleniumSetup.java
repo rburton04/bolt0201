@@ -46,12 +46,14 @@ public class SeleniumSetup {
             }
 
 
-            capability.setCapability("browserName", browser);
-            capability.setCapability("version", browserVersion);
+            capability.setCapability("browserName", browser.toLowerCase());
+//            capability.setCapability("version", browserVersion);
             switch(remoteSystem.toUpperCase()){
                 case "BROWSERSTACK":
                     //https://www.browserstack.com/automate/capabilities
                     remoteURL = System.getenv("BROWSERSTACK_URL");
+                    capability.setCapability("browserName", browser);
+                    capability.setCapability("version", browserVersion);
 
                     capability.setCapability("browserstack.local", "true");
                     //capability.setCapability("browserstack.localIdentifier", "Test123"); --can be used when having multiple browserstack connections
@@ -67,6 +69,8 @@ public class SeleniumSetup {
                 case "SAUCELABS":
                     //https://wiki.saucelabs.com/display/DOCS/Test+Configuration+Options
                     remoteURL = System.getenv("SAUCELABS_URL");
+                    capability.setCapability("browserName", browser);
+                    capability.setCapability("version", browserVersion);
 
                     capability.setCapability("platform", "Windows 10");
 //                    capability.setCapability("version", browserVersion);
@@ -84,8 +88,9 @@ public class SeleniumSetup {
             try {
                 return new RemoteWebDriver(new URL(remoteURL), capability);
             } catch (Exception e) {
-                ChromeDriverManager.getInstance().setup();
-                return new ChromeDriver();
+                //ChromeDriverManager.getInstance().setup();
+                //return new ChromeDriver();
+                return null;
             }
 
         } else {
