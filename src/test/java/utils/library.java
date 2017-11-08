@@ -18,4 +18,16 @@ public class library {
         }
         return uppercaseList;
     }
+
+    /**
+     * @param miliseconds number of miliseconds to delay
+     */
+    public static void hardDelay(int miliseconds){
+        try {
+            Thread.sleep(miliseconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
