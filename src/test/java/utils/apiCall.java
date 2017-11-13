@@ -10,7 +10,7 @@ import java.util.Map;
 public class apiCall { //TODO possibly throw all errors to what called this
 
     private String callURL, response = "", callType;
-    private Map<String, Object> paramaters;
+    private Map<String, Object> parameters;
     private int responseCode, maxAttempts = 5;
     private byte[] byteBody = new byte[0];
     //TODO expand to take in a string to check the response with so that it continues or ends making api calls based on that string
@@ -26,16 +26,16 @@ public class apiCall { //TODO possibly throw all errors to what called this
     public apiCall(String url, String callType, Map<String, Object> params){
         this.callType = callType;
         callURL = url;
-        paramaters = params;
+        parameters = params;
         buildParams();
     }
 
-    //TODO call whenever the URL is changed or when the paramaters are changed
+    //TODO call whenever the URL is changed or when the parameters are changed
     private void buildParams(){
         StringBuilder body = new StringBuilder();
         try {
-            if (paramaters != null) {
-                for (Map.Entry<String, Object> pram : paramaters.entrySet()) {
+            if (parameters != null) {
+                for (Map.Entry<String, Object> pram : parameters.entrySet()) {
                     if (body.length() != 0)
                         body.append("&");
 
@@ -115,7 +115,7 @@ public class apiCall { //TODO possibly throw all errors to what called this
     }
 
     public void putParamaters(Map<String,Object> newParams){
-        paramaters = newParams;
+        parameters = newParams;
         buildParams();
     }
 
