@@ -1,3 +1,5 @@
-mvn gauge:execute -DspecsDir=specs -DinParallel=true -Dnodes=2
+mvn gauge:execute -DspecsDir=specs
+-DinParallel=true
+-Dnodes=2
 -Dtags=tag1 & tag2
 -Denv=qa
