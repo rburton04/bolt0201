@@ -5,7 +5,6 @@ SearchPage
      |--------------|---------------|-------|-------|
      |Office        |Atlanta, GA    |Trial1 |0      |
      |DevOps        |Portland, OR   |Trial2 |0      |
-     |DevOps        |               |       |2      |
 
 * Go to swat solutions website
 * Navigate to "WORK HERE" tab

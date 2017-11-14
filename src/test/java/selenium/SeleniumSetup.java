@@ -47,12 +47,12 @@ public class SeleniumSetup {
 
 
             capability.setCapability("browserName", browser);
-            capability.setCapability("version", browserVersion);
             switch(remoteSystem.toUpperCase()){
                 case "BROWSERSTACK":
                     //https://www.browserstack.com/automate/capabilities
                     remoteURL = System.getenv("BROWSERSTACK_URL");
 
+//                  capability.setCapability("version", browserVersion);
                     capability.setCapability("browserstack.local", "true");
                     //capability.setCapability("browserstack.localIdentifier", "Test123"); --can be used when having multiple browserstack connections
                     //version not required. If not provided, runs on latest
@@ -62,12 +62,13 @@ public class SeleniumSetup {
                     capability.setCapability("resolution", "1024x768");
                     capability.setCapability("build", "version1");
                     capability.setCapability("project", "newintropage");
-                    capability.setCapability("acceptSslCerts", "true");
+//                    capability.setCapability("acceptSslCerts", "true");
                     break;
                 case "SAUCELABS":
                     //https://wiki.saucelabs.com/display/DOCS/Test+Configuration+Options
                     remoteURL = System.getenv("SAUCELABS_URL");
 
+//                  capability.setCapability("version", browserVersion);
                     capability.setCapability("platform", "Windows 10");
 //                    capability.setCapability("version", browserVersion);
                     capability.setCapability("name", "TESTING SauceLabs");

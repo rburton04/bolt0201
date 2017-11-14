@@ -1,10 +1,12 @@
 package selenium;
 
 import com.thoughtworks.gauge.*;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import utils.fileReader;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,14 @@ public class Driver extends SeleniumSetup{
     @AfterSuite
     public void closeDriver(){
         webDriver.quit();
+        try {
+            FileUtils.deleteQuietly(new File("reports/html-report/images/logo.png"));
+            FileUtils.copyFile(new File("reports/html-report/images/swatLogo.png"), new File("reports/html-report/images/logo.png"));
+            System.out.println("test");
+        }catch (Exception e){
+
+        }
+
     }
 
 }
