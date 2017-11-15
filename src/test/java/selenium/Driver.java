@@ -19,6 +19,7 @@ public class Driver extends SeleniumSetup{
 
     // Holds the WebDriver instance
     public static WebDriver webDriver;
+    protected static boolean positiveTest = true;
     protected static Map<String,String> elementDefinitions;
     protected static String spec = "";
 
@@ -44,6 +45,18 @@ public class Driver extends SeleniumSetup{
     @BeforeSpec
     public void beforeScenario(ExecutionContext context){
         spec = context.getCurrentSpecification().getName().toUpperCase();
+
+        //Identifies tests as positive or negative
+
+        if(spec.toUpperCase().contains("NEGATIVE"))
+            positiveTest = false;
+        else
+            positiveTest = true;
+
+        if(spec.contains("-"))
+            spec = spec.split("-")[0].trim();
+
+
         //System.setProperty("SPEC", context.getCurrentSpecification().getName());
         //scenario = context.getCurrentScenario().getName();
     }
