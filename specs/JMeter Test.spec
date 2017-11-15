@@ -1,9 +1,8 @@
-Specification Heading
-=====================
-Created by aenoksen on 11/13/17
+JMETER
+======
 
-This is an executable specification file which follows markdown syntax.
-Every heading in this file denotes a scenario. Every bulleted point denotes a step.
-     
-Scenario Heading
-----------------
+table:jmeter/search.csv
+
+Test One
+--------
+* Run JMeter Script "jmeter/swatsolutions.jmx" <SearchOption>

@@ -26,6 +26,14 @@ public class Driver extends SeleniumSetup{
     // Since this does not have a significance in the application's business domain, the BeforeSuite hook is used to instantiate the webDriver
     @BeforeSuite
     public void initializeDriver(){
+        //This removes an old jmeter results file if it exists
+        try{
+            File f = new File(System.getProperty("user.dir") + "/jmeter/results.xml");
+            f.delete();
+        } catch (Exception e){}
+
+
+        
         webDriver = getDriver();
         webDriver.manage().window().maximize();
         webDriver.switchTo().window(webDriver.getWindowHandle());
