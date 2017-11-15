@@ -24,14 +24,18 @@ public class SeleniumActions extends Driver{
      * @param url url of the site to go to
      */
     protected void goToSite(String url){
-        webDriver.get(url);
+        try {
+            webDriver.get(url);
+        } catch (Exception e){assertTrue("Unable to navigate to site: " + url,false);}
     }
 
     /**
      * @param elementDef String of the reference to identify what element to click
      */
     protected void click(String elementDef){
-        getElement(elementDef).click();
+        try {
+            getElement(elementDef).click();
+        } catch (Exception e){assertTrue("Unable to click element: " + elementDef, false);}
     }
 
     /**
@@ -39,14 +43,18 @@ public class SeleniumActions extends Driver{
      * @param text Text of the exact element to click
      */
     protected void clickByText(String elementDef, String text){
-        getElementByText(elementDef, text).click();
+        try{
+            getElementByText(elementDef, text).click();
+        } catch (Exception e){assertTrue("Unable to click element by text: " + elementDef + " text: " + text, false);}
     }
 
     /**
      * @param text Text of the element to click. Finds the first element with the given text.
      */
     protected void clickByLinkedText(String text){
-        getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
+        try{
+            getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
+        } catch (Exception e){assertTrue("Unable to click linked text: " + text, false);}
     }
 
     /**
@@ -54,7 +62,9 @@ public class SeleniumActions extends Driver{
      * @param index Index (0-based) of the element to click
      */
     protected void clickByIndex(String elementDef, int index){
-        getElements(elementDef).get(index).click();
+        try {
+            getElements(elementDef).get(index).click();
+        } catch (Exception e){assertTrue("Unable to click element: " + elementDef + " index: " + index, false);}
     }
 
     /**
@@ -80,10 +90,13 @@ public class SeleniumActions extends Driver{
      * @param index Index of the element to click
      */
     protected void enterTextByIndex(String elementDef, String text, int index){
-        WebElement element = getElements(elementDef).get(index);
-        lastElement = element;
-        element.clear();
-        element.sendKeys(text);
+        try {
+            WebElement element = getElements(elementDef).get(index);
+            lastElement = element;
+            element.clear();
+            element.sendKeys(text);
+        } catch (IndexOutOfBoundsException e){assertTrue("Element index is not valid, please verify it is correct: " + elementDef + " index: " + index, false);
+        } catch (Exception e){assertTrue("Unable to send keys to: " + elementDef + " index: " + index, false);}
     }
 
     /**
