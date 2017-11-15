@@ -1,9 +1,12 @@
 package selenium;
 
 import com.thoughtworks.gauge.Step;
+import utils.jMeter;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class GeneralSteps extends CustomActions {
     //protected String spec = Var.spec;
@@ -12,8 +15,19 @@ public class GeneralSteps extends CustomActions {
     go to <url>
     click ...
     select ...
-
      */
+
+    @Step ("Run JMeter Script <testName> <searchOption>")
+    public void jMeterScript(String testName, String searchOption){
+        try {
+            jMeter jmeter = new jMeter();
+            Map<String, String> vars = new HashMap<String, String>();
+            vars.put("test", searchOption);
+            jmeter.runJMeterTest(testName, vars);
+        } catch (Exception e){
+            System.out.println("error");
+        }
+    }
 
     @Step("Navigate to <tab> tab")
     public void navigateToTab(String tab) {
@@ -33,6 +47,7 @@ public class GeneralSteps extends CustomActions {
     @Step({"Go to <website> website", "Go to <website>"})
     public void navToWebsite(String website){
         goToSite(website);
+
     }
 
     @Step("Select value <value> on dropdown <index>")

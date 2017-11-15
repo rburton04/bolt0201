@@ -3,9 +3,8 @@ SearchPage
 
      |jobFunction   |location       |keyword|results|
      |--------------|---------------|-------|-------|
-     |DevOps        |               |       |2      |
      |Office        |Atlanta, GA    |Trial1 |0      |
-     |DevOps        |Portland, OR   |Trial2 |1      |
+     |DevOps        |Portland, OR   |Trial2 |0      |
 
 
 * Go to swat solutions website

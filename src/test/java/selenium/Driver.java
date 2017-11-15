@@ -1,10 +1,12 @@
 package selenium;
 
 import com.thoughtworks.gauge.*;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import utils.fileReader;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +27,14 @@ public class Driver extends SeleniumSetup{
     // Since this does not have a significance in the application's business domain, the BeforeSuite hook is used to instantiate the webDriver
     @BeforeSuite
     public void initializeDriver(){
+        //This removes an old jmeter results file if it exists
+        try{
+            File f = new File(System.getProperty("user.dir") + "/jmeter/results.xml");
+            f.delete();
+        } catch (Exception e){}
+
+
+        
         webDriver = getDriver();
         webDriver.manage().window().maximize();
         webDriver.switchTo().window(webDriver.getWindowHandle());
@@ -54,6 +64,14 @@ public class Driver extends SeleniumSetup{
     @AfterSuite
     public void closeDriver(){
         webDriver.quit();
+        try {
+            FileUtils.deleteQuietly(new File("reports/html-report/images/logo.png"));
+            FileUtils.copyFile(new File("reports/html-report/images/swatLogo.png"), new File("reports/html-report/images/logo.png"));
+            System.out.println("test");
+        }catch (Exception e){
+
+        }
+
     }
 
 }
