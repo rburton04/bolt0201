@@ -35,7 +35,9 @@ jmeter.save.saveservice.responseHeaders=true
         Map of variables to add
         */
 
-        //modifyUserPropertiesFile(options, jmeterHome + "/libexec/bin/");
+        //modifyUserPropertiesFile(options, jmeterHome + "/bin/");
+
+        //library.hardDelay(5000);
 
         // JMeter Engine
         StandardJMeterEngine jmeter = new StandardJMeterEngine();
@@ -52,6 +54,14 @@ jmeter.save.saveservice.responseHeaders=true
 
         // Initialize JMeter SaveService
         SaveService.loadProperties();
+
+        JMeterUtils.setProperty("bolttrial","TESTING123");
+
+        // Set Custom properties
+        for(Map.Entry<String, String> property : options.entrySet()){
+            JMeterUtils.setProperty("bolt." + property.getKey(),property.getValue());
+        }
+
 
         // Load existing .jmx Test Plan
         String location = System.getProperty("user.dir") + "/" + testName;
@@ -73,55 +83,5 @@ jmeter.save.saveservice.responseHeaders=true
         // Run JMeter Test
         jmeter.configure(testPlanTree);
         jmeter.run();
-    }
-
-    private static void modifyUserPropertiesFile(Map<String, String> properties, String folderPath){
-        /*
-        Use a marker to identify proporty changes done with code so they can all be removed
-        "---- BOLT PROPERTIES ----"
-
-System.getProperty("user.dir") + "/jmeter")
-       */
-
-        try {
-            File temp = new File(folderPath + "userSetup.txt");
-            if (!temp.exists()) {
-                FileUtils.copyFile(new File(folderPath + "user.properties"), new File(folderPath + "userSetup.txt"));
-            }
-
-        } catch(Exception e){
-            System.out.println("error");
-        }
-
-        BufferedReader br = null;
-        BufferedWriter bw = null;
-        try{
-            br = new BufferedReader(new FileReader(folderPath + "userSetup.txt"));//path to static properties file
-            bw = new BufferedWriter(new FileWriter(folderPath + "user.properties"));
-            String currLine = "";
-            while((currLine = br.readLine()) != null){
-                bw.write(currLine + "\n");
-            }
-            bw.newLine();
-            bw.write("#---- BOLT PROPERTIES ----\n");
-            bw.newLine();
-            for(Map.Entry<String, String> property : properties.entrySet()){
-                bw.write(property.getKey() + "=" + property.getValue());
-            }
-
-
-        } catch (Exception e){
-
-        } finally {
-            try {
-                if(br != null)
-                    br.close();
-            } catch (IOException e) { }
-            try {
-                if(bw != null)
-                    bw.close();
-            } catch (IOException e) { }
-        }
-
     }
 }

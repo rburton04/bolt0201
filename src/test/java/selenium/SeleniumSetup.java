@@ -90,6 +90,7 @@ public class SeleniumSetup {
             try {
                 return new RemoteWebDriver(new URL(remoteURL), capability);
             } catch (Exception e) {
+                //report error
                 //ChromeDriverManager.getInstance().setup();
                 //return new ChromeDriver();
                 return null;
