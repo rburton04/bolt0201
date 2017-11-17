@@ -24,14 +24,18 @@ public class SeleniumActions extends Driver{
      * @param url url of the site to go to
      */
     protected void goToSite(String url){
-        webDriver.get(url);
+        try {
+            webDriver.get(url);
+        } catch (Exception e){fail("Unable to navigate to site: " + url);}
     }
 
     /**
      * @param elementDef String of the reference to identify what element to click
      */
     protected void click(String elementDef){
-        getElement(elementDef).click();
+        try {
+            getElement(elementDef).click();
+        } catch (Exception e){fail("Unable to click element: " + elementDef);}
     }
 
     /**
@@ -39,14 +43,18 @@ public class SeleniumActions extends Driver{
      * @param text Text of the exact element to click
      */
     protected void clickByText(String elementDef, String text){
-        getElementByText(elementDef, text).click();
+        try{
+            getElementByText(elementDef, text).click();
+        } catch (Exception e){fail("Unable to click element by text: " + elementDef + " text: " + text);}
     }
 
     /**
      * @param text Text of the element to click. Finds the first element with the given text.
      */
     protected void clickByLinkedText(String text){
-        getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
+        try{
+            getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
+        } catch (Exception e){fail("Unable to click linked text: " + text);}
     }
 
     /**
@@ -54,7 +62,9 @@ public class SeleniumActions extends Driver{
      * @param index Index (0-based) of the element to click
      */
     protected void clickByIndex(String elementDef, int index){
-        getElements(elementDef).get(index).click();
+        try {
+            getElements(elementDef).get(index).click();
+        } catch (Exception e){fail("Unable to click element: " + elementDef + " index: " + index);}
     }
 
     /**
@@ -80,10 +90,13 @@ public class SeleniumActions extends Driver{
      * @param index Index of the element to click
      */
     protected void enterTextByIndex(String elementDef, String text, int index){
-        WebElement element = getElements(elementDef).get(index);
-        lastElement = element;
-        element.clear();
-        element.sendKeys(text);
+        try {
+            WebElement element = getElements(elementDef).get(index);
+            lastElement = element;
+            element.clear();
+            element.sendKeys(text);
+        } catch (IndexOutOfBoundsException e){fail("Element index is not valid, please verify it is correct: " + elementDef + " index: " + index);
+        } catch (Exception e){fail("Unable to send keys to: " + elementDef + " index: " + index);}
     }
 
     /**
@@ -91,7 +104,9 @@ public class SeleniumActions extends Driver{
      * @param expectedText the text that is expected in the last element
      */
     protected void validateTextEntry(String expectedText){
-        assertTrue(lastElement.getText().equals(expectedText));
+        try {
+            assertTrue(lastElement.getText().equals(expectedText));
+        } catch (Exception e){fail("Failed to validate text entry.");}
     }
 
     //TODO build some sort of default or random selection for dropdowns
@@ -111,10 +126,12 @@ public class SeleniumActions extends Driver{
      * @param index Index of the element to select from
      */
     protected void selectDropdownByIndex(String elementDef, String desiredOption, int index){
-        Select dropdown = new Select(getElements(elementDef).get(index));
-        selectDropdown(desiredOption, dropdown, true);
-        if(!desiredOption.isEmpty() && positiveTest)
-            assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+        try {
+            Select dropdown = new Select(getElements(elementDef).get(index));
+            selectDropdown(desiredOption, dropdown, true);
+            if (!desiredOption.isEmpty() && positiveTest)
+                assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+        } catch (Exception e){fail("Issue selecting dropdown: " + elementDef + " index: " + index);}
     }
 
     /**
@@ -155,8 +172,14 @@ public class SeleniumActions extends Driver{
      * @return List String of all options in the dropdown
      */
     protected List<String> getSelectedDropdownValues(String elementDef, int index){
-        Select dropdown = new Select(getElements(elementDef).get(index));
-        return library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
+        Select dropdown = null;
+        try {
+            dropdown = new Select(getElements(elementDef).get(index));
+        } catch (Exception e){fail("Issue getting dropdown values, element: " + elementDef + " index: " + index);}
+        if(dropdown != null)
+            return library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
+        else
+            return new ArrayList<String>();
     }
 
     /**
@@ -165,14 +188,15 @@ public class SeleniumActions extends Driver{
      * @return List String of all options in the dropdown
      */
     private List<String> getDropdownOptions(Select dropdown, boolean enabledOptions){
-        List<WebElement> options = dropdown.getOptions();
         List<String> disiredOptions = new ArrayList<>();
-        for(WebElement tempElement:options){
-            if(tempElement.isEnabled() == enabledOptions){
-                disiredOptions.add(tempElement.getText());
+        try {
+            List<WebElement> options = dropdown.getOptions();
+            for (WebElement tempElement : options) {
+                if (tempElement.isEnabled() == enabledOptions) {
+                    disiredOptions.add(tempElement.getText());
+                }
             }
-        }
-
+        } catch (Exception e){fail("Issue getting dropdown options");}
         return disiredOptions;
     }
 
@@ -191,23 +215,25 @@ public class SeleniumActions extends Driver{
      * @param desiredOptions List String of all options to select from the dropdown
      */
     protected void multiSelectDropdown(String elementDef, List<String> desiredOptions){
-        Select dropdown = new Select(getElement(elementDef));
-        desiredOptions.replaceAll(String::toUpperCase);
+        try {
+            Select dropdown = new Select(getElement(elementDef));
+            desiredOptions.replaceAll(String::toUpperCase);
 
-        dropdown.deselectAll();
-        for(String desiredOption:desiredOptions){
-            selectDropdown(desiredOption, dropdown, false);
-        }
+            dropdown.deselectAll();
+            for (String desiredOption : desiredOptions) {
+                selectDropdown(desiredOption, dropdown, false);
+            }
 
-        if(positiveTest)
-            assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
+            if (positiveTest)
+                assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
+        } catch (Exception e){fail("Issue selecting multiple dropdown options: " + elementDef);}
     }
 
     /**
      * @param elementDef String of the reference to identify the element to use
      */
     protected void clickCheckbox(String elementDef){
-        getElement(elementDef).click();
+        click(elementDef);
     }
 
     /**
@@ -249,8 +275,10 @@ public class SeleniumActions extends Driver{
      * @param elementEndDef String of the reference to identify what element to stop dragging at
      */
     protected void dragAndDrop(String elementStartDef, String elementEndDef){
-        Actions action = new Actions(webDriver);
-        action.dragAndDrop(getElement(elementStartDef), getElement(elementEndDef));
+        try {
+            Actions action = new Actions(webDriver);
+            action.dragAndDrop(getElement(elementStartDef), getElement(elementEndDef));
+        } catch (Exception e){fail("Issue dragging and dropping with actions and elements");}
     }
 
     /**
@@ -267,7 +295,7 @@ public class SeleniumActions extends Driver{
             robo.mouseMove(x2, y2);
             robo.mouseRelease(InputEvent.BUTTON1_MASK);
         } catch (Exception e){
-            //TODO error
+            fail("Issue dragging and dropping with robot");
         }
     }
 
@@ -277,8 +305,10 @@ public class SeleniumActions extends Driver{
      * @param y The distance to drag in the y plane
      */
     protected void dragAndDrop(String elementDef, int x, int y){
-        Actions action = new Actions(webDriver);
-        action.dragAndDropBy(getElement(elementDef), x, y);
+        try {
+            Actions action = new Actions(webDriver);
+            action.dragAndDropBy(getElement(elementDef), x, y);
+        } catch (Exception e){fail("Issue dragging and dropping with actions");}
     }
 
     /**
@@ -308,8 +338,10 @@ public class SeleniumActions extends Driver{
      * @param amount The amount to scroll, negative numbers scroll down
      */
     protected void scroll(int amount){
-        JavascriptExecutor jse = (JavascriptExecutor) webDriver;
-        jse.executeScript("scroll(0," + amount);
+        try {
+            JavascriptExecutor jse = (JavascriptExecutor) webDriver;
+            jse.executeScript("scroll(0," + amount);
+        } catch (Exception e){fail("Issue scrolling: " + amount);}
     }
 
     /**
@@ -337,9 +369,7 @@ public class SeleniumActions extends Driver{
     protected void focusOnElement(String elementDef, int index){
         try{
             new Actions(webDriver).moveToElement(getElements(elementDef).get(index)).perform();
-        } catch (Exception e){
-            //TODO error handling
-        }
+        } catch (Exception e){fail("Issue focusing on the element: " + elementDef + " index: " + index);}
     }
 
     //TODO wait for navigation/page change?? just use get elements?? or get element????????????
@@ -427,14 +457,20 @@ public class SeleniumActions extends Driver{
     protected WebElement getElementRelative(String elementDefinition, String relationship, String relativeDefinition){
         WebElement initialElement = getElement(elementDefinition);
         WebElement desiredElement = initialElement;
-        switch (relationship.toUpperCase()){
-            case "PARENT": desiredElement = initialElement.findElement(By.xpath("./.."));
-                break;
-            case "CHILD": desiredElement = getRelativeElements(initialElement, relativeDefinition).get(0);
-                break;
-            case "SIBLING": desiredElement = getRelativeElements(initialElement.findElement(By.xpath("./..")), relativeDefinition).get(0);
-                break;
-        }
+        try {
+            switch (relationship.toUpperCase()) {
+                case "PARENT":
+                    desiredElement = initialElement.findElement(By.xpath("./.."));
+                    break;
+                case "CHILD":
+                    desiredElement = getRelativeElements(initialElement, relativeDefinition).get(0);
+                    break;
+                case "SIBLING":
+                    desiredElement = getRelativeElements(initialElement.findElement(By.xpath("./..")), relativeDefinition).get(0);
+                    break;
+            }
+        } catch (Exception e){fail("Issue focusing on the element: " + elementDefinition + " relationship: " + relationship + " relation definition: " + relativeDefinition);}
+
         //TODO expand to include multiple elements returned
         return desiredElement;
     }
@@ -480,9 +516,7 @@ public class SeleniumActions extends Driver{
             } else{
                 //TODO error
             }
-        } catch (Exception e){
-
-        }
+        } catch (Exception e){fail("Issue getting relative element: " + relativeDefinition);}
         return elements;
     }
 
@@ -494,18 +528,20 @@ public class SeleniumActions extends Driver{
         List<WebElement> elements = new ArrayList<WebElement>();
         String[] elementData;
 
-        if(elementDefinitions.containsKey(elementDefinition)) {
-            elementData = elementDefinitions.get(elementDefinition).split("~");
-            if(elementData.length == 2){
-                elements = getElementsByTypeAndValue(elementData[0].toUpperCase(), elementData[1]);
-                //TODO check for null
-                assertTrue("Element(s) " + elementDefinition + " were not found on this page",elements != null && elements.size() > 0);
-            } else{
+        try {
+            if (elementDefinitions.containsKey(elementDefinition)) {
+                elementData = elementDefinitions.get(elementDefinition).split("~");
+                if (elementData.length == 2) {
+                    elements = getElementsByTypeAndValue(elementData[0].toUpperCase(), elementData[1]);
+                    //TODO check for null
+                    assertTrue("Element(s) " + elementDefinition + " were not found on this page", elements != null && elements.size() > 0);
+                } else {
+                    //TODO error
+                }
+            } else {
                 //TODO error
             }
-        } else{
-            //TODO error
-        }
+        } catch (Exception e){fail("Issue focusing on the element: " + elementDefinition);}
         return elements;
     }
 
