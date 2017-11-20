@@ -24,6 +24,7 @@ public class SeleniumSetup {
         String remoteURL = System.getenv("REMOTEURL");
         String browser = System.getenv("BROWSER");
         String browserVersion = System.getenv("BROWSER_VERSION");
+        boolean headless = false;
 
         if (remote.toUpperCase().equals("TRUE")) {
             DesiredCapabilities capability;
@@ -31,6 +32,12 @@ public class SeleniumSetup {
 
             switch(browser.toUpperCase()){
                 case "IE": capability = DesiredCapabilities.internetExplorer();
+                    break;
+                case "HEADLESS": headless = true;
+                    capability = DesiredCapabilities.phantomjs();
+
+                    //options = ChromeDriverManager.getInstance().setup();
+
                     break;
                 case "CHROME": capability = DesiredCapabilities.chrome();
                     break;
