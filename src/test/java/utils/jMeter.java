@@ -1,53 +1,27 @@
 package utils;
-import org.apache.commons.io.FileUtils;
+import com.googlecode.jmeter.plugins.webdriver.config.RemoteDriverConfig;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.reporters.ResultCollector;
 import org.apache.jmeter.reporters.Summariser;
 import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.collections.HashTree;
+import com.googlecode.jmeter.plugins.webdriver.config.RemoteCapability;
 
 import java.io.*;
 import java.util.Map;
 
 public class jMeter {
-    /*
-    modify jmeter.properties file to include:
-jmeter.save.saveservice.output_format=xml
-jmeter.save.saveservice.response_data=true
-jmeter.save.saveservice.samplerData=true
-jmeter.save.saveservice.requestHeaders=true
-jmeter.save.saveservice.url=true
-jmeter.save.saveservice.responseHeaders=true
 
-
-     */
-
-    //TODO Setup passing variables along
     //TODO Setup the nice report for the results
 
-    public void runJMeterTest(String testName, Map<String, String> options) throws Exception {
-
-        String jmeterHome = System.getenv("JMETER_HOME");
-        /*needed variables:
-        path to jmeter home folder stored
-        name of test to run (tests stored in a folder next to specs)
-        Map of variables to add
-        */
-
-        //modifyUserPropertiesFile(options, jmeterHome + "/bin/");
-
-        //library.hardDelay(5000);
+    public void runJMeterTest(String testName, Map<String, String> options, boolean remoteRun, String remoteUrl) throws Exception {
 
         // JMeter Engine
         StandardJMeterEngine jmeter = new StandardJMeterEngine();
-        JMeterUtils.setJMeterHome(jmeterHome);
+        JMeterUtils.setJMeterHome(System.getProperty("user.dir") + "/jmeter/");
         // Initialize Properties, logging, locale, etc.
-        JMeterUtils.loadJMeterProperties(jmeterHome + "/bin/jmeter.properties");
-        // The user.properities file can be modified to include other needed variables unsure if the following line needs to be used or not.
-        //JMeterUtils.setProperty("test", "test22");
-        //JMeterUtils.loadProperties("/path/to/your/jmeter/bin/user.properties");
-        // This should be a stored variable in the properties file
+        JMeterUtils.loadJMeterProperties(System.getProperty("user.dir") + "/jmeter/bin/jmeter.properties");
 
         JMeterUtils.initLogging();// you can comment this line out to see extra log messages of i.e. DEBUG level
         JMeterUtils.initLocale();
@@ -55,13 +29,10 @@ jmeter.save.saveservice.responseHeaders=true
         // Initialize JMeter SaveService
         SaveService.loadProperties();
 
-        JMeterUtils.setProperty("bolttrial","TESTING123");
-
         // Set Custom properties
         for(Map.Entry<String, String> property : options.entrySet()){
             JMeterUtils.setProperty("bolt." + property.getKey(),property.getValue());
         }
-
 
         // Load existing .jmx Test Plan
         String location = System.getProperty("user.dir") + "/" + testName;
@@ -69,13 +40,39 @@ jmeter.save.saveservice.responseHeaders=true
         HashTree testPlanTree = SaveService.loadTree(new File(System.getProperty("user.dir") + "/" + testName));
         //in.close();
 
+        if(remoteRun) {
+            RemoteDriverConfig seleniumHubConfig = new RemoteDriverConfig();
+            switch (System.getenv("BROWSER").toUpperCase()) {
+                default:
+                case "SAFARI":
+                case "CHROME":
+                    seleniumHubConfig.setCapability(RemoteCapability.CHROME);
+                    break;
+                case "EDGE":
+                case "IE":
+                    seleniumHubConfig.setCapability(RemoteCapability.INTERNET_EXPLORER);
+                    break;
+                case "FIREFOX":
+                    seleniumHubConfig.setCapability(RemoteCapability.FIREFOX);
+                    break;
+                case "HEADLESS":
+                    seleniumHubConfig.setCapability(RemoteCapability.PHANTOMJS);
+                    break;
+            }
+            seleniumHubConfig.setCapability(RemoteCapability.CHROME);
+            seleniumHubConfig.setSeleniumGridUrl(remoteUrl);
+
+            testPlanTree.add("remoteDriverConfig", seleniumHubConfig);
+        }
+
         Summariser summer = null;
         String summariserName = JMeterUtils.getPropDefault("summariser.name", "summary");//$NON-NLS-1$
         if (summariserName.length() > 0) {
             summer = new Summariser(summariserName);
         }
 
-        String logFile = System.getProperty("user.dir") + "/jmeter/results.xml";
+        //Adjust file naming as needed
+        String logFile = System.getProperty("user.dir") + "/jmeter/results_" + options.get(options.entrySet().iterator().next().getKey()) + ".xml";
         ResultCollector logger = new ResultCollector(summer);
         logger.setFilename(logFile);
         testPlanTree.add(testPlanTree.getArray()[0], logger);

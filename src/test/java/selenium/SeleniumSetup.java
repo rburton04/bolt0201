@@ -14,6 +14,8 @@ import java.net.URL;
 
 public class SeleniumSetup {
 
+    protected static boolean remoteRun = false;
+    protected static String remoteUrl = "";
     /**
      * @return WebDriver driver
      */
@@ -26,8 +28,14 @@ public class SeleniumSetup {
         String browserVersion = System.getenv("BROWSER_VERSION");
         boolean headless = false;
 
+        String test1 = System.getenv("BROWSERSTACK_URL");
+        String test2 = System.getenv("SAUCELABS_URL");
+        String test3 = System.getenv("OPENSHIFT_URL");
+        String test = System.getenv("BOB");
+
         if (remote.toUpperCase().equals("TRUE")) {
             DesiredCapabilities capability;
+            remoteRun = true;
 
 
             switch(browser.toUpperCase()){
@@ -88,9 +96,12 @@ public class SeleniumSetup {
                 case "OPENSHIFT":
                     remoteURL = System.getenv("OPENSHIFT_URL");
 
+//           String remoteURL = System.getenv("REMOTEURL");
 
                     break;
             }
+
+            remoteUrl = remoteURL;
 
             //Local Testing
             //capability.setBrowserName(browser);
