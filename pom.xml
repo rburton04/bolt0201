@@ -65,6 +65,12 @@
             <artifactId>ApacheJMeter_http</artifactId>
             <version>3.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/kg.apc/jmeter-plugins-webdriver -->
+        <dependency>
+            <groupId>kg.apc</groupId>
+            <artifactId>jmeter-plugins-webdriver</artifactId>
+            <version>2.2</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>

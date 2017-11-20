@@ -22,8 +22,8 @@ public class GeneralSteps extends CustomActions {
         try {
             jMeter jmeter = new jMeter();
             Map<String, String> vars = new HashMap<String, String>();
-            vars.put("test", searchOption);
-            jmeter.runJMeterTest(testName, vars);
+            vars.put("searchoption", searchOption);
+            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl);
         } catch (Exception e){
             System.out.println("error");
         }

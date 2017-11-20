@@ -35,9 +35,7 @@ public class Driver extends SeleniumSetup{
 
 
         
-        webDriver = getDriver();
-        webDriver.manage().window().maximize();
-        webDriver.switchTo().window(webDriver.getWindowHandle());
+
         //TODO setup to read a csv for elements
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
     }
@@ -47,10 +45,19 @@ public class Driver extends SeleniumSetup{
         spec = context.getCurrentSpecification().getName().toUpperCase();
 
         //Identifies tests as positive or negative
+        if(!spec.toUpperCase().contains("JMETER")){
+            webDriver = getDriver();
+            webDriver.manage().window().maximize();
+            webDriver.switchTo().window(webDriver.getWindowHandle());
+        }
 
         if(spec.toUpperCase().contains("NEGATIVE"))
             positiveTest = false;
-        else
+        else if(spec.toUpperCase().contains("JMETER")){
+            positiveTest = true;
+            //TODO handle dealing with the browser that was opened if needed
+            //TODO do any other jmeter setup that may be required
+        } else
             positiveTest = true;
 
         if(spec.contains("-"))
@@ -63,7 +70,8 @@ public class Driver extends SeleniumSetup{
     // Close the webDriver instance
     @AfterSuite
     public void closeDriver(){
-        webDriver.quit();
+        if(!spec.toUpperCase().contains("JMETER"))
+            webDriver.quit();
         try {
             FileUtils.deleteQuietly(new File("reports/html-report/images/logo.png"));
             FileUtils.copyFile(new File("reports/html-report/images/swatLogo.png"), new File("reports/html-report/images/logo.png"));
