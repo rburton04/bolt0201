@@ -22,6 +22,7 @@ public class Driver extends SeleniumSetup{
     protected static boolean positiveTest = true;
     protected static Map<String,String> elementDefinitions;
     protected static String spec = "";
+    protected static String scenario = "";
 
     // Initialize a webDriver instance of required browser
     // Since this does not have a significance in the application's business domain, the BeforeSuite hook is used to instantiate the webDriver
@@ -41,7 +42,7 @@ public class Driver extends SeleniumSetup{
     }
 
     @BeforeSpec
-    public void beforeScenario(ExecutionContext context){
+    public void beforeSpec(ExecutionContext context){
         spec = context.getCurrentSpecification().getName().toUpperCase();
 
         //Identifies tests as positive or negative
@@ -67,6 +68,12 @@ public class Driver extends SeleniumSetup{
         //System.setProperty("SPEC", context.getCurrentSpecification().getName());
         //scenario = context.getCurrentScenario().getName();
     }
+
+    @BeforeScenario
+    public void beforeScenario(ExecutionContext context){
+        scenario = context.getCurrentSpecification().getName().toUpperCase();
+    }
+
     // Close the webDriver instance
     @AfterSuite
     public void closeDriver(){
