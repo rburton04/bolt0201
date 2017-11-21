@@ -9,3 +9,4 @@ libs/
 *.iml
 build/
 *.log
+jmeter/report*

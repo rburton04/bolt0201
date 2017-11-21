@@ -17,6 +17,14 @@ public class GeneralSteps extends CustomActions {
     select ...
      */
 
+    //TODO add the following scenarios:
+    /*
+    select a specific button by text and index
+    select button, field, etc with the page it is on
+    select button, field, etc with the page and element reference defined
+    click button by text and index "click the <num> <button> button"
+     */
+
     @Step ("Run JMeter Script <testName> <searchOption>")
     public void jMeterScript(String testName, String searchOption){
         try {

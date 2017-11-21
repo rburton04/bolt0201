@@ -2,6 +2,7 @@ package selenium;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -405,9 +406,11 @@ public class SeleniumActions extends Driver{
         text = text.toUpperCase();
 
         for(WebElement tempElement:elements){
-            if(tempElement.getText().toUpperCase().equals(text)){
-                foundElement = tempElement;
-                break;
+            if(elementIsVisible(tempElement)) {
+                if (tempElement.getText().toUpperCase().equals(text)) {
+                    foundElement = tempElement;
+                    break;
+                }
             }
         }
         lastElement = foundElement;
@@ -575,6 +578,27 @@ public class SeleniumActions extends Driver{
                         elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.tagName(value)));
                         break;
                 }
+        } catch(TimeoutException e) {
+            switch (type) {
+                case "CLASS":
+                    elements = webDriver.findElements(By.className(value));
+                    break;
+                case "NAME":
+                    elements = webDriver.findElements(By.name(value));
+                    break;
+                case "ID":
+                    elements = webDriver.findElements(By.id(value));
+                    break;
+                case "XPATH":
+                    elements = webDriver.findElements(By.xpath(value));
+                    break;
+                case "LINKTEXT":
+                    elements = webDriver.findElements(By.linkText(value));
+                    break;
+                case "TAG":
+                    elements = webDriver.findElements(By.tagName(value));
+                    break;
+            }
         } catch (Exception e){
             //TODO report errors to an error report
             fail("Exception thrown while getting elements");
