@@ -23,6 +23,7 @@ public class GeneralSteps extends CustomActions {
     select button, field, etc with the page it is on
     select button, field, etc with the page and element reference defined
     click button by text and index "click the <num> <button> button"
+    hover for extra options to show up
      */
 
     @Step ("Run JMeter Script <testName> <searchOption>")
@@ -31,7 +32,7 @@ public class GeneralSteps extends CustomActions {
             jMeter jmeter = new jMeter();
             Map<String, String> vars = new HashMap<String, String>();
             vars.put("searchoption", searchOption);
-            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl);
+            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl, scenario);
         } catch (Exception e){
             System.out.println("error");
         }

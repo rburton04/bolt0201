@@ -15,7 +15,7 @@ public class jMeter {
 
     //TODO Setup the nice report for the results
 
-    public void runJMeterTest(String testName, Map<String, String> options, boolean remoteRun, String remoteUrl) throws Exception {
+    public void runJMeterTest(String testName, Map<String, String> options, boolean remoteRun, String remoteUrl, String scenario) throws Exception {
 
         // JMeter Engine
         StandardJMeterEngine jmeter = new StandardJMeterEngine();
@@ -72,7 +72,13 @@ public class jMeter {
         }
 
         //Adjust file naming as needed
-        String logFile = System.getProperty("user.dir") + "/jmeter/results_" + options.get(options.entrySet().iterator().next().getKey()) + ".xml";
+        String logFile;
+        if(!options.isEmpty())
+            logFile = System.getProperty("user.dir") + "/jmeter/results_" + scenario + "_" + options.get(options.entrySet().iterator().next().getKey()) + ".xml";
+        else
+            logFile = System.getProperty("user.dir") + "/jmeter/results_" + scenario + ".xml";
+
+        System.out.println("Log File: " + logFile);
         ResultCollector logger = new ResultCollector(summer);
         logger.setFilename(logFile);
         testPlanTree.add(testPlanTree.getArray()[0], logger);

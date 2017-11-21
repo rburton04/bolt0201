@@ -24,7 +24,7 @@ public class SeleniumSetup {
         String remoteSystem = System.getenv("REMOTE_SYSTEM");
         String remote = System.getenv("REMOTE");
         String remoteURL = System.getenv("REMOTEURL");
-        String browser = System.getenv("BROWSER");
+        String browser = System.getenv("BROWSER").toLowerCase();
         String browserVersion = System.getenv("BROWSER_VERSION");
         boolean headless = false;
 
