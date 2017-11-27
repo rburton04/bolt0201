@@ -1,7 +1,7 @@
 SearchPage
 ===========
 
-table:SearchPageCSV.csv
+table:specs/swat_website/searchpagecsv.csv
 
 * Go to swat solutions website
 * Navigate to "WORK HERE" tab
