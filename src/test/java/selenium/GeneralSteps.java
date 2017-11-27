@@ -26,18 +26,6 @@ public class GeneralSteps extends CustomActions {
     hover for extra options to show up
      */
 
-    @Step ("Run JMeter Script <testName> <searchOption>")
-    public void jMeterScript(String testName, String searchOption){
-        try {
-            jMeter jmeter = new jMeter();
-            Map<String, String> vars = new HashMap<String, String>();
-            vars.put("searchoption", searchOption);
-            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl, scenario);
-        } catch (Exception e){
-            System.out.println("error");
-        }
-    }
-
     @Step("Navigate to <tab> tab")
     public void navigateToTab(String tab) {
         clickByLinkedText(tab);

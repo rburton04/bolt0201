@@ -1,6 +1,7 @@
 package utils;
 import com.googlecode.jmeter.plugins.webdriver.config.RemoteDriverConfig;
 import org.apache.jmeter.engine.StandardJMeterEngine;
+import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.reporters.ResultCollector;
 import org.apache.jmeter.reporters.Summariser;
 import org.apache.jmeter.save.SaveService;
@@ -29,16 +30,18 @@ public class jMeter {
         // Initialize JMeter SaveService
         SaveService.loadProperties();
 
-        // Set Custom properties
-        for(Map.Entry<String, String> property : options.entrySet()){
-            JMeterUtils.setProperty("bolt." + property.getKey(),property.getValue());
-        }
-
         // Load existing .jmx Test Plan
         String location = System.getProperty("user.dir") + "/" + testName;
-        //FileInputStream in = new FileInputStream(System.getProperty("user.dir") + "/" + testName);
         HashTree testPlanTree = SaveService.loadTree(new File(System.getProperty("user.dir") + "/" + testName));
-        //in.close();
+
+        //Pass variables into JMeter script
+        if(!options.isEmpty()) {
+            Arguments jmeterVars = new Arguments();
+            for (Map.Entry<String, String> property : options.entrySet()) {
+                jmeterVars.addArgument("bolt." + property.getKey(), property.getValue());
+            }
+            testPlanTree.add(jmeterVars);
+        }
 
         if(remoteRun) {
             RemoteDriverConfig seleniumHubConfig = new RemoteDriverConfig();

@@ -2,6 +2,10 @@ package CustomSteps;
 
 import com.thoughtworks.gauge.Step;
 import selenium.GeneralSteps;
+import utils.jMeter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 
@@ -24,6 +28,57 @@ public class CustomClientSteps extends GeneralSteps {
     @Step("Verify value <value> doesn't exist in dropdown <index>")
     public void verifyValueDoesntExist(String value, int index){
         assertFalse(checkOptionExistsInDropdown(spec + ":dropdown", index - 1, value));
+    }
+
+    @Step ("Run JMeter Script <testName> <searchOption>")
+    public void jMeterScript(String testName, String searchOption){
+        try {
+            jMeter jmeter = new jMeter();
+            Map<String, String> vars = new HashMap<String, String>();
+            vars.put("searchoption", searchOption);
+            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl, scenario);
+        } catch (Exception e){
+            System.out.println("error");
+        }
+    }
+    @Step ("Run JMeter Script <testName> <searchOption> <threadCount>")
+    public void jMeterScript(String testName, String searchOption, String threadCount){
+        try {
+            jMeter jmeter = new jMeter();
+            Map<String, String> vars = new HashMap<String, String>();
+            vars.put("searchoption", searchOption);
+            vars.put("threadCount", threadCount);
+            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl, scenario);
+        } catch (Exception e){
+            System.out.println("error");
+        }
+    }
+    @Step ("Run JMeter Script <testName> <searchOption> <threadCount> <rampUpPeriod>")
+    public void jMeterScript(String testName, String searchOption, String threadCount, String rampUpPeriod){
+        try {
+            jMeter jmeter = new jMeter();
+            Map<String, String> vars = new HashMap<String, String>();
+            vars.put("searchoption", searchOption);
+            vars.put("threadCount", threadCount);
+            vars.put("rampUpPeriod", rampUpPeriod);
+            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl, scenario);
+        } catch (Exception e){
+            System.out.println("error");
+        }
+    }
+    @Step ("Run JMeter Script <testName> <searchOption> <threadCount> <rampUpPeriod> <loopCount>")
+    public void jMeterScript(String testName, String searchOption, String threadCount, String rampUpPeriod, String loopCount){
+        try {
+            jMeter jmeter = new jMeter();
+            Map<String, String> vars = new HashMap<String, String>();
+            vars.put("searchoption", searchOption);
+            vars.put("threadCount", threadCount);
+            vars.put("rampUpPeriod", rampUpPeriod);
+            vars.put("loopCount", loopCount);
+            jmeter.runJMeterTest(testName, vars, remoteRun, remoteUrl, scenario);
+        } catch (Exception e){
+            System.out.println("error");
+        }
     }
 
 }

@@ -11,14 +11,34 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="bolt.threadCount" elementType="Argument">
+            <stringProp name="Argument.name">bolt.threadCount</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="bolt.rampUpPeriod" elementType="Argument">
+            <stringProp name="Argument.name">bolt.rampUpPeriod</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="bolt.loopCount" elementType="Argument">
+            <stringProp name="Argument.name">bolt.loopCount</stringProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="BOLT_API_and_Protocol" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">${__V(${bolt.loopCount})}</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">1</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__V(${bolt.threadCount})}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__V(${bolt.rampUpPeriod})}</stringProp>
         <longProp name="ThreadGroup.start_time">1510593536000</longProp>
         <longProp name="ThreadGroup.end_time">1510593536000</longProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -26,13 +46,6 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </ThreadGroup>
       <hashTree>
-        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="Set Paramaters" enabled="true">
-          <stringProp name="BeanShellSampler.query">vars.put(&quot;bolt.searchoption&quot;, props.get(&quot;bolt.searchoption&quot;));</stringProp>
-          <stringProp name="BeanShellSampler.filename"></stringProp>
-          <stringProp name="BeanShellSampler.parameters"></stringProp>
-          <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
-        </BeanShellSampler>
-        <hashTree/>
         <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="SWAT" enabled="true"/>
         <hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1 /SwatSolutions.com" enabled="true">
