@@ -30,12 +30,11 @@ public class Driver extends SeleniumSetup{
     public void initializeDriver(){
         //This removes an old jmeter results file if it exists
         try{
-            File f = new File(System.getProperty("user.dir") + "/jmeter/results.xml");
-            f.delete();
+            File f = new File(System.getProperty("user.dir") + "/jmeter/results");
+            if(f.isDirectory())
+                FileUtils.cleanDirectory(f);
         } catch (Exception e){}
 
-
-        
 
         //TODO setup to read a csv for elements
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));

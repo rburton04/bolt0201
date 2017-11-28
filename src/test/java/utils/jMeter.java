@@ -76,10 +76,13 @@ public class jMeter {
 
         //Adjust file naming as needed
         String logFile;
-        if(!options.isEmpty())
-            logFile = System.getProperty("user.dir") + "/jmeter/results_" + scenario + "_" + options.get(options.entrySet().iterator().next().getKey()) + ".xml";
-        else
-            logFile = System.getProperty("user.dir") + "/jmeter/results_" + scenario + ".xml";
+        if(!options.isEmpty()) {
+            if(options.containsKey("index"))
+                logFile = System.getProperty("user.dir") + "/jmeter/results/results_" + scenario + "_" + options.get("index") + ".xml";
+            else
+                logFile = System.getProperty("user.dir") + "/jmeter/results/results_" + scenario + "_" + options.get(options.entrySet().iterator().next().getKey()) + ".xml";
+        }else
+            logFile = System.getProperty("user.dir") + "/jmeter/results/results_" + scenario + ".xml";
 
         System.out.println("Log File: " + logFile);
         ResultCollector logger = new ResultCollector(summer);

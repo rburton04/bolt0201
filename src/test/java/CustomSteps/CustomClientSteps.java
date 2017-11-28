@@ -81,4 +81,23 @@ public class CustomClientSteps extends GeneralSteps {
         }
     }
 
+
+    @Step ("Run JMeter Conference Script <index> <name> <feedback> <ip> <port> <threadCount> <rampUpPeriod> <loopCount>")
+    public void jmeterConferenceDemo (String index, String name, String feedback, String ip, String port, String threadCount, String rampUpPeriod, String loopCount){
+        try {
+            jMeter jmeter = new jMeter();
+            Map<String, String> vars = new HashMap<String, String>();
+            vars.put("index", index);
+            vars.put("name", name);
+            vars.put("feedback", feedback);
+            vars.put("ip", ip);
+            vars.put("port", port);
+            vars.put("threadCount", threadCount);
+            vars.put("rampUpPeriod", rampUpPeriod);
+            vars.put("loopCount", loopCount);
+            jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, remoteRun, remoteUrl, scenario);
+        } catch (Exception e){
+            System.out.println("error");
+        }
+    }
 }
