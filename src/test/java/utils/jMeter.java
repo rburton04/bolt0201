@@ -62,7 +62,7 @@ public class jMeter {
                     seleniumHubConfig.setCapability(RemoteCapability.PHANTOMJS);
                     break;
             }
-            seleniumHubConfig.setCapability(RemoteCapability.CHROME);
+            //seleniumHubConfig.setCapability(RemoteCapability.CHROME);
             seleniumHubConfig.setSeleniumGridUrl(remoteUrl);
 
             testPlanTree.add("remoteDriverConfig", seleniumHubConfig);

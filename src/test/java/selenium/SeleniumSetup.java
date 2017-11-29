@@ -28,11 +28,6 @@ public class SeleniumSetup {
         String browserVersion = System.getenv("BROWSER_VERSION");
         boolean headless = false;
 
-        String test1 = System.getenv("BROWSERSTACK_URL");
-        String test2 = System.getenv("SAUCELABS_URL");
-        String test3 = System.getenv("OPENSHIFT_URL");
-        String test = System.getenv("BOB");
-
         if (remote.toUpperCase().equals("TRUE")) {
             DesiredCapabilities capability;
             remoteRun = true;

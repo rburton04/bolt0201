@@ -36,6 +36,13 @@ public class GeneralSteps extends CustomActions {
         clickByText(spec + ":button", button);
     }
 
+    @Step("Click on the <index> <button> button")
+    public void clickButton(int index, String button){
+        //TODO build click by text and index method
+        //clickByIndex(spec + ":button", index);
+        //clickByText(spec + ":button", button);
+    }
+
     @Step("Select <dropdown> from dropdown")
     public void selectDropdown (String dropdown){
         selectDropdown(spec + ":dropdown", dropdown);

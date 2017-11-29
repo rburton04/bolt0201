@@ -1,0 +1,1 @@
+cp logo_org.png logo.png

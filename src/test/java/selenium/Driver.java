@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import utils.fileReader;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -78,14 +79,44 @@ public class Driver extends SeleniumSetup{
     public void closeDriver(){
         if(!spec.toUpperCase().contains("JMETER"))
             webDriver.quit();
+
         try {
+            File f = new File(System.getProperty("user.dir") + "/moveLogo.sh");
+            //check if f exists, if not handle it differently
+            PrintWriter writer = new PrintWriter(f);
+            writer.print("cp " + System.getProperty("user.dir") + "/logo_org.png " + System.getProperty("user.dir") + "/reports/html-report/images/logo.png");
+            writer.close();
+            //if(f.isDirectory())
+            //    f.delete();
+            /*
+            remove contents of the file
+            add "cp " + full path to logo_org.png + " " + full path to logo.png file
+             */
+        } catch (Exception e){
+
+        }
+        /*try {
             FileUtils.deleteQuietly(new File("reports/html-report/images/logo.png"));
             FileUtils.copyFile(new File("reports/html-report/images/swatLogo.png"), new File("reports/html-report/images/logo.png"));
             System.out.println("test");
         }catch (Exception e){
 
-        }
+        } finally {
+            try {
+                File f = new File(System.getProperty("user.dir") + "/moveLogo.sh");
+                //check if f exists, if not handle it differently
+                PrintWriter writer = new PrintWriter(f);
+                //if(f.isDirectory())
+                //    f.delete();
+            /*
+            remove contents of the file
+            add "cp " + full path to logo_org.png + " " + full path to logo.png file
 
+            } catch (Exception e){
+
+            }
+        }
+*/
     }
 
 }
