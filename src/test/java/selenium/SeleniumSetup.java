@@ -114,7 +114,7 @@ public class SeleniumSetup {
                 ChromeDriverManager.getInstance().setup();
                 return new ChromeDriver();
             }
-            switch (browser) {
+            switch (browser.toUpperCase()) {
                 case "IE":
                     InternetExplorerDriverManager.getInstance().setup();
                     return new InternetExplorerDriver();

@@ -49,6 +49,17 @@ public class SeleniumActions extends Driver{
         } catch (Exception e){fail("Unable to click element by text: " + elementDef + " text: " + text);}
     }
 
+    protected void clickByTextAndIndex(String elementDef, String text, int index){
+        try{
+            List<WebElement> elements = getElementsByText(elementDef, text);
+            if(elements.size() >= index) {
+                elements.get(index).click();
+                lastElement = elements.get(index);
+            } else
+                fail("Index for element to click by text and index is out of bounds.");
+        } catch (Exception e){fail("Unable to click element by text and index: " + elementDef + " text: " + text + " index: " + index);}
+    }
+
     /**
      * @param text Text of the element to click. Finds the first element with the given text.
      */
@@ -415,6 +426,21 @@ public class SeleniumActions extends Driver{
         }
         lastElement = foundElement;
         return foundElement;
+    }
+
+    protected List<WebElement> getElementsByText(String elementDefinition, String text){
+        List<WebElement> elements = getElements(elementDefinition);
+        List<WebElement> foundElements = new ArrayList<>();
+        text = text.toUpperCase();
+
+        for(WebElement tempElement:elements){
+            if(elementIsVisible(tempElement)) {
+                if (tempElement.getText().toUpperCase().equals(text)) {
+                    foundElements.add(tempElement);
+                }
+            }
+        }
+        return foundElements;
     }
 
     /**
