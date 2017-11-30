@@ -8,7 +8,7 @@ Created by aenoksen on 11/20/17
      |Sean   |Why didn't we have this sooner? |
      |Arun   |This is just awesome!           |
 
-*Go to "http://192.168.99.1:8085/home"
+*Go to AUT
 *Navigate to "User feedback" tab
 
 Add User Feedback

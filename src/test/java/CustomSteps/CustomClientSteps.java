@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public class CustomClientSteps extends GeneralSteps {
 
@@ -82,8 +83,8 @@ public class CustomClientSteps extends GeneralSteps {
     }
 
 
-    @Step ("Run JMeter Conference Script <index> <name> <feedback> <ip> <port> <threadCount> <rampUpPeriod> <loopCount>")
-    public void jmeterConferenceDemo (String index, String name, String feedback, String ip, String port, String threadCount, String rampUpPeriod, String loopCount){
+    @Step ("Run JMeter Conference Script <index> <name> <feedback> <threadCount> <rampUpPeriod> <loopCount>")
+    public void jmeterConferenceDemo (String index, String name, String feedback, String threadCount, String rampUpPeriod, String loopCount){
         try {
             jMeter jmeter = new jMeter();
             Map<String, String> vars = new HashMap<String, String>();
@@ -96,6 +97,8 @@ public class CustomClientSteps extends GeneralSteps {
             vars.put("rampUpPeriod", rampUpPeriod);
             vars.put("loopCount", loopCount);
             jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, remoteRun, remoteUrl, scenario);
+            if(!jmeter.getSuccess())
+                fail("Failure in the JMeter test run. Please investigate");
         } catch (Exception e){
             System.out.println("error");
         }

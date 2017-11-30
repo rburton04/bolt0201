@@ -11,8 +11,11 @@ import com.googlecode.jmeter.plugins.webdriver.config.RemoteCapability;
 
 import java.io.*;
 import java.util.Map;
+import java.util.Scanner;
 
 public class jMeter {
+
+    private boolean success = false;
 
     //TODO Setup the nice report for the results
 
@@ -92,5 +95,19 @@ public class jMeter {
         // Run JMeter Test
         jmeter.configure(testPlanTree);
         jmeter.run();
+
+        jmeter.exit();
+
+        Scanner scan = new Scanner(logFile);
+        success = true;
+        while (scan.hasNextLine()){
+            if(scan.nextLine().contains("s=\"false\"")){
+                success = false;
+            }
+        }
+    }
+
+    public boolean getSuccess(){
+        return success;
     }
 }
