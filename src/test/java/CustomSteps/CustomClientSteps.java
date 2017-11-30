@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public class CustomClientSteps extends GeneralSteps {
 
@@ -96,6 +97,8 @@ public class CustomClientSteps extends GeneralSteps {
             vars.put("rampUpPeriod", rampUpPeriod);
             vars.put("loopCount", loopCount);
             jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, remoteRun, remoteUrl, scenario);
+            if(!jmeter.getSuccess())
+                fail("Failure in the JMeter test run. Please investigate");
         } catch (Exception e){
             System.out.println("error");
         }
