@@ -82,8 +82,8 @@ public class CustomClientSteps extends GeneralSteps {
     }
 
 
-    @Step ("Run JMeter Conference Script <index> <name> <feedback> <ip> <port> <threadCount> <rampUpPeriod> <loopCount>")
-    public void jmeterConferenceDemo (String index, String name, String feedback, String ip, String port, String threadCount, String rampUpPeriod, String loopCount){
+    @Step ("Run JMeter Conference Script <index> <name> <feedback> <threadCount> <rampUpPeriod> <loopCount>")
+    public void jmeterConferenceDemo (String index, String name, String feedback, String threadCount, String rampUpPeriod, String loopCount){
         try {
             jMeter jmeter = new jMeter();
             Map<String, String> vars = new HashMap<String, String>();

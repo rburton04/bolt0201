@@ -22,6 +22,9 @@ public class Driver extends SeleniumSetup{
     public static WebDriver webDriver;
     protected static boolean positiveTest = true;
     protected static Map<String,String> elementDefinitions;
+    protected static String ip = System.getenv("IP");
+    protected static String port = System.getenv("PORT");
+    protected static String aut = System.getenv("AUT_URL");
     protected static String spec = "";
     protected static String scenario = "";
 

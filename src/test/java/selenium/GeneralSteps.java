@@ -26,6 +26,11 @@ public class GeneralSteps extends CustomActions {
     hover for extra options to show up
      */
 
+    @Step("Go to AUT")
+    public void navigateToAUT(){
+        goToSite(aut);
+    }
+
     @Step("Navigate to <tab> tab")
     public void navigateToTab(String tab) {
         clickByLinkedText(tab);
