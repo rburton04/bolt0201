@@ -122,4 +122,7 @@ public class Driver extends SeleniumSetup{
 */
     }
 
+    public static WebDriver getWebDriver(){
+        return webDriver;
+    }
 }
