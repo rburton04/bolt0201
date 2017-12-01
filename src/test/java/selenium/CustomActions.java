@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class CustomActions extends SeleniumActions{
+public class CustomActions extends GeneralSteps{
 
     protected void validateResults(int value){
         try {

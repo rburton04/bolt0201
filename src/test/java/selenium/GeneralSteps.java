@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class GeneralSteps extends CustomActions {
+public class GeneralSteps extends SeleniumActions {
     //protected String spec = Var.spec;
     /*
     navigate to..
@@ -18,14 +18,7 @@ public class GeneralSteps extends CustomActions {
     select ...
      */
 
-    //TODO add the following scenarios:
-    /*
-    select a specific button by text and index
-    select button, field, etc with the page it is on
-    select button, field, etc with the page and element reference defined
-    click button by text and index "click the <num> <button> button"
-    hover for extra options to show up
-     */
+
 
     @Step("Hover over <tab> tab")
     public void hover (String tab){
