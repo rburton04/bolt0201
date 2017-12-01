@@ -70,6 +70,15 @@ public class SeleniumActions extends Driver{
     }
 
     /**
+     * @param text Text of the element to click. Finds the first element with the given text.
+     */
+    protected void clickByLinkedTextPartialText(String text){
+        try{
+            getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0).click();
+        } catch (Exception e){fail("Unable to click linked text: " + text);}
+    }
+
+    /**
      * @param elementDef String of the reference to identify what element to click
      * @param index Index (0-based) of the element to click
      */
@@ -599,6 +608,9 @@ public class SeleniumActions extends Driver{
                         break;
                     case "LINKTEXT":
                         elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.linkText(value)));
+                        break;
+                    case "PARTIAL_LINKTEXT":
+                        elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.partialLinkText(value)));
                         break;
                     case "TAG":
                         elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.tagName(value)));

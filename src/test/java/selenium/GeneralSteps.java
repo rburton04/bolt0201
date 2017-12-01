@@ -36,6 +36,11 @@ public class GeneralSteps extends CustomActions {
         clickByLinkedText(tab);
     }
 
+    @Step("Navigate to tab with partial text <tab>")
+    public void navigateToTabPartialText(String tab) {
+        clickByLinkedTextPartialText(tab);
+    }
+
     @Step("Click <button> button")
     public void clickButton(String button){
         clickByText(spec + ":button", button);
