@@ -1,5 +1,6 @@
 package selenium;
 
+import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
 import utils.jMeter;
 
@@ -25,6 +26,28 @@ public class GeneralSteps extends CustomActions {
     click button by text and index "click the <num> <button> button"
     hover for extra options to show up
      */
+
+    @Step("Hover over <tab> tab")
+    public void hover (String tab){
+        hoverOverElement(tab);
+    }
+
+    @Step("Hover over tab with partial text <tab>")
+    public void hoverPartialText (String tab){
+        hoverOverElementPartialText(tab);
+    }
+
+    @ContinueOnFailure
+    @Step("Verify current page is <url>")
+    public void verifyPage(String url){
+        verifyCurrentPage(url);
+    }
+
+    @ContinueOnFailure
+    @Step("Verify <option> is an option in dropdown")
+    public void verifyOptionInDropdown(String option){
+        checkOptionExistsInDropdown(spec + ":dropdown", option);
+    }
 
     @Step("Go to AUT")
     public void navigateToAUT(){
@@ -57,16 +80,24 @@ public class GeneralSteps extends CustomActions {
         selectDropdown(spec + ":dropdown", dropdown);
     }
 
-    @Step({"Go to <website> website", "Go to <website>"})
-    public void navToWebsite(String website){
-        goToSite(website);
-
+    @Step("Select <dropdown1>, <dropdown2> from dropdown")
+    public void multiDropdowns(String dw1, String dw2){
+        List<String> selections = new LinkedList<String>();
+        selections.add(dw1);
+        selections.add(dw2);
+        multiSelectDropdown(spec + ":dropdown",selections);
     }
 
     @Step("Select value <value> on dropdown <index>")
     public void selectDropdown (String value, int index) {
         //-1 is used as people don't count with 0-based indexing
         selectDropdownByIndex(spec + ":dropdown", value, index - 1);
+    }
+
+    @Step({"Go to <website> website", "Go to <website>"})
+    public void navToWebsite(String website){
+        goToSite(website);
+
     }
 
     @Step("Enter text <text> in field <index>")
@@ -89,13 +120,5 @@ public class GeneralSteps extends CustomActions {
             scrollUp();
         else
             scrollDown();
-    }
-
-    @Step("Select <dropdown1>, <dropdown2> from dropdown")
-    public void multiDropdowns(String dw1, String dw2){
-        List<String> selections = new LinkedList<String>();
-        selections.add(dw1);
-        selections.add(dw2);
-        multiSelectDropdown(spec + ":dropdown",selections);
     }
 }

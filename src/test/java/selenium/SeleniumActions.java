@@ -1,5 +1,6 @@
 package selenium;
 
+import com.sun.jna.Library;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
@@ -173,8 +174,13 @@ public class SeleniumActions extends Driver{
      * @param option dropdown option to check (case sensitive)
      * @return true if the option exists, else false
      */
-    protected boolean checkOptionExistsInDropdown(String elementDef, String option){
-        return getSelectedDropdownValues(elementDef, 0).contains(option);
+    protected void checkOptionExistsInDropdown(String elementDef, String option){
+        try{
+            if(!getSelectedDropdownValues(elementDef, 0).contains(option))
+                fail(option + " was not found in the dropdown.");
+        } catch (Exception e){fail("Issue selecting dropdown: " + elementDef + " and checking if option existed: " + option);
+
+        }
     }
 
     /**
@@ -374,6 +380,22 @@ public class SeleniumActions extends Driver{
 
     protected void selectCalendarDate(){
 
+    }
+
+    protected void hoverOverElement(String text){
+        try{
+            Actions action = new Actions (webDriver);
+            action.moveToElement(getElementsByTypeAndValue("LINKTEXT", text).get(0)).build().perform();
+            library.hardDelay(250);
+        } catch (Exception e){fail("Unable to hover on element with text: " + text);}
+    }
+
+    protected void hoverOverElementPartialText(String text){
+        try{
+            Actions action = new Actions (webDriver);
+            action.moveToElement(getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0)).build().perform();
+            library.hardDelay(250);
+        } catch (Exception e){fail("Unable to hover on element with text: " + text);}
     }
 
     /**
