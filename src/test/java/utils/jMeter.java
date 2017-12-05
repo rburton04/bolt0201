@@ -105,6 +105,7 @@ public class jMeter {
                 success = false;
             }
         }
+        scan.close();
     }
 
     public boolean getSuccess(){

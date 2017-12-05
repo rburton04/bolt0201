@@ -14,6 +14,10 @@ import static org.junit.Assert.fail;
 
 public class CustomClientSteps extends CustomActions {
 
+
+
+
+
     @Step("Go to swat solutions website")
     public void launchSwatApplication() { goToSite(SWAT_URL); }
     @Step("Go to bbc website")

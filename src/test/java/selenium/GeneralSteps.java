@@ -42,6 +42,9 @@ public class GeneralSteps extends SeleniumActions {
         checkOptionExistsInDropdown(spec + ":dropdown", option);
     }
 
+    //TODO verify <option> is an active option in the dropdown
+    //TODO verify that <option> is an inactive option in the dropdown
+
     @Step("Go to AUT")
     public void navigateToAUT(){
         goToSite(aut);
@@ -66,6 +69,16 @@ public class GeneralSteps extends SeleniumActions {
     public void clickButton(int index, String button){
         //the -1 is used to move the index to a 0-based indexing as compared to a 1 based
         clickByTextAndIndex(spec+":button", button, index - 1);
+    }
+
+    @Step("Select <value> from dropdown with <defaultVal> default value")
+    public void testDefaultDropdownValue(String value, String defaultVal){
+        selectValueFromDropdownWithDefaultValue(defaultVal, value);
+    }
+
+    @Step("Select <value> from the <label> dropdown")
+    public void testDropdownLabel(String value, String label){
+        selectValueFromDropdownByLabel(label, value);
     }
 
     @Step("Select <dropdown> from dropdown")
