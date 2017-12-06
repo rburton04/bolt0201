@@ -185,19 +185,36 @@ public class SeleniumActions extends Driver{
         }
     }
 
-    protected void enterTextByLabel(String text, String label){
+    //TODO adjust this so that it will look for both input fields and for textareas by default.
+    protected void enterTextByLabel(String text, String label, String fieldType){
+        WebElement element = getElementWithLabel(label, fieldType);
+        if(element != null){
+            element.sendKeys(text);
+        }
 
     }
 
+    //TODO make the attribute variable as it could be a different attribute for other sites
     protected void enterTextByDefaultValues(String text, String defaultVal){
-        List<WebElement> elements = getAllElementsOfGivenType("input");
-        for(WebElement element : elements){
-            if(element.getAttribute("placeholder").equalsIgnoreCase(defaultVal)){
-                //TODO verify if this is even correct. Might change with different applications
-                //TODO verify if .getText would work instead
-                element.sendKeys(text);
-                break;
+        try {
+            List<WebElement> elements = getAllElementsOfGivenType("input");
+            for (WebElement element : elements) {
+                String placeholder = element.getAttribute("placeholder");
+                String ariaLabel = element.getAttribute("aria-label");
+                if(placeholder == null)
+                    placeholder = "";
+                if(ariaLabel == null)
+                    ariaLabel = "";
+                if (placeholder.equalsIgnoreCase(defaultVal) ||
+                        ariaLabel.equalsIgnoreCase(defaultVal)) {
+                    //TODO verify if this is even correct. Might change with different applications
+                    //TODO verify if .getText would work instead
+                    element.sendKeys(text);
+                    break;
+                }
             }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
 
@@ -267,9 +284,13 @@ public class SeleniumActions extends Driver{
         try{
             elements = webDriver.findElements(By.tagName(type));
 
-            for(WebElement element:elements){
-                if(!elementIsVisible(element))
-                    elements.remove(element);
+            int elementCount = elements.size();
+            for(int index = 0; index < elementCount; index++){
+                if(!elementIsVisible(elements.get(index))) {
+                    elements.remove(index);
+                    elementCount--;
+                    index--;
+                }
             }
         } catch (Exception e){
             fail("Issue looking for all " + type + " elements.");

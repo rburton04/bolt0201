@@ -112,6 +112,21 @@ public class GeneralSteps extends SeleniumActions {
         enterTextByIndex(spec + ":textField", text, index - 1);
     }
 
+    @Step("Enter text <text> into input field labeled <label>")
+    public void enterTextViaLabelInput(String text, String label){
+        enterTextByLabel(text, label, "input");
+    }
+
+    @Step("Enter text <text> into textarea labeled <label>")
+    public void enterTextViaLabelTextarea(String text, String label){
+        enterTextByLabel(text, label, "textarea");
+    }
+
+    @Step("Enter text <text> into field with default value <value>")
+    public void enterTextViaDefaultVal(String text, String value){
+        enterTextByDefaultValues(text, value);
+    }
+
     @Step("<check> checkbox")
     public void checkbox(String selection){
         if(selection.toUpperCase().equals("UNCHECK"))
