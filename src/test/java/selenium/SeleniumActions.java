@@ -13,6 +13,7 @@ import utils.library;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,6 +131,175 @@ public class SeleniumActions extends Driver{
             assertTrue(lastElement.getText().equals(expectedText));
         } catch (Exception e){fail("Failed to validate text entry.");}
     }
+
+    //TODO SmartMethods start
+
+    /**
+     * @param defaultValue The default value of the desired dropdown
+     * @param desiredOption The desired option to be selected
+     */
+    protected void selectValueFromDropdownWithDefaultValue(String defaultValue, String desiredOption){
+        WebElement element = getDropdownWithDefaultValue(defaultValue);
+        if(element != null){
+            Select dropdown = new Select(element);
+            selectDropdown(desiredOption, dropdown, true);
+            if (!desiredOption.isEmpty() && positiveTest)
+                assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+        }
+    }
+
+    /**
+     * @param defaultValue the pre-selected value of the desired dropdown
+     * @return the desired dropdown, or null if it is not found
+     */
+    protected WebElement getDropdownWithDefaultValue(String defaultValue){
+        WebElement desiredElement = null;
+        try{
+            List<WebElement> elements = getAllElementsOfGivenType("select");
+
+            for(WebElement element:elements){
+                Select select = new Select(element);
+                if(select.getFirstSelectedOption().getText().equalsIgnoreCase(defaultValue)) {
+                    desiredElement = element;
+                    break;
+                }
+            }
+        } catch (Exception e){
+            fail("Failed to find dropdown with default value: " + defaultValue);
+        }
+
+        return desiredElement;
+    }
+
+    /**
+     * @param label The label that identifies the dropdown
+     * @param desiredOption The option to be selected in the dropdown
+     */
+    protected void selectValueFromDropdownByLabel(String label, String desiredOption){
+        WebElement element = getElementWithLabel(label, "select");//getDropdownWithDefaultValue(defaultValue);
+        if(element != null){
+            Select dropdown = new Select(element);
+            selectDropdown(desiredOption, dropdown, true);
+            if (!desiredOption.isEmpty() && positiveTest)
+                assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+        }
+    }
+
+    //TODO adjust this so that it will look for both input fields and for textareas by default.
+    protected void enterTextByLabel(String text, String label, String fieldType){
+        WebElement element = getElementWithLabel(label, fieldType);
+        if(element != null){
+            element.sendKeys(text);
+        }
+
+    }
+
+    //TODO make the attribute variable as it could be a different attribute for other sites
+    protected void enterTextByDefaultValues(String text, String defaultVal){
+        try {
+            List<WebElement> elements = getAllElementsOfGivenType("input");
+            for (WebElement element : elements) {
+                String placeholder = element.getAttribute("placeholder");
+                String ariaLabel = element.getAttribute("aria-label");
+                if(placeholder == null)
+                    placeholder = "";
+                if(ariaLabel == null)
+                    ariaLabel = "";
+                if (placeholder.equalsIgnoreCase(defaultVal) ||
+                        ariaLabel.equalsIgnoreCase(defaultVal)) {
+                    //TODO verify if this is even correct. Might change with different applications
+                    //TODO verify if .getText would work instead
+                    element.sendKeys(text);
+                    break;
+                }
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * @param label The text of the label to search for
+     * @param elementType The type of element that is desired
+     * @return WebElement of the desired type with the given label
+     */
+    protected WebElement getElementWithLabel(String label, String elementType){
+        WebElement desiredElement = null;
+        try{
+            //TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
+            //TODO break out some parts to helper methods
+            //TODO handle ':' and other types of potential chars at the end of the label string
+            List<WebElement> elements = getAllElementsOfGivenType("label");
+            WebElement labelElement = null;
+            //List<WebElement> elements = getAllElementsOfGivenType("select");
+
+            for(WebElement element:elements){
+                ///List<WebElement> sibblings = getElementRelatives(element, "SIBLING");
+                if(element.getText().equalsIgnoreCase(label)){
+                    labelElement = element;
+                    break;
+                }
+            }
+
+            //check for a sibbling that is a dropdown
+            List<WebElement> sibblings = getElementRelatives(labelElement, "SIBLING");
+            for(WebElement element: sibblings){
+                if(element.getTagName().equalsIgnoreCase(elementType)){
+                    return element;
+                }
+            }
+
+            List<WebElement> aunts = getElementRelatives(labelElement, "AUNT");
+            //check the aunts
+            for(WebElement element: aunts){
+                if(element.getTagName().equalsIgnoreCase(elementType)){
+                    return element;
+                }
+            }
+
+            //check the cousins
+            for(WebElement element: aunts){
+                List<WebElement> cousins = getElementRelatives(element, "CHILD");
+                for(WebElement element2: cousins) {
+                    if (element.getTagName().equalsIgnoreCase(elementType)) {
+                        return element;
+                    }
+                }
+            }
+            //check the cousins. May need to know where the original/starting element was for this to be most effective
+
+        } catch (Exception e){
+            fail("Failed to validate text entry.");
+        }
+
+        return desiredElement;
+    }
+
+    /**
+     * @param type the type of the elements desired
+     * @return all elements of the given type that are visible
+     */
+    private List<WebElement> getAllElementsOfGivenType(String type){
+        List<WebElement> elements = new ArrayList();
+        try{
+            elements = webDriver.findElements(By.tagName(type));
+
+            int elementCount = elements.size();
+            for(int index = 0; index < elementCount; index++){
+                if(!elementIsVisible(elements.get(index))) {
+                    elements.remove(index);
+                    elementCount--;
+                    index--;
+                }
+            }
+        } catch (Exception e){
+            fail("Issue looking for all " + type + " elements.");
+        }
+
+        return elements;
+    }
+
+    //TODO SmartMethods end
 
     //TODO build some sort of default or random selection for dropdowns
     //TODO build a method to select dropdown option by index
@@ -509,6 +679,36 @@ public class SeleniumActions extends Driver{
     }
 
     /**
+     * @param initialElement WebElement to start looking from
+     * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
+     * @return WebElement of the related element
+     */
+    protected List<WebElement> getElementRelatives(WebElement initialElement, String relationship){
+        List<WebElement> desiredElements = new ArrayList<>();
+        try {
+            switch (relationship.toUpperCase()) {
+                case "PARENT":
+                    desiredElements.add(initialElement.findElement(By.xpath("./..")));
+                    break;
+                case "AUNT":
+                    desiredElements = initialElement.findElement(By.xpath("./../..")).findElements(By.xpath(".//*"));
+                    desiredElements.remove(initialElement.findElement(By.xpath("./..")));
+                    break;
+                case "CHILD":
+                    desiredElements = initialElement.findElements(By.xpath(".//*"));
+                    break;
+                case "SIBLING":
+                    desiredElements = initialElement.findElement(By.xpath("./..")).findElements(By.xpath(".//*"));
+                    desiredElements.remove(initialElement);
+                    break;
+            }
+        } catch (Exception e){fail("Failed to find: " + relationship + " element(s)");}
+
+        //TODO expand to include multiple elements returned
+        return desiredElements;
+    }
+
+    /**
      * @param elementDefinition String of the reference to identify what element to use
      * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
      * @param relativeDefinition String of the reference to identify what element to refer to
@@ -654,6 +854,9 @@ public class SeleniumActions extends Driver{
                     break;
                 case "LINKTEXT":
                     elements = webDriver.findElements(By.linkText(value));
+                    break;
+                case "PARTIAL_LINKTEXT":
+                    elements = webDriver.findElements(By.partialLinkText(value));
                     break;
                 case "TAG":
                     elements = webDriver.findElements(By.tagName(value));

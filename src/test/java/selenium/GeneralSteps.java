@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class GeneralSteps extends CustomActions {
+public class GeneralSteps extends SeleniumActions {
     //protected String spec = Var.spec;
     /*
     navigate to..
@@ -18,14 +18,7 @@ public class GeneralSteps extends CustomActions {
     select ...
      */
 
-    //TODO add the following scenarios:
-    /*
-    select a specific button by text and index
-    select button, field, etc with the page it is on
-    select button, field, etc with the page and element reference defined
-    click button by text and index "click the <num> <button> button"
-    hover for extra options to show up
-     */
+
 
     @Step("Hover over <tab> tab")
     public void hover (String tab){
@@ -48,6 +41,9 @@ public class GeneralSteps extends CustomActions {
     public void verifyOptionInDropdown(String option){
         checkOptionExistsInDropdown(spec + ":dropdown", option);
     }
+
+    //TODO verify <option> is an active option in the dropdown
+    //TODO verify that <option> is an inactive option in the dropdown
 
     @Step("Go to AUT")
     public void navigateToAUT(){
@@ -73,6 +69,16 @@ public class GeneralSteps extends CustomActions {
     public void clickButton(int index, String button){
         //the -1 is used to move the index to a 0-based indexing as compared to a 1 based
         clickByTextAndIndex(spec+":button", button, index - 1);
+    }
+
+    @Step("Select <value> from dropdown with <defaultVal> default value")
+    public void testDefaultDropdownValue(String value, String defaultVal){
+        selectValueFromDropdownWithDefaultValue(defaultVal, value);
+    }
+
+    @Step("Select <value> from the <label> dropdown")
+    public void testDropdownLabel(String value, String label){
+        selectValueFromDropdownByLabel(label, value);
     }
 
     @Step("Select <dropdown> from dropdown")
@@ -104,6 +110,21 @@ public class GeneralSteps extends CustomActions {
     public void enterText (String text, int index) {
         //-1 is used as people don't count with 0-based indexing
         enterTextByIndex(spec + ":textField", text, index - 1);
+    }
+
+    @Step("Enter text <text> into input field labeled <label>")
+    public void enterTextViaLabelInput(String text, String label){
+        enterTextByLabel(text, label, "input");
+    }
+
+    @Step("Enter text <text> into textarea labeled <label>")
+    public void enterTextViaLabelTextarea(String text, String label){
+        enterTextByLabel(text, label, "textarea");
+    }
+
+    @Step("Enter text <text> into field with default value <value>")
+    public void enterTextViaDefaultVal(String text, String value){
+        enterTextByDefaultValues(text, value);
     }
 
     @Step("<check> checkbox")

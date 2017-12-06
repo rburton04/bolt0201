@@ -2,6 +2,7 @@ package CustomSteps;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
+import selenium.CustomActions;
 import selenium.GeneralSteps;
 import utils.jMeter;
 
@@ -11,7 +12,11 @@ import java.util.Map;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
-public class CustomClientSteps extends GeneralSteps {
+public class CustomClientSteps extends CustomActions {
+
+
+
+
 
     @Step("Go to swat solutions website")
     public void launchSwatApplication() { goToSite(SWAT_URL); }
