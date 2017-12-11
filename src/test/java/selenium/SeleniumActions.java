@@ -90,6 +90,14 @@ public class SeleniumActions extends Driver{
         } catch (Exception e){fail("Unable to click element: " + elementDef + " index: " + index);}
     }
 
+    protected void clickDynamically(String buttonText){
+
+    }
+
+    protected void clickByIndexDynamically(String buttonText, int index){
+
+    }
+
     /**
      * @param elementDef String of the reference to identify what element to click
      */
@@ -216,6 +224,82 @@ public class SeleniumActions extends Driver{
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    //TODO read and store table
+
+    //TODO compare table method
+    //TODO check value exists in table
+    //TODO check if row exists in table
+    //TODO etc.
+    protected void readTableTo2DArray (String tableName){
+
+        ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
+        WebElement table = getTable(tableName);
+        //get list of elements with "tr" (a row)
+
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        for(WebElement row:rows){
+            ArrayList<String> rowVals = new ArrayList<>();
+            List<WebElement> column = row.findElements(By.tagName("td"));
+            for(WebElement val:column){
+                rowVals.add(val.getText());
+            }
+            results.add(rowVals);
+        }
+        //then go through each column using "td"
+        //put together the parts to an array
+        System.out.println(results);
+    }
+
+    /**
+     * @param tableName The title for the desired table
+     * @return the whole table element else null;
+     */
+    private WebElement getTable(String tableName){
+        WebElement desiredTable = null;
+        WebElement heading = null;
+        List<WebElement> elements;//getAllElementsOfGivenType("table");
+        List <WebElement> titles = getElementsByTypeAndValue("LINKTEXT",tableName);
+
+        for(WebElement element : titles) {
+            if (elementIsVisible(element)) {
+                focusOnElement(element);
+                heading = element;
+
+//check siblings
+                elements = getElementRelatives(heading, "SIBLING", false); //TODO not working right
+                for (WebElement sibling : elements) {
+                    if (sibling.getTagName().equalsIgnoreCase("table")) {
+                        return sibling;
+                    }
+                }
+
+//check for the first and second aunt after the tableName and the given sibblings
+                int count;
+
+                elements = getElementRelatives(heading, "AUNT", false); //TODO not working right
+                if (elements.size() > 2)
+                    count = 2;
+                else
+                    count = elements.size();
+
+                for (int index = 0; index < count; index++) {
+                    if (elements.get(index).getTagName().equalsIgnoreCase("table")) {
+                        return elements.get(index);
+                    }
+//check the aunts' children
+                    List<WebElement> children = getElementRelatives(elements.get(index), "CHILD");
+                    for (WebElement child : children) {
+                        if (child.getTagName().equalsIgnoreCase("table")) {
+                            return child;
+                        }
+                    }
+                }
+            }
+        }
+
+        return desiredTable;
     }
 
     /**
@@ -580,9 +664,16 @@ public class SeleniumActions extends Driver{
      * @param index Index of the given element
      */
     protected void focusOnElement(String elementDef, int index){
+        focusOnElement(getElements(elementDef).get(index));
+    }
+
+    /**
+     * @param element WebElement to focus on
+     */
+    protected void focusOnElement(WebElement element){
         try{
-            new Actions(webDriver).moveToElement(getElements(elementDef).get(index)).perform();
-        } catch (Exception e){fail("Issue focusing on the element: " + elementDef + " index: " + index);}
+            new Actions(webDriver).moveToElement(element).perform();
+        } catch (Exception e){fail("Issue focusing on the provided element.");}
     }
 
     //TODO wait for navigation/page change?? just use get elements?? or get element????????????
@@ -706,6 +797,50 @@ public class SeleniumActions extends Driver{
 
         //TODO expand to include multiple elements returned
         return desiredElements;
+    }
+
+    /**
+     * @param initialElement WebElement to start looking from
+     * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
+     * @return WebElement of the related element
+     */
+    protected List<WebElement> getElementRelatives(WebElement initialElement, String relationship, boolean beforeElement){
+        List<WebElement> desiredElements = new ArrayList<>();
+        boolean initialElementFound = false;
+        try {
+            switch (relationship.toUpperCase()) {
+                case "PARENT":
+                    desiredElements.add(initialElement.findElement(By.xpath("./..")));
+                    break;
+                case "AUNT":
+                    desiredElements = initialElement.findElement(By.xpath("./../..")).findElements(By.xpath(".//*"));
+                    //reset the initialElement for the search for elements before or after the initial
+                    initialElement = initialElement.findElement(By.xpath("./.."));
+                    break;
+                case "CHILD":
+                    desiredElements = initialElement.findElements(By.xpath(".//*"));
+                    break;
+                case "SIBLING":
+                    desiredElements = initialElement.findElement(By.xpath("./..")).findElements(By.xpath(".//*"));
+                    break;
+            }
+        } catch (Exception e){
+            fail("Failed to find: " + relationship + " element(s)");
+        }
+
+        List<WebElement> finalList = new ArrayList<>();
+        for(WebElement checkElement:desiredElements){
+
+            if(checkElement.equals(initialElement)) {
+                initialElementFound = true;
+                continue;
+            }
+
+            if(initialElementFound != beforeElement)
+                finalList.add(checkElement);
+        }
+
+        return finalList;
     }
 
     /**

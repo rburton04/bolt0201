@@ -53,6 +53,9 @@ public class Driver extends SeleniumSetup{
             webDriver = getDriver();
             webDriver.manage().window().maximize();
             webDriver.switchTo().window(webDriver.getWindowHandle());
+        } else{
+            if(System.getenv("REMOTE").equalsIgnoreCase("TRUE"))
+                remoteRun = true;
         }
 
         if(spec.toUpperCase().contains("NEGATIVE"))
