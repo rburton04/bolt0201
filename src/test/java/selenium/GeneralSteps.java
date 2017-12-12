@@ -2,23 +2,15 @@ package selenium;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
-import utils.jMeter;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class GeneralSteps extends SeleniumActions {
-	//protected String spec = Var.spec;
-	/*
-	navigate to..
-	go to <url>
-	click ...
-	select ...
-	 */
 
-
+	//TODO click a symbol
+		//may need to use href or use the class name/search for a class name containing 'search'
+	//TODO click a button with a label
 
 	@Step("Hover over <tab> tab")
 	public void hover (String tab){
@@ -62,12 +54,13 @@ public class GeneralSteps extends SeleniumActions {
 
 	@Step("Click <button> button")
     public void clickButton(String button){
-
+	    clickDynamicallyByType(button, "button");
     }
 
     @Step("Click the <index> <button> button")
     public void clickButton(int index, String button){
-
+        //converting 1-based counting to 0-based
+        clickDynamicallyByIndexAndType(button, "button", index-1);
     }
 
 	//TODO update button steps with dynamic button clicks

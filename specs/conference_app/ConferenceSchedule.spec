@@ -1,18 +1,19 @@
 CONFERENCESCHEDULE
 ==================
 Created by aenoksen on 11/21/17
+Tags: schedule
 
      |name   |comment                         |
      |-------|--------------------------------|
      |Andrew |BOLT is great!                  |
-     |Sean   |Why didn't we have this sooner? |
-     |Arun   |This is just awesome!           |
-     |Richard|Hello                           |
+     |Bob    |BOLT is great!                  |
+     |Susan  |I enjoyed this conference                 |
 
 *Go to AUT
 
 Comment on Conference Schedule
 ------------------------------
+Tags: smoke-test
 *Navigate to "Conference Schedule" tab
 *Navigate to "25.03.2015" tab
 *Click on the "3" "Comment" button

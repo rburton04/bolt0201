@@ -1,6 +1,7 @@
 package selenium;
 
-import com.sun.jna.Library;
+import utils.library;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
@@ -9,11 +10,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import utils.library;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,11 +90,38 @@ public class SeleniumActions extends Driver{
     }
 
     protected void clickDynamically(String buttonText){
+        clickByIndexDynamically(buttonText, 0);
+    }
 
+    protected void clickDynamicallyByType(String text, String type){
+        clickDynamicallyByIndexAndType(text, type, 0);
+    }
+
+    protected void clickDynamicallyByIndexAndType(String text, String type, int index){
+        List<WebElement> elements = getAllElementsOfGivenType(type);
+        int numFound = 0;
+        boolean clicked = false;
+        for(WebElement element:elements){
+            if(element.getText().equalsIgnoreCase(text)){
+                if(numFound == index) {
+                    element.click();
+                    clicked = true;
+                    break;
+                } else
+                    numFound++;
+            }
+        }
+        if(!clicked){
+            fail("Failed to click the element of type: " + type + " text: " + text + " and index: " + index);
+        }
     }
 
     protected void clickByIndexDynamically(String buttonText, int index){
+        List<WebElement> elements = getElementsByTypeAndValue("LINKTEXT", buttonText);
 
+        if(elements.size() > index){
+            elements.get(index).click();
+        }
     }
 
     /**
