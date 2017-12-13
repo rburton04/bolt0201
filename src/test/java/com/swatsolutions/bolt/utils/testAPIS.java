@@ -1,4 +1,4 @@
-package swatsolutions.bolt.utils;
+package com.swatsolutions.bolt.utils;
 
 import java.util.List;
 import java.util.Map;

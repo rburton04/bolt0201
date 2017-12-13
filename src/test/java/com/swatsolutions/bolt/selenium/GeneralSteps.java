@@ -1,4 +1,4 @@
-package selenium;
+package com.swatsolutions.bolt.selenium;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
@@ -6,11 +6,23 @@ import com.thoughtworks.gauge.Step;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GeneralSteps extends SeleniumActions {
+public class GeneralSteps extends SelemiumSmartActions {
 
 	//TODO click a symbol
 		//may need to use href or use the class name/search for a class name containing 'search'
+		//store the symbol class/id/etc in the element_definitions file under something like SYMBOL:name as most are used throughout
 	//TODO click a button with a label
+		//Click previously defined symbol <symbol>
+
+
+	@Step("Click defined symbol <symbol>")
+	public void clickDefinedSymbol(String symbol){
+		click("SYMBOL:" + symbol);
+	}
+	@Step("Click button with label <label>")
+	public void clickButtonByLabel(String label){
+		clickDynamicallyByLabel(label, "button");
+	}
 
 	@Step("Hover over <tab> tab")
 	public void hover (String tab){
@@ -53,15 +65,15 @@ public class GeneralSteps extends SeleniumActions {
 	}
 
 	@Step("Click <button> button")
-    public void clickButton(String button){
-	    clickDynamicallyByType(button, "button");
-    }
+	public void clickButton(String button){
+		clickDynamicallyByType(button, "button");
+	}
 
-    @Step("Click the <index> <button> button")
-    public void clickButton(int index, String button){
-        //converting 1-based counting to 0-based
-        clickDynamicallyByIndexAndType(button, "button", index-1);
-    }
+	@Step("Click the <index> <button> button")
+	public void clickButton(int index, String button){
+		//converting 1-based counting to 0-based
+		clickDynamicallyByIndexAndType(button, "button", index-1);
+	}
 
 	//TODO update button steps with dynamic button clicks
 
@@ -135,7 +147,7 @@ public class GeneralSteps extends SeleniumActions {
 	//TODO modify this step as this is only for testing
 	@Step("Get data from table <table>")
 	public void getTableData(String table){
-        readTableTo2DArray(table);
+		readTableTo2DArray(table);
 	}
 
 	@Step("<check> checkbox")

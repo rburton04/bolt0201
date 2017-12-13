@@ -1,8 +1,8 @@
-package selenium;
+package com.swatsolutions.bolt.selenium;
 
 import com.thoughtworks.gauge.*;
 
-import utils.fileReader;
+import com.swatsolutions.bolt.utils.fileReader;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;

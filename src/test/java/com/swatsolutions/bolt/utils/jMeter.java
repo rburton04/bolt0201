@@ -1,5 +1,4 @@
-package swatsolutions.bolt.utils;
-import com.googlecode.jmeter.plugins.webdriver.config.ChromeDriverConfig;
+package com.swatsolutions.bolt.utils;
 import com.googlecode.jmeter.plugins.webdriver.config.RemoteDriverConfig;
 import org.apache.jmeter.engine.DistributedRunner;
 import org.apache.jmeter.engine.JMeterEngine;
