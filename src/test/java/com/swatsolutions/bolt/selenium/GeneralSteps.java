@@ -6,13 +6,19 @@ import com.thoughtworks.gauge.Step;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GeneralSteps extends SelemiumSmartActions {
+public class GeneralSteps extends SeleniumSmartActions {
 
-	//TODO click a symbol
-		//may need to use href or use the class name/search for a class name containing 'search'
-		//store the symbol class/id/etc in the element_definitions file under something like SYMBOL:name as most are used throughout
-	//TODO click a button with a label
-		//Click previously defined symbol <symbol>
+	//TODO start a video?
+	//TODO check if a video is there
+	//TODO check for ads on the page
+		//look for id="google_image_div" and/or and img with src containing: "//www.google.com/ads/"
+		//look for class="plistaList" or "plista_widget_sidebar_item"
+	//TODO move mouse to an element before interacting with it
+		//found that in some situations, it is impossible to get to options on a dropdown that has to be hovered over.
+		//must do something so the mouse moves at normal speeds, not super speed.
+		//find location of the hover and the location of where it is going, break it into small segments and then complete segments with a delay between each segment
+		//Hover over <tab> and select option <option>
+		//Hover over <tab> and select option <option> realistically
 
 
 	@Step("Click defined symbol <symbol>")
@@ -22,6 +28,12 @@ public class GeneralSteps extends SelemiumSmartActions {
 	@Step("Click button with label <label>")
 	public void clickButtonByLabel(String label){
 		clickDynamicallyByLabel(label, "button");
+	}
+
+	@Step("Hover over <tab> tab and select <option>")
+	public void hoverAndClick(String tab, String option){
+		hover(tab);
+		navigateToTab(option);
 	}
 
 	@Step("Hover over <tab> tab")
@@ -54,7 +66,7 @@ public class GeneralSteps extends SelemiumSmartActions {
 		goToSite(aut);
 	}
 
-	@Step("Navigate to <tab> tab")
+	@Step({"Navigate to <tab> tab", "Navigate to <tab>"})
 	public void navigateToTab(String tab) {
 		clickByLinkedText(tab);
 	}

@@ -10,9 +10,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SelemiumSmartActions extends SeleniumActions{
-
-	//TODO SmartMethods start
+public class SeleniumSmartActions extends SeleniumActions{
 	//these methods need more advanced ways to find the desired elements.
 	//check if any parts can be broken out of what exists
 	//add needed javadocs
@@ -325,6 +323,4 @@ public class SelemiumSmartActions extends SeleniumActions{
 
 		return elements;
 	}
-
-	//TODO SmartMethods end
 }

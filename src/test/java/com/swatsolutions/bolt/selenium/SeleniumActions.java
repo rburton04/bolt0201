@@ -777,4 +777,44 @@ public class SeleniumActions extends Driver{
 		return (String) js.executeScript(String.format("return window.localStorage.getItem('%s');", key));
 	}
 
+	//TODO videos
+	protected void checkVideoExists(){
+		//check the iFrame exists (using selectFrame)
+		//use FlashSelenium or flex-ui-selenium for interacting with the video
+	}
+
+	protected void checkHTML5Video(){
+		//custom stuff for HTML5 videos:
+		//check controls functionality and playback using those elements
+		//uses CSS elements
+	}
+
+	//TODO slow down mouse movements
+	//doesn't work. possibly not realistic due to running on remote machines
+	//move mouse to hover first
+	protected void realisticMouseMovement(WebElement element){
+
+		Point starting = MouseInfo.getPointerInfo().getLocation();
+		Point going = new Point(element.getLocation().getX(), element.getLocation().getY());
+
+		Actions action = new Actions(webDriver);
+
+		action.moveToElement(getElementsByTypeAndValue("LINKTEXT", "WEATHER").get(0)).build().perform();
+		library.hardDelay(250);
+
+		int xDiff = going.x - starting.x;
+		int yDiff = going.y - starting.y;
+
+		if(Math.abs(xDiff) > 20 || Math.abs(yDiff) > 20){
+			for(int i = 0; i < 10; i++){
+				action.moveByOffset((xDiff/10),(yDiff/10)).build().perform();
+				library.hardDelay(80);
+			}
+		}
+
+		action.moveToElement(element).click().build().perform();
+
+
+
+	}
 }
