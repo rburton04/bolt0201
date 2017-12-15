@@ -2,9 +2,8 @@ package CustomSteps;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
-import selenium.CustomActions;
-import selenium.GeneralSteps;
-import utils.jMeter;
+
+import com.swatsolutions.bolt.utils.jMeter;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,14 +1,16 @@
-package selenium;
+package CustomSteps;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+
+import com.swatsolutions.bolt.selenium.GeneralSteps;
 
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class CustomActions extends GeneralSteps{
+public class CustomActions extends GeneralSteps {
 
     protected void validateResults(int value){
         try {

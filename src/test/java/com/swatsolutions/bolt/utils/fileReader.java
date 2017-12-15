@@ -1,4 +1,4 @@
-package utils;
+package com.swatsolutions.bolt.utils;
 
 import com.opencsv.CSVReader;
 

@@ -1,4 +1,4 @@
-package selenium;
+package com.swatsolutions.bolt.selenium;
 
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;

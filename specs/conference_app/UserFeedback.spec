@@ -8,13 +8,16 @@ Created by aenoksen on 11/20/17
      |Sean   |Why didn't we have this sooner? |
      |Arun   |This is just awesome!           |
 
-*Go to AUT
-*Navigate to "User feedback" tab
+* Go to AUT
+* Navigate to "User feedback" tab
 
 Add User Feedback
 -----------------
-*Enter text <name> in field "1"
-*Enter text <feedback> in field "2"
-*Click "Send Feedback" button
+* Enter text <name> in field "1"
+* Enter text <feedback> in field "2"
+* Click "Send Feedback" button
 
 
+Fail Test
+---------
+* Navigate to "nonexistant" tab

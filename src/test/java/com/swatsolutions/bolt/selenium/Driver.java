@@ -1,10 +1,12 @@
-package selenium;
+package com.swatsolutions.bolt.selenium;
 
 import com.thoughtworks.gauge.*;
+
+import com.swatsolutions.bolt.utils.fileReader;
+
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import utils.fileReader;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -53,6 +55,9 @@ public class Driver extends SeleniumSetup{
             webDriver = getDriver();
             webDriver.manage().window().maximize();
             webDriver.switchTo().window(webDriver.getWindowHandle());
+        } else{
+            if(System.getenv("REMOTE").equalsIgnoreCase("TRUE"))
+                remoteRun = true;
         }
 
         if(spec.toUpperCase().contains("NEGATIVE"))
