@@ -20,11 +20,20 @@ public class GeneralSteps extends SeleniumSmartActions {
 		//Hover over <tab> and select option <option>
 		//Hover over <tab> and select option <option> realistically
 
+	//TODO press key <key>
+
+	//TODO add some steps that allow ways to get around potential issues, like "click element with attribute <att> equal to value <val>"
+
+	@Step("Click element with attribute <att> and value <val>")
+	public void clickElementWithAttribute(String att, String val){
+		clickByAttributeAndValue(att, val);
+	}
 
 	@Step("Click defined symbol <symbol>")
 	public void clickDefinedSymbol(String symbol){
 		click("SYMBOL:" + symbol);
 	}
+
 	@Step("Click button with label <label>")
 	public void clickButtonByLabel(String label){
 		clickDynamicallyByLabel(label, "button");
@@ -66,7 +75,7 @@ public class GeneralSteps extends SeleniumSmartActions {
 		goToSite(aut);
 	}
 
-	@Step({"Navigate to <tab> tab", "Navigate to <tab>"})
+	@Step({"Navigate to <tab> tab", "Navigate to <tab>", "Click on <text> text"})
 	public void navigateToTab(String tab) {
 		clickByLinkedText(tab);
 	}
@@ -162,6 +171,8 @@ public class GeneralSteps extends SeleniumSmartActions {
 		readTableTo2DArray(table);
 	}
 
+
+//TODO do something with this nasty looking step
 	@Step("<check> checkbox")
 	public void checkbox(String selection){
 		if(selection.toUpperCase().equals("UNCHECK"))
@@ -169,6 +180,28 @@ public class GeneralSteps extends SeleniumSmartActions {
 		else
 			setCheckboxToValue(spec + ":checkbox", true);
 	}
+
+	@Step("Click <text> checkbox")
+	public void checkboxClick(String text){
+		smartClickCheckbox(text);
+	}
+
+	@Step({"Check the <text> checkbox","Select the <text> radio button"})
+	public void checkboxSelection(String text){
+		smartSetCheckboxToValue(text, true);
+	}
+
+	@Step("Uncheck the <text> checkbox")
+	public void uncheckboxSelection(String text){
+		smartSetCheckboxToValue(text, false);
+	}
+
+//TODO radial buttons
+	//possibly about the same as checkboxes
+	//input 'type', actual type is radio
+	//value may be equal to the label
+//TODO select <num> radio with heading <heading>
+//TODO select radio button labeled <label>
 
 	@Step("Scroll <direction>")
 	public void scroll(String direction){

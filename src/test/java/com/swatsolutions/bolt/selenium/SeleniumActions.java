@@ -67,24 +67,6 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
-	 * @param text Text of the element to click. Finds the first element with the given text.
-	 */
-	protected void clickByLinkedText(String text){
-		try{
-			getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
-		} catch (Exception e){fail("Unable to click linked text: " + text);}
-	}
-
-	/**
-	 * @param text Text of the element to click. Finds the first element with the given text.
-	 */
-	protected void clickByLinkedTextPartialText(String text){
-		try{
-			getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0).click();
-		} catch (Exception e){fail("Unable to click linked text: " + text);}
-	}
-
-	/**
 	 * @param elementDef String of the reference to identify what element to click
 	 * @param index Index (0-based) of the element to click
 	 */
@@ -95,15 +77,13 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
-	 * @param text text on the element to click
-	 * @param index index of the element to click
+	 * @param att Name of the attribute
+	 * @param val Value of the given attribute
 	 */
-	protected void clickByIndexDynamically(String text, int index){
-		List<WebElement> elements = getElementsByTypeAndValue("LINKTEXT", text);
-
-		if(elements.size() > index){
-			elements.get(index).click();
-		}
+	protected void clickByAttributeAndValue(String att, String val){
+		try{
+			getElementByAttributeAndValue(att, val).click();
+		} catch (Exception e){fail("Unable to click element with attribute: " + att + " value: " + val);}
 	}
 
 	/**
@@ -766,6 +746,16 @@ public class SeleniumActions extends Driver{
 		}
 		lastElements = elements;
 		return elements;
+	}
+
+	protected WebElement getElementByAttributeAndValue(String attribute, String value){
+		WebElement element = null;
+		try {
+			element = webDriver.findElement(By.xpath("//*[@" + attribute + "='" + value + "']"));
+		} catch (Exception e){
+			fail("Failed to find element by attribute: " + attribute + " and value: " + value);
+		}
+		return element;
 	}
 
 	/**
