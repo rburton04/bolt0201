@@ -1,0 +1,16 @@
+1. Setup Driver to read a flag to know to start a selenium webdriver or an appiumdriver object.
+2. Put the base of code for appium in its own section.
+3. Figure out how to make steps use either appium or webdriver based on the test. Maybe use a flag and an if/else for every step.
+4. Allow a step to do nothing for mobile or web as sometimes that may be required. (the if or else is left empty on a step)
+5. May need a new package to hold all of the steps.
+6. Add appium to the pom file:
+        <dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>5.0.4</version>
+		</dependency>
+7. Ensure similar functionality options between webdriver and appium
+
+TODO
+Check on issues with supporting different android/ios versions
+Check if this is a viable option or if there is something else that could work

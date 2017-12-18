@@ -50,6 +50,12 @@ public class SeleniumSetup {
                     break;
                 case "EDGE":capability = DesiredCapabilities.edge();
                     break;
+	            case "ANDROID":capability = DesiredCapabilities.android();
+	            	break;
+	            case "IPHONE":capability = DesiredCapabilities.iphone();
+	            	break;
+	            case "IPAD":capability = DesiredCapabilities.ipad();
+	            	break;
                 default: capability = DesiredCapabilities.chrome();
                     browser = "CHROME";
                     break;
