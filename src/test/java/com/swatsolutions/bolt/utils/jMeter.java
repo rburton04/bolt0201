@@ -138,27 +138,25 @@ public class jMeter{
 			DistributedRunner distributedRunner = new DistributedRunner(remoteProps);
 
 			List<String> hosts = new LinkedList<>();
+
 			//add your JMeter slaves here
             //TODO determine a way to identify the number of remote nodes to utilize
             for(int index = 0; index < remoteServers; index++) {
                 String host = System.getenv("REMOTE_HOST_" + String.valueOf(index + 1));
-                if(host.isEmpty())
+                if(host == null)
                     break;
 
                 hosts.add(host);
             }
-
-            File file = new File(System.getProperty("user.dir") + "/jmeter/results/results_" + scenario + "trial.txt");
-            PrintStream results = new PrintStream(file);
-
 
 			distributedRunner.setStdout(System.out);
 			distributedRunner.setStdErr(System.err);
 			distributedRunner.init(hosts, testPlanTree);
 			engines.addAll(distributedRunner.getEngines());
 			distributedRunner.start();
+			jmeter.run();
 			//a delay just for good measure
-            library.hardDelay(500);
+            library.hardDelay(5000);
 			distributedRunner.stop();
 		} else
 			jmeter.run();

@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -190,6 +191,56 @@ public class SeleniumSmartActions extends SeleniumActions{
 			if (!desiredOption.isEmpty() && positiveTest)
 				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
 		}
+	}
+
+	/**
+	 * @param label the label identifying the dropdown
+	 * @param optionIndex the index of the item to select
+	 */
+	protected void selectIndexFromDropdownByLabel(String label, int optionIndex){
+		WebElement element = getElementWithLabel(label, "select");//getDropdownWithDefaultValue(defaultValue);
+		if(element != null){
+			Select dropdown = new Select(element);
+			String desiredOption = selectDropdown(optionIndex, dropdown, true);
+
+			if (positiveTest)
+				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+		}
+	}
+
+	/**
+	 * @param defaultValue The default value of the dropdown
+	 * @param index Index of the item to select
+	 */
+	protected void selectIndexFromDropdownWithDefaultValue(String defaultValue, int index){
+		WebElement element = getDropdownWithDefaultValue(defaultValue);
+		if(element != null){
+			Select dropdown = new Select(element);
+			String desiredOption = selectDropdown(index, dropdown, true);
+
+			if (positiveTest)
+				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+		}
+	}
+
+	/**
+	 * @param label the label identifying the dropdown
+	 */
+	protected void selectRandomFromDropdownByLabel(String label){
+		try{
+			int size = new Select(getElementWithLabel(label, "select")).getOptions().size();
+			selectIndexFromDropdownByLabel(label, ThreadLocalRandom.current().nextInt(0,size));
+		} catch (Exception e){fail("Issue selecting random dropdown labeled: " + label);}
+	}
+
+	/**
+	 * @param defaultValue The default value of the dropdown
+	 */
+	protected void selectRandomFromDropdownByDefaultValue(String defaultValue){
+		try{
+			int size = new Select(getDropdownWithDefaultValue(defaultValue)).getOptions().size();
+			selectIndexFromDropdownWithDefaultValue(defaultValue, ThreadLocalRandom.current().nextInt(0,size));
+		} catch (Exception e){fail("Issue selecting random dropdown with default value: " + defaultValue);}
 	}
 
 	//TODO adjust this so that it will look for both input fields and for textareas by default.
@@ -405,6 +456,11 @@ public class SeleniumSmartActions extends SeleniumActions{
 		return desiredElement;
 	}
 
+	/**
+	 * @param baseElement WebElement by which to start looking
+	 * @param elementType Type of the desired element (tagname)
+	 * @return WebElement of the found element, else null
+	 */
 	private WebElement findElementRelativeByType(WebElement baseElement, String elementType){
 		try{
 			//check for a sibbling that is a dropdown

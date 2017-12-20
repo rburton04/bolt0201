@@ -1,5 +1,6 @@
 package CustomSteps;
 
+import com.swatsolutions.bolt.selenium.DynamicSteps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class CustomActions extends GeneralSteps {
+public class CustomActions extends DynamicSteps {
 
     protected void validateResults(int value){
         try {

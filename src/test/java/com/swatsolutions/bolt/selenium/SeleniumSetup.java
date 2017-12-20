@@ -3,10 +3,12 @@ package com.swatsolutions.bolt.selenium;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -38,6 +40,7 @@ public class SeleniumSetup {
                     break;
                 case "HEADLESS": headless = true;
                     capability = DesiredCapabilities.phantomjs();
+                    browser = "phantomjs";
 
                     //options = ChromeDriverManager.getInstance().setup();
 
@@ -127,6 +130,9 @@ public class SeleniumSetup {
                 case "FIREFOX":
                     FirefoxDriverManager.getInstance().setup();
                     return new FirefoxDriver();
+	            case "HEADLESS": headless = true;
+		            PhantomJsDriverManager.getInstance().setup();
+		            return new PhantomJSDriver();
                 default:
                     ChromeDriverManager.getInstance().setup();
                     return new ChromeDriver();
