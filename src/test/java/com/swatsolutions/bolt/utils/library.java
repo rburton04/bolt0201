@@ -1,9 +1,11 @@
 package com.swatsolutions.bolt.utils;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class library {
 
@@ -26,6 +28,18 @@ public class library {
         try {
             Thread.sleep(miliseconds);
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+	/**
+	 * @param driver WebDriver
+	 * @param miliseconds number of miliseconds to wait
+	 */
+	public static void implicitWait(WebDriver driver, long miliseconds){
+        try {
+            driver.manage().timeouts().implicitlyWait(miliseconds, TimeUnit.MILLISECONDS);
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

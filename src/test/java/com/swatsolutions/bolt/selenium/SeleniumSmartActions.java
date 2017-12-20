@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -15,6 +16,79 @@ public class SeleniumSmartActions extends SeleniumActions{
 	//check if any parts can be broken out of what exists
 	//add needed javadocs
 	//add try-catch statements where needed
+
+	//TODO select a checkbox by name/text
+	//TODO radial button(s)
+
+	/**
+	 * @param label The label next to the checkbox
+	 */
+	protected void smartClickCheckbox(String label){
+		WebElement element = getElementWithLabel(label, "input");
+		if(element != null)
+			element.click();
+	}
+
+	/**
+	 * @param text Text of the element to click. Finds the first element with the given text.
+	 */
+	protected void clickByLinkedText(String text){
+		try{
+			getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
+		} catch (Exception e){fail("Unable to click linked text: " + text);}
+	}
+
+	/**
+	 * @param text Text of the element to click. Finds the first element with the given text.
+	 */
+	protected void clickByLinkedTextPartialText(String text){
+		try{
+			getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0).click();
+		} catch (Exception e){fail("Unable to click linked text: " + text);}
+	}
+
+	/**
+	 * @param text text on the element to click
+	 * @param index index of the element to click
+	 */
+	protected void clickByIndexDynamically(String text, int index){
+		List<WebElement> elements = getElementsByTypeAndValue("LINKTEXT", text);
+
+		if(elements.size() > index){
+			elements.get(index).click();
+		}
+	}
+
+	/**\
+	 * @param label The label next to the checkbox
+	 * @param value true to select the checkbox, false to uncheck it
+	 */
+	protected void smartSetCheckboxToValue(String label, boolean value){
+		WebElement element = getElementWithLabel(label, "input");
+		WebElement element3 = null;
+		List<WebElement> temp = getElementsByTypeAndValue("LINKTEXT", label);
+		for(WebElement element2:temp){
+			if(elementIsVisible(element2)){
+				element3 = element2;
+				break;
+			}
+		}
+
+		element = findElementRelativeByType(element3,"input");
+
+		if(element != null) {
+
+			if (value != element.isSelected()) {
+				smartClickCheckbox(label);
+				if (positiveTest)
+					assertTrue(element.isSelected() == value);
+			}
+		}
+	}
+
+
+
+
 
 	/**
 	 * @param buttonText text on the element to be clicked
@@ -119,6 +193,56 @@ public class SeleniumSmartActions extends SeleniumActions{
 		}
 	}
 
+	/**
+	 * @param label the label identifying the dropdown
+	 * @param optionIndex the index of the item to select
+	 */
+	protected void selectIndexFromDropdownByLabel(String label, int optionIndex){
+		WebElement element = getElementWithLabel(label, "select");//getDropdownWithDefaultValue(defaultValue);
+		if(element != null){
+			Select dropdown = new Select(element);
+			String desiredOption = selectDropdown(optionIndex, dropdown, true);
+
+			if (positiveTest)
+				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+		}
+	}
+
+	/**
+	 * @param defaultValue The default value of the dropdown
+	 * @param index Index of the item to select
+	 */
+	protected void selectIndexFromDropdownWithDefaultValue(String defaultValue, int index){
+		WebElement element = getDropdownWithDefaultValue(defaultValue);
+		if(element != null){
+			Select dropdown = new Select(element);
+			String desiredOption = selectDropdown(index, dropdown, true);
+
+			if (positiveTest)
+				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+		}
+	}
+
+	/**
+	 * @param label the label identifying the dropdown
+	 */
+	protected void selectRandomFromDropdownByLabel(String label){
+		try{
+			int size = new Select(getElementWithLabel(label, "select")).getOptions().size();
+			selectIndexFromDropdownByLabel(label, ThreadLocalRandom.current().nextInt(0,size));
+		} catch (Exception e){fail("Issue selecting random dropdown labeled: " + label);}
+	}
+
+	/**
+	 * @param defaultValue The default value of the dropdown
+	 */
+	protected void selectRandomFromDropdownByDefaultValue(String defaultValue){
+		try{
+			int size = new Select(getDropdownWithDefaultValue(defaultValue)).getOptions().size();
+			selectIndexFromDropdownWithDefaultValue(defaultValue, ThreadLocalRandom.current().nextInt(0,size));
+		} catch (Exception e){fail("Issue selecting random dropdown with default value: " + defaultValue);}
+	}
+
 	//TODO adjust this so that it will look for both input fields and for textareas by default.
 
 	/**
@@ -170,14 +294,73 @@ public class SeleniumSmartActions extends SeleniumActions{
 	//TODO check if row exists in table
 	//TODO etc.
 
+	protected void verifyTableContains(String value, boolean expectedResult, ArrayList<ArrayList<String>> discoveredTable){
+		boolean valueFound = false;
+		for(ArrayList<String> discoveredRow:discoveredTable){
+			if(discoveredRow.contains(value))
+				valueFound = true;
+		}
+
+		if(valueFound != expectedResult){
+			if(expectedResult)
+				fail("The value: " + value + " was not found in the table when it was not expected.");
+			else
+				fail("The value: " + value + " was found in the table when it was not expected.");
+		}
+	}
+
+	protected void verifyTableContains(List<String> row, boolean expectedResult, ArrayList<ArrayList<String>> discoveredTable){
+		if(discoveredTable.contains(row) != expectedResult){
+			if(expectedResult)
+				fail("The row: '" + row.toString() + "' was not found in the table when it was not expected.");
+			else
+				fail("The row: '" + row.toString() + "' was found in the table when it was not expected.");
+		}
+	}
+
+	protected void verifyTableContains(ArrayList<ArrayList<String>> expectedTable, boolean expectedResult, ArrayList<ArrayList<String>> discoveredTable){
+
+	}
+
+	protected void verifyTablesMatch(ArrayList<ArrayList<String>> expectedTable, boolean expectedResult, ArrayList<ArrayList<String>> discoveredTable){
+		boolean match = true;
+		if(expectedTable.size() == discoveredTable.size()){
+			for(int counter = 0; counter < expectedTable.size(); counter++){
+				ArrayList<String> expectedRow = expectedTable.get(counter);
+				ArrayList<String> discoveredRow = discoveredTable.get(counter);
+
+				if(expectedRow.size() != discoveredRow.size()) {
+					match = false;
+					break;
+				}
+
+				for(int index = 0; index < expectedRow.size(); index++){
+					if(!expectedRow.get(index).equals(discoveredRow.get(index))){
+						match = false;
+						break;
+					}
+				}
+
+				if(!match)
+					break;
+			}
+		}
+
+		if(match != expectedResult){
+			if(expectedResult)
+				fail("The provided tables were not found to match when they were expected to.");
+			else
+				fail("The provided tables were found to match when they were not expected to.");
+		}
+	}
+
 	/**
 	 * @param tableName header of the table that is found above the given table
 	 */
-	protected void readTableTo2DArray (String tableName){
+	protected ArrayList<ArrayList<String>> readTableTo2DArray (String tableName){
 
 		ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
 		WebElement table = getTable(tableName);
-		//get list of elements with "tr" (a row)
 
 		List<WebElement> rows = table.findElements(By.tagName("tr"));
 		for(WebElement row:rows){
@@ -188,9 +371,8 @@ public class SeleniumSmartActions extends SeleniumActions{
 			}
 			results.add(rowVals);
 		}
-		//then go through each column using "td"
-		//put together the parts to an array
-		System.out.println(results);
+
+		return results;
 	}
 
 	/**
@@ -265,16 +447,31 @@ public class SeleniumSmartActions extends SeleniumActions{
 					break;
 				}
 			}
+			desiredElement = findElementRelativeByType(labelElement, elementType);
 
+		} catch (Exception e){
+			fail("Failed to validate text entry.");
+		}
+
+		return desiredElement;
+	}
+
+	/**
+	 * @param baseElement WebElement by which to start looking
+	 * @param elementType Type of the desired element (tagname)
+	 * @return WebElement of the found element, else null
+	 */
+	private WebElement findElementRelativeByType(WebElement baseElement, String elementType){
+		try{
 			//check for a sibbling that is a dropdown
-			List<WebElement> sibblings = getElementRelatives(labelElement, "SIBLING");
+			List<WebElement> sibblings = getElementRelatives(baseElement, "SIBLING");
 			for(WebElement element: sibblings){
 				if(element.getTagName().equalsIgnoreCase(elementType)){
 					return element;
 				}
 			}
 
-			List<WebElement> aunts = getElementRelatives(labelElement, "AUNT");
+			List<WebElement> aunts = getElementRelatives(baseElement, "AUNT");
 			//check the aunts
 			for(WebElement element: aunts){
 				if(element.getTagName().equalsIgnoreCase(elementType)){
@@ -291,13 +488,10 @@ public class SeleniumSmartActions extends SeleniumActions{
 					}
 				}
 			}
-			//check the cousins. May need to know where the original/starting element was for this to be most effective
+		} catch(Exception e){
 
-		} catch (Exception e){
-			fail("Failed to validate text entry.");
 		}
-
-		return desiredElement;
+		return null;
 	}
 
 	/**
