@@ -96,6 +96,7 @@ public class jMeter{
 			//seleniumHubConfig.setCapability(RemoteCapability.CHROME);
 			seleniumHubConfig.setSeleniumGridUrl(remoteUrl);
 
+			//TODO look at adding this elsewhere, maybe inside the primary tree at the start or the end.
 			testPlanTree.add("remoteDriverConfig", seleniumHubConfig);
 			} catch (Exception e){
 				System.out.println("");
