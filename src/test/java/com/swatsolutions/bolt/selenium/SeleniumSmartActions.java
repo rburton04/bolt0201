@@ -86,10 +86,6 @@ public class SeleniumSmartActions extends SeleniumActions{
 		}
 	}
 
-
-
-
-
 	/**
 	 * @param buttonText text on the element to be clicked
 	 */
@@ -251,11 +247,38 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param fieldType type of field to enter text into (field, textarea, etc.)
 	 */
 	protected void enterTextByLabel(String text, String label, String fieldType){
-		WebElement element = getElementWithLabel(label, fieldType);
-		if(element != null){
-			element.sendKeys(text);
+		try {
+			WebElement element = getElementWithLabel(label, fieldType);
+			if (element != null) {
+				element.sendKeys(text);
+			} else
+				fail("Failed to enter text by the label: " + label);
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			fail("Failed to enter text by the label: " + label);
 		}
+	}
 
+	/**
+	 * @param text the text to enter
+	 * @param label the label that identifies the element
+	 * @param fieldType type of field to enter text into (field, textarea, etc.)
+	 * @param index the index of the element to enter text into
+	 */
+	protected void  enterTextByLabelAndIndex(String text, String label, String fieldType, int index){
+		try{
+			List<WebElement> elements = getElementsWithLabel(label, fieldType);
+			if(index < elements.size()) {
+				if(elements.get(index) != null)
+					elements.get(index).sendKeys(text);
+				else
+					fail("Failed to enter text by the label: " + label + " and Index: " + index);
+			} else
+				fail("Failed to enter text by the label: " + label + " and Index: " + index);
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			fail("Failed to enter text by the label: " + label + " and Index: " + index);
+		}
 	}
 
 	//TODO make the attribute variable as it could be a different attribute for other sites
@@ -282,6 +305,41 @@ public class SeleniumSmartActions extends SeleniumActions{
 					break;
 				}
 			}
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+	}
+
+	/**
+	 * @param text text to be entered
+	 * @param defaultVal the default value that exists in an element
+	 * @param index the index of the element to enter text into
+	 */
+	protected void enterTextByDefaultValuesAndIndex(String text, String defaultVal, int index){
+		try {
+			List<WebElement> elements = getAllElementsOfGivenType("input");
+			int numFound = 0;
+			for (WebElement element : elements) {
+				String placeholder = element.getAttribute("placeholder");
+				String ariaLabel = element.getAttribute("aria-label");
+				if(placeholder == null)
+					placeholder = "";
+				if(ariaLabel == null)
+					ariaLabel = "";
+				if ((placeholder.equalsIgnoreCase(defaultVal) ||
+						ariaLabel.equalsIgnoreCase(defaultVal)) &&
+						numFound == index) {
+					//TODO verify if this is even correct. Might change with different applications
+					//TODO verify if .getText would work instead
+					element.sendKeys(text);
+					break;
+				} else
+					numFound++;
+			}
+
+			if(numFound != index)
+				fail("Failed to enter text by default value into: " + defaultVal + " and index: " + index);
+
 		} catch (Exception e){
 			System.out.println(e.getMessage());
 		}
@@ -454,6 +512,35 @@ public class SeleniumSmartActions extends SeleniumActions{
 		}
 
 		return desiredElement;
+	}
+
+	protected List<WebElement> getElementsWithLabel(String label, String elementType){
+		List<WebElement> desiredElements = null;
+		try{
+			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
+			//TODO break out some parts to helper methods
+			//TODO handle ':' and other types of potential chars at the end of the label string
+			List<WebElement> elements = getAllElementsOfGivenType("label");
+			List<WebElement> labelElement = null;
+			//List<WebElement> elements = getAllElementsOfGivenType("select");
+
+			for(WebElement element:elements){
+				///List<WebElement> sibblings = getElementRelatives(element, "SIBLING");
+				if(element.getText().equalsIgnoreCase(label)){
+					labelElement.add(element);
+				}
+			}
+
+			for(WebElement elementLabel:labelElement){
+				WebElement foundElement = findElementRelativeByType(elementLabel, elementType);
+				if(foundElement != null)
+					desiredElements.add(foundElement);
+			}
+
+		} catch (Exception e){
+			fail("Failed to validate text entry.");
+		}
+		return desiredElements;
 	}
 
 	/**

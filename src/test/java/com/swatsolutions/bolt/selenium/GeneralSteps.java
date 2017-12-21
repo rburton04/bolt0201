@@ -195,14 +195,29 @@ public class GeneralSteps extends SeleniumSmartActions {
 		enterTextByLabel(text, label, "input");
 	}
 
+	@Step("Enter text <text> into input field labeled <label> and index <index>")
+	public void enterTextViaLabelInput(String text, String label, int index){
+		enterTextByLabelAndIndex(text, label, "input", index);
+	}
+
 	@Step("Enter text <text> into textarea labeled <label>")
 	public void enterTextViaLabelTextarea(String text, String label){
 		enterTextByLabel(text, label, "textarea");
 	}
 
+	@Step("Enter text <text> into textarea labeled <label> and index <index>")
+	public void enterTextViaLabelTextarea(String text, String label, int index){
+		enterTextByLabelAndIndex(text, label, "textarea", index);
+	}
+
 	@Step("Enter text <text> into field with default value <value>")
 	public void enterTextViaDefaultVal(String text, String value){
 		enterTextByDefaultValues(text, value);
+	}
+
+	@Step("Enter text <text> into field with default value <value> and index <index>")
+	public void enterTextViaDefaultVal(String text, String label, int index){
+		enterTextByDefaultValuesAndIndex(text, label, index);
 	}
 
 	//TODO add step(s) to add text instead of replacing all of the text in the box
