@@ -156,7 +156,8 @@ public class jMeter{
 			distributedRunner.setStdErr(System.err);
 			distributedRunner.init(hosts, testPlanTree);
 			engines.addAll(distributedRunner.getEngines());
-			distributedRunner.start();
+		//	distributedRunner.start();
+			jmeter.run();
 			//a delay just for good measure
             library.hardDelay(500);
 			distributedRunner.stop();
