@@ -47,6 +47,7 @@ public class SeleniumSetup {
 
                     break;
 	            case "HEADLESS": capability = DesiredCapabilities.chrome();
+	                browser = "chrome";
 		            ChromeOptions chromeHeadless = new ChromeOptions();
 		            chromeHeadless.addArguments("headless");
 		            //this may need to be changed for virtual mobile testing or something
@@ -152,7 +153,8 @@ public class SeleniumSetup {
 		            return new ChromeDriver(options);
                 default:
                     ChromeDriverManager.getInstance().setup();
-                    return new ChromeDriver();
+                    ChromeOptions cOption = new ChromeOptions().addArguments("disable-infobars");
+                    return new ChromeDriver(cOption);
 
             }
         }
