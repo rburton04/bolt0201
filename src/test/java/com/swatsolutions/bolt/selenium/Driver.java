@@ -29,6 +29,8 @@ public class Driver extends SeleniumSetup{
     protected static String aut = System.getenv("AUT_URL");
     protected static String spec = "";
     protected static String scenario = "";
+    protected static String storedUrl = "";
+    protected static int elementWaitTime = 5;
 
     // Initialize a webDriver instance of required browser
     // Since this does not have a significance in the application's business domain, the BeforeSuite hook is used to instantiate the webDriver
@@ -41,6 +43,9 @@ public class Driver extends SeleniumSetup{
                 FileUtils.cleanDirectory(f);
         } catch (Exception e){}
 
+        if(!System.getenv("ELEMENT_WAIT_TIME").isEmpty()){
+        	elementWaitTime = Integer.valueOf(System.getenv("ELEMENT_WAIT_TIME"));
+        }
 
         //TODO setup to read a csv for elements
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));

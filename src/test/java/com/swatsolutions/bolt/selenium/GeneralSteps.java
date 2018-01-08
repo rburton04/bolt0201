@@ -2,6 +2,7 @@ package com.swatsolutions.bolt.selenium;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
+import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +23,12 @@ public class GeneralSteps extends SeleniumSmartActions {
 		//Hover over <tab> and select option <option>
 		//Hover over <tab> and select option <option> realistically
 
-	//TODO press key <key>
 
 	//TODO add some steps that allow ways to get around potential issues, like "click element with attribute <att> equal to value <val>"
 
+
+	//TODO build a step to handle multiple input boxes after a label
+	// or multiple drop downs
 
 	//CLICKING STEPS
 
@@ -38,29 +41,6 @@ public class GeneralSteps extends SeleniumSmartActions {
 	public void clickDefinedSymbol(String symbol){
 		click("SYMBOL:" + symbol);
 	}
-
-	@Step("Click button with label <label>")
-	public void clickButtonByLabel(String label){
-		clickDynamicallyByLabel(label, "button");
-	}
-
-	@Step("Click <button> button")
-	public void clickButton(String button){
-		clickDynamicallyByType(button, "button");
-	}
-
-	@Step("Click <text>")
-	public void clickItem(String text){
-		clickDynamically(text);
-	}
-
-	@Step("Click the <index> <button> button")
-	public void clickButton(int index, String button){
-		//converting 1-based counting to 0-based
-		clickDynamicallyByIndexAndType(button, "button", index-1);
-	}
-
-	//TODO update button steps with dynamic button clicks
 
 	@Step("Click <button> button by element definition")
 	public void clickButtonElementDefinition(String button){

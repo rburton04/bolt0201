@@ -8,6 +8,40 @@ public class DynamicSteps extends GeneralSteps {
 	//TODO build option for a pre-built list to used instead of random values
 	//TODO ability to enter a large number of different strings into the same field in one step
 
+	//Click Button
+	@Step("Click button with label <label>")
+	public void clickButtonByLabel(String label){
+		clickDynamicallyByLabel(label, "button");
+	}
+
+	@Step({"Click button with text <text>","Click text <text>"})
+	public void clickButtonText(String text){
+		clickAnyText(text);
+	}
+
+	@Step("Click <button> button")
+	public void clickButton(String button){
+		clickDynamicallyByType(button, "button");
+	}
+
+	@Step({"Click button with text <text> and index <index>", "Click text <text> with index <index>"})
+	public void clickButtonText(String text, int index){
+		clickAnyText(text, index);
+	}
+
+	//Click
+
+	@Step("Click <text>")
+	public void clickItem(String text){
+		clickDynamically(text);
+	}
+
+	@Step("Click the <index> <button> button")
+	public void clickButton(int index, String button){
+		//converting 1-based counting to 0-based
+		clickDynamicallyByIndexAndType(button, "button", index-1);
+	}
+
 	//Enter Text
 
 	//TODO enhance these steps to use nums, alphabetic, or alphanumeric options

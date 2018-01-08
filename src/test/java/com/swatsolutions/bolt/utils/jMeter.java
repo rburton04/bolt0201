@@ -70,7 +70,7 @@ public class jMeter{
 			testPlanTree.add(jmeterVars);
 		}
 
-		if(false) {
+		if(true) {
 			try {
 				//ChromeDriverConfig cdriverTest = new ChromeDriverConfig();
 				RemoteDriverConfig seleniumHubConfig = new RemoteDriverConfig();
@@ -154,11 +154,11 @@ public class jMeter{
 			distributedRunner.setStdErr(System.err);
 			distributedRunner.init(hosts, testPlanTree);
 			engines.addAll(distributedRunner.getEngines());
-			distributedRunner.start();
+//			distributedRunner.start();
 			jmeter.run();
 			//a delay just for good measure
             library.hardDelay(5000);
-			distributedRunner.stop();
+//			distributedRunner.stop();
 		} else
 			jmeter.run();
 
