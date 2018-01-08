@@ -20,6 +20,102 @@ public class SeleniumSmartActions extends SeleniumActions{
 	//TODO select a checkbox by name/text
 	//TODO radial button(s)
 
+	protected enum verifyButtonStatus {DISABLED, NONEXISTANT, ENABLED, EXISTS};
+
+	/**
+	 * @param status enum for the status to verify
+	 * @param text text on the button
+	 */
+	protected void verifyButtonStatusByText(verifyButtonStatus status, String text){
+		verifyButtonStatusByText(status, text, 0);
+	}
+
+	/**
+	 * @param status enum for the status to verify
+	 * @param text text of the button
+	 * @param index index of the button with given text
+	 */
+	protected void verifyButtonStatusByText(verifyButtonStatus status, String text, int index){
+		verifyElementStatus(status, findElementsWithText(text).get(index));
+	}
+
+	/**
+	 * @param status enum for the status to verify
+	 * @param label label of the button
+	 */
+	protected void verifyButtonStatusByLabel(verifyButtonStatus status, String label){
+		verifyElementStatus(status, getElementWithLabel(label, "button"));
+	}
+
+	/**
+	 * @param status enum for the status to verify
+	 * @param label label of the button
+	 * @param index index of the button with the given label
+	 */
+	protected void verifyButtonStatusByLabel(verifyButtonStatus status, String label, int index){
+		//TODO not yet built/supported
+		verifyElementStatus(status, getElementWithLabel(label, "button"));
+	}
+
+	/**
+	 * @param status enum for the status to verify
+	 * @param text text tied to the button
+	 */
+	protected void verifyButtonStatusDynamically(verifyButtonStatus status, String text){
+		verifyElementStatus(status, findElementDynamicallyByIndexAndType("button", text, 0));
+	}
+
+	/**
+	 * @param status
+	 * @param element
+	 */
+	protected void verifyElementStatus(verifyButtonStatus status, WebElement element){
+		boolean failed = false;
+		switch (status){
+			case DISABLED:
+				if(element == null)
+					failed = true;
+				else if(element.isEnabled())
+					failed = true;
+				break;
+			case NONEXISTANT:
+				if(element != null)
+					failed = true;
+				break;
+			case ENABLED:
+				if(element == null)
+					failed = true;
+				else if(!element.isEnabled())
+					failed = true;
+				break;
+			case EXISTS:
+				if(element == null)
+					failed = true;
+				break;
+		}
+		if(failed)
+			fail("Button status verification failed for " + status.name() + " validation.");
+	}
+
+
+
+
+	/**
+	 * @param identifier value of the type of the element to get text from
+	 * @param type type of identifier to use to find the element (tag, name, id, etc.)
+	 * @return the text of the element found
+	 */
+	protected String getText(String identifier, String type){
+		List<WebElement> elements = getElementsByTypeAndValue(type, identifier);
+		String elementText = "";
+		if(elements.size() > 0){
+			if(elements.get(0) != null){
+				elementText = elements.get(0).getText();
+			}
+		}
+		return elementText;
+	}
+
 	/**
 	 * @param label The label next to the checkbox
 	 */
@@ -101,28 +197,33 @@ public class SeleniumSmartActions extends SeleniumActions{
 		clickDynamicallyByIndexAndType(text, type, 0);
 	}
 
+	protected WebElement findElementDynamicallyByIndexAndType(String type, String text, int index){
+		List<WebElement> elements = getAllElementsOfGivenType(type);
+		int numFound = 0;
+		for(WebElement element:elements){
+			if(element.getText().equalsIgnoreCase(text)){
+				if(numFound == index)
+					return element;
+				else
+					numFound++;
+			}
+		}
+		fail("Failed to find the element of type: " + type + " text: " + text + " and index: " + index);
+		return null;
+	}
+
+
 	/**
 	 * @param text text on the element to be clicked
 	 * @param type the type of element to be clicked (tag name)
 	 * @param index index of the element to click
 	 */
 	protected void clickDynamicallyByIndexAndType(String text, String type, int index){
-		List<WebElement> elements = getAllElementsOfGivenType(type);
-		int numFound = 0;
-		boolean clicked = false;
-		for(WebElement element:elements){
-			if(element.getText().equalsIgnoreCase(text)){
-				if(numFound == index) {
-					element.click();
-					clicked = true;
-					break;
-				} else
-					numFound++;
-			}
-		}
-		if(!clicked){
+		WebElement element = findElementDynamicallyByIndexAndType(type, text, index);
+		if(element != null)
+			element.click();
+		else
 			fail("Failed to click the element of type: " + type + " text: " + text + " and index: " + index);
-		}
 	}
 
 	/**
@@ -139,6 +240,68 @@ public class SeleniumSmartActions extends SeleniumActions{
 	}
 
 	/**
+	 * @param text text to click on the page
+	 */
+	protected void clickAnyText(String text){
+		clickAnyText(text, 0);
+	}
+
+	/**
+	 * @param text text to click
+	 * @param index index to click (use 0 for a default)
+	 */
+	protected void clickAnyText(String text, int index){
+		try{
+			findElementsWithText(text).get(index).click();
+		} catch (Exception e){
+			fail("Failed to click text: " + text);
+		}
+	}
+
+	/**
+	 * @param text string to look for
+	 * @return all webelements with the given
+	 */
+	protected List<WebElement> findElementsWithText(String text){
+		try{
+			return getElementsByTypeAndValue("XPATH", "//*[text()[contains(.,'" + text + "')]]");
+			//for non case-sensitive:
+			//"//*[text() = 'text']"
+		} catch (Exception e){
+			fail("Failed to find text: " + text);
+		}
+		return null;
+	}
+
+	/**
+	 * @param text string to check exists on the current page
+	 * @param index index of the text to check (use 0 to check for any instance)
+	 */
+	protected void checkIfTextExists(String text, int index){
+		List<WebElement> elements = findElementsWithText(text);
+
+		if(elements == null || elements.size() < index)
+			fail("Failed to find text: " + text);
+	}
+
+	/**
+	 * @param text string to check does not exist on the current page
+	 * @param index index of the text to check (use 0 to check for any instance)
+	 */
+	protected void checkIfTextDoesNotExist(String text, int index){
+		try {
+			List<WebElement> elements = findElementsWithText(text);
+
+			if (elements != null){
+			    if(elements.size() >= index)
+					fail("Found text that was not expected: " + text);
+			}
+		} catch (Exception e){
+			//this is a pass
+		}
+	}
+
+	/**
 	 * @param defaultValue The default value of the desired dropdown
 	 * @param desiredOption The desired option to be selected
 	 */
@@ -146,7 +309,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		WebElement element = getDropdownWithDefaultValue(defaultValue);
 		if(element != null){
 			Select dropdown = new Select(element);
-			selectDropdown(desiredOption, dropdown, true);
+			selectDropdown(desiredOption, dropdown);
 			if (!desiredOption.isEmpty() && positiveTest)
 				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
 		}
@@ -182,8 +345,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 	protected void selectValueFromDropdownByLabel(String label, String desiredOption){
 		WebElement element = getElementWithLabel(label, "select");//getDropdownWithDefaultValue(defaultValue);
 		if(element != null){
+			//TODO if desired option is "" and that is not an option, than just move on
 			Select dropdown = new Select(element);
-			selectDropdown(desiredOption, dropdown, true);
+			selectDropdown(desiredOption, dropdown);
 			if (!desiredOption.isEmpty() && positiveTest)
 				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
 		}
@@ -240,6 +404,27 @@ public class SeleniumSmartActions extends SeleniumActions{
 	}
 
 	//TODO adjust this so that it will look for both input fields and for textareas by default.
+
+	protected String getTextByLabel(String label, String fieldType){
+		return getTextByLabel(label, fieldType, 0);
+	}
+
+	protected String getTextByLabel(String label, String fieldType, int index){
+		String text = "";
+		try {
+			List<WebElement> elements = getElementsWithLabel(label, fieldType);
+			if (elements != null) {
+				if(elements.size() > index)
+					text = elements.get(index).getText();
+			} else
+				fail("Failed to get text by the label: " + label);
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			fail("Failed to get text by the label: " + label);
+		}
+
+		return text;
+	}
 
 	/**
 	 * @param text the text to enter
