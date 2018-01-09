@@ -24,27 +24,17 @@ public class SeleniumSmartActions extends SeleniumActions{
 
 	/**
 	 * @param status enum for the status to verify
-	 * @param text text on the button
-	 */
-	protected void verifyButtonStatusByText(verifyButtonStatus status, String text){
-		verifyButtonStatusByText(status, text, 0);
-	}
-
-	/**
-	 * @param status enum for the status to verify
 	 * @param text text of the button
 	 * @param index index of the button with given text
 	 */
 	protected void verifyButtonStatusByText(verifyButtonStatus status, String text, int index){
-		verifyElementStatus(status, findElementsWithText(text).get(index));
-	}
-
-	/**
-	 * @param status enum for the status to verify
-	 * @param label label of the button
-	 */
-	protected void verifyButtonStatusByLabel(verifyButtonStatus status, String label){
-		verifyElementStatus(status, getElementWithLabel(label, "button"));
+		List<WebElement> foundElements = findElementsWithText(text, true);
+		if(foundElements == null)
+			verifyElementStatus(status, null);
+		else if (foundElements.size() <= index)
+			verifyElementStatus(status, null);
+		else
+			verifyElementStatus(status, findElementsWithText(text).get(index));
 	}
 
 	/**
@@ -54,7 +44,13 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void verifyButtonStatusByLabel(verifyButtonStatus status, String label, int index){
 		//TODO not yet built/supported
-		verifyElementStatus(status, getElementWithLabel(label, "button"));
+		List<WebElement> foundElements = getElementsWithLabel(label, "button");
+		if(foundElements == null)
+			verifyElementStatus(status, null);
+		else if (foundElements.size() <= index)
+			verifyElementStatus(status, null);
+		else
+			verifyElementStatus(status, foundElements.get(index));
 	}
 
 	/**
@@ -62,7 +58,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param text text tied to the button
 	 */
 	protected void verifyButtonStatusDynamically(verifyButtonStatus status, String text){
-		verifyElementStatus(status, findElementDynamicallyByIndexAndType("button", text, 0));
+		verifyElementStatus(status, findElementDynamicallyByIndexAndType("button", text, 0, true));
 	}
 
 	/**
@@ -198,6 +194,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 	}
 
 	protected WebElement findElementDynamicallyByIndexAndType(String type, String text, int index){
+		return findElementDynamicallyByIndexAndType(type, text, index, false);
+	}
+	protected WebElement findElementDynamicallyByIndexAndType(String type, String text, int index, boolean ignoreFailure){
 		List<WebElement> elements = getAllElementsOfGivenType(type);
 		int numFound = 0;
 		for(WebElement element:elements){
@@ -208,7 +207,10 @@ public class SeleniumSmartActions extends SeleniumActions{
 					numFound++;
 			}
 		}
-		fail("Failed to find the element of type: " + type + " text: " + text + " and index: " + index);
+		if(ignoreFailure)
+			return null;
+		else
+			fail("Failed to find the element of type: " + type + " text: " + text + " and index: " + index);
 		return null;
 	}
 
@@ -263,12 +265,22 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @return all webelements with the given
 	 */
 	protected List<WebElement> findElementsWithText(String text){
+		return findElementsWithText(text, false);
+	}
+
+	/**
+	 * @param text string to look for
+	 * @param ignoreFailure true to ignore failures while finding the element
+	 * @return all webelements with the given
+	 */
+	protected List<WebElement> findElementsWithText(String text, boolean ignoreFailure){
 		try{
 			return getElementsByTypeAndValue("XPATH", "//*[text()[contains(.,'" + text + "')]]");
 			//for non case-sensitive:
 			//"//*[text() = 'text']"
 		} catch (Exception e){
-			fail("Failed to find text: " + text);
+			if(!ignoreFailure)
+				fail("Failed to find text: " + text);
 		}
 		return null;
 	}
@@ -293,7 +305,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			List<WebElement> elements = findElementsWithText(text);
 
 			if (elements != null){
-			    if(elements.size() >= index)
+			    if(elements.size() > index)
 					fail("Found text that was not expected: " + text);
 			}
 		} catch (Exception e){
@@ -414,8 +426,13 @@ public class SeleniumSmartActions extends SeleniumActions{
 		try {
 			List<WebElement> elements = getElementsWithLabel(label, fieldType);
 			if (elements != null) {
-				if(elements.size() > index)
+				if(elements.size() > index) {
 					text = elements.get(index).getText();
+					if(text.isEmpty())
+						text = elements.get(index).getAttribute("value");
+					if(text.isEmpty())
+						text = elements.get(index).getAttribute("innerHTML");
+				}
 			} else
 				fail("Failed to get text by the label: " + label);
 		} catch (Exception e){
@@ -700,13 +717,13 @@ public class SeleniumSmartActions extends SeleniumActions{
 	}
 
 	protected List<WebElement> getElementsWithLabel(String label, String elementType){
-		List<WebElement> desiredElements = null;
+		List<WebElement> desiredElements = new ArrayList<>();
 		try{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
 			//TODO break out some parts to helper methods
 			//TODO handle ':' and other types of potential chars at the end of the label string
 			List<WebElement> elements = getAllElementsOfGivenType("label");
-			List<WebElement> labelElement = null;
+			List<WebElement> labelElement = new ArrayList<>();
 			//List<WebElement> elements = getAllElementsOfGivenType("select");
 
 			for(WebElement element:elements){

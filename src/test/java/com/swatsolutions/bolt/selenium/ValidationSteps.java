@@ -1,158 +1,181 @@
 package com.swatsolutions.bolt.selenium;
 
+import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
 import org.junit.Assert;
 
-public class ValidationSteps extends GeneralSteps {
+public class ValidationSteps extends SeleniumSmartActions {
 	//TODO positive validation
 
 	//check text matches expected
+	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> matches <text>")
-	protected void verifyText(String label, String text){
+	public void verifyText(String label, String text){
 		Assert.assertTrue("Textbox text did not match the expected value", text.equalsIgnoreCase(getTextByLabel(label, "input")));
 	}
-
+	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> index <index> matches <text>")
-	protected void verifyText(String label, int index, String text){
+	public void verifyText(String label, int index, String text){
 		Assert.assertTrue("Textbox text did not match the expected value", text.equalsIgnoreCase(getTextByLabel(label, "input", index)));
 	}
-
+	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> matches <text>")
-	protected void verifyTextArea(String label, String text){
+	public void verifyTextArea(String label, String text){
 		Assert.assertTrue("Textarea text did not match the expected value", text.equalsIgnoreCase(getTextByLabel(label, "textarea")));
 	}
-
+	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> index <index> matches <text>")
-	protected void verifyTextArea(String label, int index, String text){
+	public void verifyTextArea(String label, int index, String text){
 		Assert.assertTrue("Textarea text did not match the expected value", text.equalsIgnoreCase(getTextByLabel(label, "textarea", index)));
 	}
 
 	//check page title
+	@ContinueOnFailure
 	@Step("Verify page title matches <title>")
-	protected void verifyTitle(String title){
-		Assert.assertTrue("Page title failed to match.", title.equalsIgnoreCase(getText("h1", "TAG")));
+	public void verifyTitle(String title){
+		//TODO decrease wait time for the page title??
+		String pageTitle = "";
+		int index = 1;
+		while(pageTitle.isEmpty()){
+			if(index > 6)
+				break;
+			pageTitle = getText("h" + index, "TAG");
+			index ++;
+		}
+
+		Assert.assertTrue("Page title failed to match.", title.equalsIgnoreCase(pageTitle));
 	}
 
 	//Check page changed
+	@ContinueOnFailure
 	@Step("Verify page changed")
-	protected void verifyPageChange(){
+	public void verifyPageChange(){
 		compareUrl(storedUrl, false);
 	}
 
 	//Check the current page is as expected
+	@ContinueOnFailure
 	@Step("Verify page url matches <url>")
-	protected void verifyUrl(String url){
+	public void verifyUrl(String url){
 		compareUrl(url, true);
 	}
 
 	//TODO negative validation
 
 	//Check for error pop-up with given text
+	@ContinueOnFailure
 	@Step("Verify popup with text <text> is displayed")
-	protected void verifyPopupText(String text){
+	public void verifyPopupText(String text){
 //possibly use the "checkIfTextExists" method
 		checkIfTextExists(text, 0);
 	}
 
 	//Check text does not match what was entered
+	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> does not match <text>")
-	protected void verifyTextMismatch(String label, String text){
+	public void verifyTextMismatch(String label, String text){
 		Assert.assertFalse("Textbox text matched when it should not have", text.equalsIgnoreCase(getTextByLabel(label, "input")));
 	}
-
+	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> index <index> does not match <text>")
-	protected void verifyTextMismatch(String label, int index, String text){
+	public void verifyTextMismatch(String label, int index, String text){
 		Assert.assertFalse("Textbox text matched when it should not have", text.equalsIgnoreCase(getTextByLabel(label, "input", index)));
 	}
-
+	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> does not match <text>")
-	protected void verifyTextAreaMismatch(String label, String text){
+	public void verifyTextAreaMismatch(String label, String text){
 		Assert.assertFalse("Textarea text matched when it should not have", text.equalsIgnoreCase(getTextByLabel(label, "textarea")));
 	}
-
+	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> index <index> does not match <text>")
-	protected void verifyTextAreaMismatch(String label, int index, String text){
+	public void verifyTextAreaMismatch(String label, int index, String text){
 		Assert.assertFalse("Textarea text matched when it should not have", text.equalsIgnoreCase(getTextByLabel(label, "textarea", index)));
 	}
 
 	//Check error message text exists
+	@ContinueOnFailure
 	@Step("Verify error message <message> exists")
-	protected void verifyErrorMessageDisplayed(String message){
+	public void verifyErrorMessageDisplayed(String message){
 		checkIfTextExists(message, 0);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify error message <message> index <index> exists")
-	protected void verifyErrorMessageDisplayed(String message, int index){
+	public void verifyErrorMessageDisplayed(String message, int index){
 		checkIfTextExists(message, index);
 	}
-
+	@ContinueOnFailure
 	@Step("Save current Url")
-	protected void storeCurrUrl(){
+	public void storeCurrUrl(){
 		storedUrl = getCurrentUrl();
 	}
 
 	//Check page did not change upon button click
+	@ContinueOnFailure
 	@Step("Verify page did not change")
-	protected void verifyPageNoChange(){
+	public void verifyPageNoChange(){
 		compareUrl(storedUrl, true);
 	}
 
 	//Verify a button does not exist
+	@ContinueOnFailure
 	@Step("Verify button <button> does not exist")
-	protected void verifyButtonDoesntExist(String button){
+	public void verifyButtonDoesntExist(String button){
 		verifyButtonStatusDynamically(verifyButtonStatus.NONEXISTANT, button);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify button labeled <label> does not exist")
-	protected void verifyButtonDoesntExistLabel(String label){
-		verifyButtonStatusByLabel(verifyButtonStatus.NONEXISTANT, label);
+	public void verifyButtonDoesntExistLabel(String label){
+		verifyButtonStatusByLabel(verifyButtonStatus.NONEXISTANT, label, 0);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify button with text <text> does not exist")
-	protected void verifyButtonDoesntExistText(String text){
-		verifyButtonStatusByText(verifyButtonStatus.NONEXISTANT, text);
+	public void verifyButtonDoesntExistText(String text){
+		verifyButtonStatusByText(verifyButtonStatus.NONEXISTANT, text, 0);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify button with text <text> and index <index> does not exist")
-	protected void verifyButtonDoesntExistText(String text, int index){
+	public void verifyButtonDoesntExistText(String text, int index){
 		verifyButtonStatusByText(verifyButtonStatus.NONEXISTANT, text, index);
 	}
 
 	//Verify text does not exist
+	@ContinueOnFailure
 	@Step("Verify text <text> does not exist")
-	protected void verifyTextDoesntExist(String text){
+	public void verifyTextDoesntExist(String text){
 		checkIfTextDoesNotExist(text, 0);
 	}
 
 	//Verify disabled button
+	@ContinueOnFailure
 	@Step("Verify button <button> is disabled")
-	protected void verifyButtonDisabled(String button){
+	public void verifyButtonDisabled(String button){
 		verifyButtonStatusDynamically(verifyButtonStatus.DISABLED, button);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify button labeled <label> is disabled")
-	protected void verifyButtonDisabledLabel(String label){
-		verifyButtonStatusByLabel(verifyButtonStatus.DISABLED, label);
+	public void verifyButtonDisabledLabel(String label){
+		verifyButtonStatusByLabel(verifyButtonStatus.DISABLED, label, 0);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify button with text <text> is disabled")
-	protected void verifyButtonDisabledText(String text){
-		verifyButtonStatusByText(verifyButtonStatus.DISABLED, text);
+	public void verifyButtonDisabledText(String text){
+		verifyButtonStatusByText(verifyButtonStatus.DISABLED, text, 0);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify button with text <text> and index <index> is disabled")
-	protected void verifyButtonDisabledText(String text, int index){
+	public void verifyButtonDisabledText(String text, int index){
 		verifyButtonStatusByText(verifyButtonStatus.DISABLED, text, index);
 	}
 
 	//Verify <good or bad> symbol is displayed
+	@ContinueOnFailure
 	@Step("Verify <symbol> symbol is displayed")
-	protected void verifySymbolDisplayed(String symbol){
+	public void verifySymbolDisplayed(String symbol){
 		checkElementExists("SYMBOL:" + symbol, true, 0);
 	}
-
+	@ContinueOnFailure
 	@Step("Verify <symbol> symbol is not displayed")
-	protected void verifySymbolNotDisplayed(String symbol){
+	public void verifySymbolNotDisplayed(String symbol){
 		checkElementExists("SYMBOL:" + symbol, false, 0);
 	}
 }
