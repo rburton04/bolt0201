@@ -14,7 +14,7 @@ pipeline {
 
     stages {
 
-        stage('BOLT TESTS') { 
+        stage('BOLT Dev API TESTS') { 
 
             steps {
 
@@ -29,9 +29,37 @@ pipeline {
         }
 
       }
+      
+      stage('BOLT QA API TESTS') { 
 
+            steps {
+
+                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/conference_app_jmeter.spec -Denv=qa' 
+ 
+           
+           // publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+
+             perfReport modePerformancePerTestCase: true, modeThroughput: true, sourceDataFiles: '**/results*.xml'
+
+
+        }
+
+      }
+        stage('BOLT PreProd UI TESTS') { 
+
+            steps {
+
+                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/UserFeedback.spec -Denv=preprod' 
+ 
+           
+             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+
+             //perfReport modePerformancePerTestCase: true, modeThroughput: true, sourceDataFiles: '**/results*.xml'
+
+
+        }
+
+      }
     }
-
-   
-
+  
 }
