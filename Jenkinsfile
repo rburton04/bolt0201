@@ -18,7 +18,7 @@ pipeline {
 
             steps {
 
-                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/UserFeedback.spec -Denv=qa' 
+                sh 'clean install' 
  
            
             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
