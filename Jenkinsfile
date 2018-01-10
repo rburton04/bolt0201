@@ -18,7 +18,7 @@ pipeline {
 
             steps {
 
-                sh 'clean install' 
+                sh 'mvn clean install' 
  
            
             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
