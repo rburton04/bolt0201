@@ -18,6 +18,3 @@ Add User Feedback
 * Click "Send Feedback" button
 
 
-Fail Test
----------
-* Navigate to "nonexistant" tab
