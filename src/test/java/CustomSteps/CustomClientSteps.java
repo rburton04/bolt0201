@@ -91,8 +91,8 @@ public class CustomClientSteps extends CustomActions {
     }
 
 
-    @Step ("Run JMeter Conference Script <index> <name> <feedback> <threadCount> <rampUpPeriod> <loopCount>")
-    public void jmeterConferenceDemo (String index, String name, String feedback, String threadCount, String rampUpPeriod, String loopCount){
+    @Step ("Run JMeter Conference Script <index> <name> <feedback> <threadCount> <rampUpPeriod> <loopCount> <hostCount>")
+    public void jmeterConferenceDemo (String index, String name, String feedback, String threadCount, String rampUpPeriod, String loopCount, String hostCount){
         try {
             jMeter jmeter = new jMeter();
             Map<String, String> vars = new HashMap<String, String>();
@@ -104,7 +104,7 @@ public class CustomClientSteps extends CustomActions {
             vars.put("threadCount", threadCount);
             vars.put("rampUpPeriod", rampUpPeriod);
             vars.put("loopCount", loopCount);
-            jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, remoteRun, remoteUrl, scenario);
+            jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, remoteRun, remoteUrl, scenario, Integer.valueOf(hostCount));
             if(!jmeter.getSuccess())
                 fail("Failure in the JMeter test run. Please investigate");
         } catch (Exception e){

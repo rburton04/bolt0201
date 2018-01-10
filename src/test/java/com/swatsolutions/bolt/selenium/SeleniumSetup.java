@@ -3,10 +3,13 @@ package com.swatsolutions.bolt.selenium;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -36,12 +39,21 @@ public class SeleniumSetup {
             switch(browser.toUpperCase()){
                 case "IE": capability = DesiredCapabilities.internetExplorer();
                     break;
-                case "HEADLESS": headless = true;
+                case "PHANTOMJS": headless = true;
                     capability = DesiredCapabilities.phantomjs();
+                    browser = "phantomjs";
 
                     //options = ChromeDriverManager.getInstance().setup();
 
                     break;
+	            case "HEADLESS": capability = DesiredCapabilities.chrome();
+	                browser = "chrome";
+		            ChromeOptions chromeHeadless = new ChromeOptions();
+		            chromeHeadless.addArguments("headless");
+		            //this may need to be changed for virtual mobile testing or something
+		            chromeHeadless.addArguments("window-size=1200x600");
+		            capability.setCapability(ChromeOptions.CAPABILITY, chromeHeadless);
+		            break;
                 case "CHROME": capability = DesiredCapabilities.chrome();
                     break;
                 case "FIREFOX": capability = DesiredCapabilities.firefox();
@@ -50,6 +62,12 @@ public class SeleniumSetup {
                     break;
                 case "EDGE":capability = DesiredCapabilities.edge();
                     break;
+	            case "ANDROID":capability = DesiredCapabilities.android();
+	            	break;
+	            case "IPHONE":capability = DesiredCapabilities.iphone();
+	            	break;
+	            case "IPAD":capability = DesiredCapabilities.ipad();
+	            	break;
                 default: capability = DesiredCapabilities.chrome();
                     browser = "CHROME";
                     break;
@@ -121,9 +139,22 @@ public class SeleniumSetup {
                 case "FIREFOX":
                     FirefoxDriverManager.getInstance().setup();
                     return new FirefoxDriver();
+	            case "PHANTOMJS":
+		            headless = true;
+		            PhantomJsDriverManager.getInstance().setup();
+		            browser = "phantomjs";
+	            	return new PhantomJSDriver();
+	            case "HEADLESS": headless = true;
+	                ChromeDriverManager.getInstance().setup();
+		            ChromeOptions options = new ChromeOptions();
+		            options.addArguments("headless");
+		            //this may need to be changed for virtual mobile testing or something
+		            options.addArguments("window-size=1200x600");
+		            return new ChromeDriver(options);
                 default:
                     ChromeDriverManager.getInstance().setup();
-                    return new ChromeDriver();
+                    ChromeOptions cOption = new ChromeOptions().addArguments("disable-infobars");
+                    return new ChromeDriver(cOption);
 
             }
         }

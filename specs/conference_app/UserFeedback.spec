@@ -13,8 +13,8 @@ Created by aenoksen on 11/20/17
 
 Add User Feedback
 -----------------
-* Enter text <name> in field "1"
-* Enter text <feedback> in field "2"
+* Enter text <name> into input field labeled "Name"
+* Enter text <feedback> into textarea labeled "Feedback"
 * Click "Send Feedback" button
 
 

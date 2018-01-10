@@ -1,6 +1,6 @@
 This is a concept file with following syntax for each concept.
 # Search openings <jobFunction> <location> <keyword>
-* Select value <jobFunction> on dropdown "1"
-* Select value <location> on dropdown "2"
+* Select <jobFunction> from the "Job Function:" dropdown
+* Select <location> from the "Location:" dropdown
 * Enter text <keyword> in field "1"
 * Click Search button

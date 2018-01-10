@@ -2,7 +2,10 @@ package com.swatsolutions.bolt.selenium;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
+import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,14 +24,36 @@ public class GeneralSteps extends SeleniumSmartActions {
 		//Hover over <tab> and select option <option> realistically
 
 
+	//TODO add some steps that allow ways to get around potential issues, like "click element with attribute <att> equal to value <val>"
+
+
+	//TODO build a step to handle multiple input boxes after a label
+	// or multiple drop downs
+
+	//CLICKING STEPS
+
+	@Step("Click element with attribute <att> and value <val>")
+	public void clickElementWithAttribute(String att, String val){
+		clickByAttributeAndValue(att, val);
+	}
+
 	@Step("Click defined symbol <symbol>")
 	public void clickDefinedSymbol(String symbol){
 		click("SYMBOL:" + symbol);
 	}
-	@Step("Click button with label <label>")
-	public void clickButtonByLabel(String label){
-		clickDynamicallyByLabel(label, "button");
+
+	@Step("Click <button> button by element definition")
+	public void clickButtonElementDefinition(String button){
+		clickByText(spec + ":button", button);
 	}
+
+	@Step("Click on the <index> <button> button by element definition")
+	public void clickButtonElementDefinition(int index, String button){
+		//the -1 is used to move the index to a 0-based indexing as compared to a 1 based
+		clickByTextAndIndex(spec+":button", button, index - 1);
+	}
+
+	//HOVERING STEPS
 
 	@Step("Hover over <tab> tab and select <option>")
 	public void hoverAndClick(String tab, String option){
@@ -46,6 +71,7 @@ public class GeneralSteps extends SeleniumSmartActions {
 		hoverOverElementPartialText(tab);
 	}
 
+	//VERIFICATION STEPS
 	@ContinueOnFailure
 	@Step("Verify current page is <url>")
 	public void verifyPage(String url){
@@ -61,12 +87,13 @@ public class GeneralSteps extends SeleniumSmartActions {
 	//TODO verify <option> is an active option in the dropdown
 	//TODO verify that <option> is an inactive option in the dropdown
 
+	//URL STEPS
 	@Step("Go to AUT")
 	public void navigateToAUT(){
 		goToSite(aut);
 	}
 
-	@Step({"Navigate to <tab> tab", "Navigate to <tab>"})
+	@Step({"Navigate to <tab> tab", "Navigate to <tab>", "Click on <text> text"})
 	public void navigateToTab(String tab) {
 		clickByLinkedText(tab);
 	}
@@ -76,37 +103,23 @@ public class GeneralSteps extends SeleniumSmartActions {
 		clickByLinkedTextPartialText(tab);
 	}
 
-	@Step("Click <button> button")
-	public void clickButton(String button){
-		clickDynamicallyByType(button, "button");
+	@Step({"Go to <website> website", "Go to <website>"})
+	public void navToWebsite(String website){
+		goToSite(website);
+
 	}
 
-	@Step("Click the <index> <button> button")
-	public void clickButton(int index, String button){
-		//converting 1-based counting to 0-based
-		clickDynamicallyByIndexAndType(button, "button", index-1);
-	}
+	//DROPDOWN STEPS
 
-	//TODO update button steps with dynamic button clicks
-
-	@Step("Click <button> button by element definition")
-	public void clickButtonElementDefinition(String button){
-		clickByText(spec + ":button", button);
-	}
-
-	@Step("Click on the <index> <button> button by element definition")
-	public void clickButtonElementDefinition(int index, String button){
-		//the -1 is used to move the index to a 0-based indexing as compared to a 1 based
-		clickByTextAndIndex(spec+":button", button, index - 1);
-	}
+	//TODO select the value by index from a dropdown with label
 
 	@Step("Select <value> from dropdown with <defaultVal> default value")
-	public void testDefaultDropdownValue(String value, String defaultVal){
+	public void selectDefaultDropdownValue(String value, String defaultVal){
 		selectValueFromDropdownWithDefaultValue(defaultVal, value);
 	}
 
 	@Step("Select <value> from the <label> dropdown")
-	public void testDropdownLabel(String value, String label){
+	public void selectDropdownLabel(String value, String label){
 		selectValueFromDropdownByLabel(label, value);
 	}
 
@@ -129,11 +142,27 @@ public class GeneralSteps extends SeleniumSmartActions {
 		selectDropdownByIndex(spec + ":dropdown", value, index - 1);
 	}
 
-	@Step({"Go to <website> website", "Go to <website>"})
-	public void navToWebsite(String website){
-		goToSite(website);
-
+	@Step("Select the <optionIndex> option from dropdown")
+	public void selectDropdown(int optionIndex){
+		selectDropdownOptionByIndex(spec + ":dropdown", optionIndex-1);
 	}
+
+	@Step("Select the <optionIndex> option from dropdown <index>")
+	public void selectDropdown(int optionIndex, int index){
+		selectDropdownAndOptionByIndex(spec + ":dropdown", index, optionIndex-1);
+	}
+
+	@Step("Select the <optionIndex> option from the <label> dropdown")
+	public void selectDropdownLabel(int optionIndex, String label){
+		selectIndexFromDropdownByLabel(label, optionIndex-1);
+	}
+
+	@Step("Select the <optionIndex> option from dropdown with <defaultVal> default value")
+	public void selectDefaultDropdownValue(int optionIndex, String defaultVal){
+		selectIndexFromDropdownWithDefaultValue(defaultVal, optionIndex-1);
+	}
+
+	//ENTER TEXT
 
 	@Step("Enter text <text> in field <index>")
 	public void enterText (String text, int index) {
@@ -146,9 +175,19 @@ public class GeneralSteps extends SeleniumSmartActions {
 		enterTextByLabel(text, label, "input");
 	}
 
+	@Step("Enter text <text> into input field labeled <label> and index <index>")
+	public void enterTextViaLabelInput(String text, String label, int index){
+		enterTextByLabelAndIndex(text, label, "input", index);
+	}
+
 	@Step("Enter text <text> into textarea labeled <label>")
 	public void enterTextViaLabelTextarea(String text, String label){
 		enterTextByLabel(text, label, "textarea");
+	}
+
+	@Step("Enter text <text> into textarea labeled <label> and index <index>")
+	public void enterTextViaLabelTextarea(String text, String label, int index){
+		enterTextByLabelAndIndex(text, label, "textarea", index);
 	}
 
 	@Step("Enter text <text> into field with default value <value>")
@@ -156,12 +195,37 @@ public class GeneralSteps extends SeleniumSmartActions {
 		enterTextByDefaultValues(text, value);
 	}
 
+	@Step("Enter text <text> into field with default value <value> and index <index>")
+	public void enterTextViaDefaultVal(String text, String label, int index){
+		enterTextByDefaultValuesAndIndex(text, label, index);
+	}
+
+	//TODO add step(s) to add text instead of replacing all of the text in the box
+
+	//PRESS/ENTER SPECIAL KEYS
+
+	@Step("Press <key> key")
+	public void pressKey(String key){
+		keyPress(key);
+	}
+
+	@Step("Press many keys (seperate each with a comma) <keys>")
+	public void pressManyKeys(String key){
+		ArrayList<String> keys = new ArrayList<String>(Arrays.asList(key.split(",")));
+		multiKeyPress(keys);
+	}
+
+	//TABLES
+
 	//TODO modify this step as this is only for testing
 	@Step("Get data from table <table>")
 	public void getTableData(String table){
 		readTableTo2DArray(table);
 	}
 
+	//CHECKBOX AND RADIO BUTTONS
+
+	//TODO do something with this nasty looking step
 	@Step("<check> checkbox")
 	public void checkbox(String selection){
 		if(selection.toUpperCase().equals("UNCHECK"))
@@ -169,6 +233,30 @@ public class GeneralSteps extends SeleniumSmartActions {
 		else
 			setCheckboxToValue(spec + ":checkbox", true);
 	}
+
+	@Step("Click <text> checkbox")
+	public void checkboxClick(String text){
+		smartClickCheckbox(text);
+	}
+
+	@Step({"Check the <text> checkbox","Select the <text> radio button"})
+	public void checkboxSelection(String text){
+		smartSetCheckboxToValue(text, true);
+	}
+
+	@Step("Uncheck the <text> checkbox")
+	public void uncheckboxSelection(String text){
+		smartSetCheckboxToValue(text, false);
+	}
+
+//TODO radial buttons
+	//possibly about the same as checkboxes
+	//input 'type', actual type is radio
+	//value may be equal to the label
+//TODO select <num> radio with heading <heading>
+//TODO select radio button labeled <label>
+
+	//SCROLL
 
 	@Step("Scroll <direction>")
 	public void scroll(String direction){

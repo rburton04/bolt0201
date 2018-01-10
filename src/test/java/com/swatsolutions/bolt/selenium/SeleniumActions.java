@@ -2,10 +2,8 @@ package com.swatsolutions.bolt.selenium;
 
 import com.swatsolutions.bolt.utils.library;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.junit.Assert;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -15,12 +13,69 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
 public class SeleniumActions extends Driver{
+
+	/**
+	 * @param elementDef
+	 * @param expectedResult
+	 * @param index
+	 */
+	protected void checkElementExists (String elementDef, boolean expectedResult, int index){
+		try {
+			boolean passed = false;
+			int tempWaitTime = elementWaitTime;
+			elementWaitTime = 2;
+			List<WebElement> elements = getElements(elementDef, true);
+			elementWaitTime = tempWaitTime;
+			if (expectedResult) {
+				//expected to be found
+				if (elements != null) {
+					if (elements.size() > index) {
+						if (elementIsVisible(elements.get(index)))
+							passed = true;
+					}
+				}
+				if (!passed)
+					fail("Failed to find expected element.");
+			} else {
+				//not expected
+				passed = true;
+				if (elements != null) {
+					if (elements.size() > index) {
+						//Verify this is effective, it may not be worth doing
+						if (elementIsVisible(elements.get(index)))
+							passed = false;
+					}
+				}
+				if (!passed)
+					fail("Found unexpected element.");
+			}
+		} catch (Exception e){fail("An error occurred while attempting to check if an element exists."); }
+	}
+
+	/**
+	 * @param url url to compare the current url to
+	 * @param expectedResult true if the values should match
+	 */
+	protected void compareUrl(String url, boolean expectedResult){
+		if(expectedResult)
+			Assert.assertTrue("Current URL does not match expected URL.", getCurrentUrl().equalsIgnoreCase(url));
+		else
+			Assert.assertFalse("Current URL matches the expected URL.", getCurrentUrl().equalsIgnoreCase(url));
+	}
+
+	/**
+	 * @return the url of the current page
+	 */
+	protected String getCurrentUrl(){
+		return webDriver.getCurrentUrl();
+	}
 
 	/**
 	 * @param url url of the site to go to
@@ -41,6 +96,8 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
+	 * Clicks element with the given element definition and given text
+	 *
 	 * @param elementDef String of the reference to identify what element to click
 	 * @param text Text of the exact element to click
 	 */
@@ -67,24 +124,6 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
-	 * @param text Text of the element to click. Finds the first element with the given text.
-	 */
-	protected void clickByLinkedText(String text){
-		try{
-			getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
-		} catch (Exception e){fail("Unable to click linked text: " + text);}
-	}
-
-	/**
-	 * @param text Text of the element to click. Finds the first element with the given text.
-	 */
-	protected void clickByLinkedTextPartialText(String text){
-		try{
-			getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0).click();
-		} catch (Exception e){fail("Unable to click linked text: " + text);}
-	}
-
-	/**
 	 * @param elementDef String of the reference to identify what element to click
 	 * @param index Index (0-based) of the element to click
 	 */
@@ -95,15 +134,15 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
-	 * @param text text on the element to click
-	 * @param index index of the element to click
+	 * clicks on the first element found with the given attribute and value
+	 *
+	 * @param att Name of the attribute
+	 * @param val Value of the given attribute
 	 */
-	protected void clickByIndexDynamically(String text, int index){
-		List<WebElement> elements = getElementsByTypeAndValue("LINKTEXT", text);
-
-		if(elements.size() > index){
-			elements.get(index).click();
-		}
+	protected void clickByAttributeAndValue(String att, String val){
+		try{
+			getElementByAttributeAndValue(att, val).click();
+		} catch (Exception e){fail("Unable to click element with attribute: " + att + " value: " + val);}
 	}
 
 	/**
@@ -167,7 +206,7 @@ public class SeleniumActions extends Driver{
 	protected void selectDropdownByIndex(String elementDef, String desiredOption, int index){
 		try {
 			Select dropdown = new Select(getElements(elementDef).get(index));
-			selectDropdown(desiredOption, dropdown, true);
+			selectDropdown(desiredOption, dropdown);
 			if (!desiredOption.isEmpty() && positiveTest)
 				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
 		} catch (Exception e){fail("Issue selecting dropdown: " + elementDef + " index: " + index);}
@@ -176,14 +215,63 @@ public class SeleniumActions extends Driver{
 	/**
 	 * @param desiredOption String of the option to select from the dropdown
 	 * @param dropdown Select of the specific dropdown to select values from
-	 * @param clearSelections boolean to clear all previous selections
 	 */
-	protected void selectDropdown(String desiredOption, Select dropdown, boolean clearSelections){
+	protected void selectDropdown(String desiredOption, Select dropdown){
 		if(library.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption.toUpperCase())){
 			dropdown.selectByValue(desiredOption);
 		} else{
 			//TODO error
 		}
+	}
+
+	protected String selectDropdown(int optionIndex, Select dropdown, boolean clearSelections){
+		String desiredOption = "";
+
+		//if(clearSelections)
+		//	dropdown.deselectAll();
+
+		if(dropdown.getOptions().size() > optionIndex) {
+			desiredOption = dropdown.getOptions().get(optionIndex).getText();
+			dropdown.selectByIndex(optionIndex);
+		}else
+			fail("Option Index out of range for the given element.");
+		return desiredOption;
+	}
+
+	/**
+	 * @param elementDef String of the reference to identify the element to use
+	 * @param optionIndex Index of the desired option
+	 */
+	protected void selectDropdownOptionByIndex(String elementDef, int optionIndex){
+		selectDropdownAndOptionByIndex(elementDef, 0, optionIndex);
+	}
+
+	protected void selectDropdownOptionRandom(String elementDef){
+		try{
+			int size = new Select(getElements(elementDef).get(0)).getOptions().size();
+			selectDropdownOptionByIndex(elementDef, ThreadLocalRandom.current().nextInt(0,size));
+		} catch (Exception e){fail("Issue selecting random dropdown: " + elementDef);}
+	}
+
+	protected void selectDropdownOptionRandom(String elementDef, int dropdownIndex){
+		try{
+			int size = new Select(getElements(elementDef).get(0)).getOptions().size();
+			selectDropdownAndOptionByIndex(elementDef, dropdownIndex, ThreadLocalRandom.current().nextInt(0,size));
+		} catch (Exception e){fail("Issue selecting random dropdown: " + elementDef);}
+	}
+
+	/**
+	 * @param elementDef String of the reference to identify the element to use
+	 * @param dropdownIndex Index of the desired dropdown
+	 * @param optionIndex Index of the desired option
+	 */
+	protected void selectDropdownAndOptionByIndex(String elementDef, int dropdownIndex, int optionIndex){
+		try {
+			Select dropdown = new Select(getElements(elementDef).get(dropdownIndex));
+			String desiredOption = selectDropdown(optionIndex, dropdown, true);
+			if (positiveTest)
+				assertTrue(dropdown.getFirstSelectedOption().getText().equals(desiredOption));
+		} catch (Exception e){fail("Issue selecting dropdown: " + elementDef + " index: " + dropdownIndex);}
 	}
 
 	/**
@@ -265,7 +353,7 @@ public class SeleniumActions extends Driver{
 
 			dropdown.deselectAll();
 			for (String desiredOption : desiredOptions) {
-				selectDropdown(desiredOption, dropdown, false);
+				selectDropdown(desiredOption, dropdown);
 			}
 
 			if (positiveTest)
@@ -370,6 +458,32 @@ public class SeleniumActions extends Driver{
 		return getElement(elementDef).getText();
 	}
 
+	/**
+	 * @param keyToPress string matching the key to be pressed
+	 */
+	protected void keyPress(String keyToPress){
+		Keys key = Keys.valueOf(keyToPress.trim().toUpperCase());
+		Actions action = new Actions(webDriver);
+		action.sendKeys(key);
+		action.build().perform();
+	}
+
+	/**
+	 * @param keysToPress all keys to press at the same time
+	 */
+	protected void multiKeyPress(List<String> keysToPress){
+		Actions actions = new Actions(webDriver);
+		ArrayList<Keys> allKeys = new ArrayList<>();
+		for(String key:keysToPress){
+			allKeys.add(Keys.valueOf(key.trim().toUpperCase()));
+			actions.keyDown(allKeys.get(allKeys.size() - 1));
+		}
+		for(Keys key: allKeys){
+			actions.keyUp(key);
+		}
+		actions.build().perform();
+	}
+
 	protected void scrollUp(){
 		scroll(250);
 	}
@@ -403,7 +517,7 @@ public class SeleniumActions extends Driver{
 		try{
 			Actions action = new Actions (webDriver);
 			action.moveToElement(getElementsByTypeAndValue("LINKTEXT", text).get(0)).build().perform();
-			library.hardDelay(250);
+			library.implicitWait(webDriver,250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
 
@@ -411,7 +525,7 @@ public class SeleniumActions extends Driver{
 		try{
 			Actions action = new Actions (webDriver);
 			action.moveToElement(getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0)).build().perform();
-			library.hardDelay(250);
+			library.implicitWait(webDriver, 250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
 
@@ -532,7 +646,11 @@ public class SeleniumActions extends Driver{
 		return element.isDisplayed();
 	}
 
+	//TODO utilize element.findelement for searching through sibbling elements for a type of element
+
 	/**
+	 * Get all of the elements with a given relationship to the original
+	 *
 	 * @param initialElement WebElement to start looking from
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
@@ -563,6 +681,8 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
+	 * Get the relatives of an element before or after the starting element (or its' parent)
+	 *
 	 * @param initialElement WebElement to start looking from
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
@@ -678,11 +798,17 @@ public class SeleniumActions extends Driver{
 		return elements;
 	}
 
+	protected List<WebElement> getElements(String elementDefinition){
+		return getElements(elementDefinition, false);
+	}
+
 	/**
+	 * Finds all elements with a given element definition
+	 *
 	 * @param elementDefinition page:object
 	 * @return WebElements of the desired elementDefinition
 	 */
-	protected List<WebElement> getElements(String elementDefinition){
+	protected List<WebElement> getElements(String elementDefinition, boolean ignoreFailure){
 		List<WebElement> elements = new ArrayList<WebElement>();
 		String[] elementData;
 
@@ -699,18 +825,25 @@ public class SeleniumActions extends Driver{
 			} else {
 				//TODO error
 			}
-		} catch (Exception e){fail("Issue focusing on the element: " + elementDefinition);}
+		} catch (Exception e){
+			if(ignoreFailure){
+				return null;
+			} else
+				fail("Issue focusing on the element: " + elementDefinition);
+		}
 		return elements;
 	}
 
 	/**
+	 * Get all elements with a type of attribute and given value
+	 *
 	 * @param type Describes the type of the value (Class, Name, Id, etc.)
 	 * @param value Value to search for
 	 * @return List of WebElements that match the given type and value
 	 */
 	protected List<WebElement> getElementsByTypeAndValue(String type, String value){
 		List<WebElement> elements = new ArrayList<WebElement>();
-		WebDriverWait wait = new WebDriverWait(webDriver, 5);
+		WebDriverWait wait = new WebDriverWait(webDriver, elementWaitTime); //TODO make this variable
 		//TODO add wait for the element and possibly loop a couple times
 		try {
 				switch (type) {
@@ -769,6 +902,21 @@ public class SeleniumActions extends Driver{
 	}
 
 	/**
+	 * @param attribute attribute of an element
+	 * @param value value of the attribute
+	 * @return webelement of the first element found with the given attribute and value
+	 */
+	protected WebElement getElementByAttributeAndValue(String attribute, String value){
+		WebElement element = null;
+		try {
+			element = webDriver.findElement(By.xpath("//*[@" + attribute + "='" + value + "']"));
+		} catch (Exception e){
+			fail("Failed to find element by attribute: " + attribute + " and value: " + value);
+		}
+		return element;
+	}
+
+	/**
 	 * @param key Key to identify the needed values from local storage
 	 * @return String of the value for the given key
 	 */
@@ -781,18 +929,36 @@ public class SeleniumActions extends Driver{
 	protected void checkVideoExists(){
 		//check the iFrame exists (using selectFrame)
 		//use FlashSelenium or flex-ui-selenium for interacting with the video
+
+		//find the title
+			//option for the title on the video or the title above the video
+		//get the whole iframe
+		//verify the video exists in the frame
+
+		//add interactions to the video
+
+		//TODO likely need to wait for more advancements in finding elements
+		List<WebElement> iframes = getElementsByTypeAndValue("TAG","iframe");
+
+
+		//TODO sort through the iframes to see if the desired video exists.
+
+		webDriver.switchTo().defaultContent();
 	}
 
 	protected void checkHTML5Video(){
 		//custom stuff for HTML5 videos:
 		//check controls functionality and playback using those elements
 		//uses CSS elements
+
+		//https://advancedtestautomation.blogspot.com/2016/07/test-video-using-selenium-webdriver.html
+		//http://toolsqa.com/selenium-webdriver/selenium-webdriver-basics-video-tutorials/
 	}
 
 	//TODO slow down mouse movements
 	//doesn't work. possibly not realistic due to running on remote machines
 	//move mouse to hover first
-	protected void realisticMouseMovement(WebElement element){
+/*	protected void realisticMouseMovement(WebElement element){
 
 		Point starting = MouseInfo.getPointerInfo().getLocation();
 		Point going = new Point(element.getLocation().getX(), element.getLocation().getY());
@@ -817,4 +983,5 @@ public class SeleniumActions extends Driver{
 
 
 	}
+	*/
 }
