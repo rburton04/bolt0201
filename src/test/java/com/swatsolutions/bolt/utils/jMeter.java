@@ -70,7 +70,7 @@ public class jMeter{
 			testPlanTree.add(jmeterVars);
 		}
 
-		if(true) {
+		if(false) {
 			try {
 				//ChromeDriverConfig cdriverTest = new ChromeDriverConfig();
 				RemoteDriverConfig seleniumHubConfig = new RemoteDriverConfig();
