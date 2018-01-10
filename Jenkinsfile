@@ -49,7 +49,7 @@ pipeline {
 
             steps {
 
-                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/UserFeedback.spec -Denv=preprod' 
+                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/UserFeedback.spec -Denv=pre_prod' 
  
            
              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
