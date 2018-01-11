@@ -1,5 +1,8 @@
 package com.swatsolutions.bolt.selenium;
 
+import com.sun.jna.Library;
+import com.swatsolutions.bolt.utils.databaseConnection;
+import com.swatsolutions.bolt.utils.library;
 import com.thoughtworks.gauge.*;
 
 import com.swatsolutions.bolt.utils.fileReader;
@@ -49,6 +52,42 @@ public class Driver extends SeleniumSetup{
 
         //TODO setup to read a csv for elements
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
+
+        //TODO add support for connecting to a database, querying data, and storing the data in a csv
+// if env var doesn't exist, it comes in as null. :)
+	    int counter = 1;
+
+	    while (System.getenv("QUERY_" + counter) != null){
+	    	String query = System.getenv("QUERY_" + counter);
+	    	String fileName = System.getenv("FILENAME_" + counter);
+	    	//optional
+	    	String username = System.getenv("DB_USERNAME_" + counter);
+		    String password = System.getenv("DB_PASSWORD_" + counter);
+		    String url = System.getenv("URL_" + counter);
+		    String dbType = System.getenv("DB_TYPE_" + counter);
+
+		    if(username == null)
+		    	username = System.getenv("DB_USERNAME");
+		    if(password == null)
+		    	password = System.getenv("DB_PASSWORD");
+		    if(url == null)
+		    	url = System.getenv("DB_URL");
+		    if(dbType == null)
+				dbType = System.getenv("DB_TYPE");
+
+
+
+		    if(fileName == null || username == null || password == null || url == null || dbType == null) {
+			    //error and continue to the next
+		    }
+
+		    databaseConnection dbConnection = new databaseConnection(url, username, password, dbType);
+		    dbConnection.querySelect(query);
+		    library.writeMapToFile(dbConnection.getQueryResponse(), fileName);
+		    dbConnection.closeConnection();
+
+		    counter ++;
+	    }
     }
 
     @BeforeSpec
