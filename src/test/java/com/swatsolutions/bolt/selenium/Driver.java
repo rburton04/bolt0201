@@ -50,17 +50,14 @@ public class Driver extends SeleniumSetup{
         	elementWaitTime = Integer.valueOf(System.getenv("ELEMENT_WAIT_TIME"));
         }
 
-        //TODO setup to read a csv for elements
         elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
 
-        //TODO add support for connecting to a database, querying data, and storing the data in a csv
-// if env var doesn't exist, it comes in as null. :)
+        //query and setup csv files from a database based on the db.properties properties
 	    int counter = 1;
-
 	    while (System.getenv("QUERY_" + counter) != null){
 	    	String query = System.getenv("QUERY_" + counter);
 	    	String fileName = System.getenv("FILENAME_" + counter);
-	    	//optional
+	    	//optional properties
 	    	String username = System.getenv("DB_USERNAME_" + counter);
 		    String password = System.getenv("DB_PASSWORD_" + counter);
 		    String url = System.getenv("URL_" + counter);
@@ -78,7 +75,11 @@ public class Driver extends SeleniumSetup{
 
 
 		    if(fileName == null || username == null || password == null || url == null || dbType == null) {
-			    //error and continue to the next
+		    	//message will be only printed in the console as it is not in a step, but it can be found as "checkHAH " is added in front of the message
+			    Gauge.writeMessage("One of the required values to query for test data was found to be null. Please review " +
+					    "the values entered for QUERY_" + counter);
+			    counter++;
+			    continue;
 		    }
 
 		    databaseConnection dbConnection = new databaseConnection(url, username, password, dbType);
@@ -86,7 +87,7 @@ public class Driver extends SeleniumSetup{
 		    library.writeMapToFile(dbConnection.getQueryResponse(), fileName);
 		    dbConnection.closeConnection();
 
-		    counter ++;
+		    counter++;
 	    }
     }
 

@@ -54,14 +54,12 @@ public class library {
 		if(data.isEmpty() || fileLocation.isEmpty())
 			return;
 	    FileWriter fw = null;
-	    //TODO go through how data is pulled from the database and ensure that this is correct. The way that the map is gone through may need to be adjusted.
-		try{
+	    try{
 			//ensure file does not exist
 			try {
 				Path file = Paths.get(System.getProperty("user.dir") + "/" + fileLocation);
-				Files.delete(file);
-			} catch (Exception e){
-				//handles an exeption if the file doesn't exist
+				Files.deleteIfExists(file);
+			} catch (Exception e){ //handles an exeption if the file doesn't exist. No action needed.
 			}
 			fw = new FileWriter(System.getProperty("user.dir") + "/" + fileLocation);
 
@@ -72,10 +70,6 @@ public class library {
 					if((i+1) < entrySize)
 						fw.append(",");
 				}
-//				for(String val:entry.getValue()){
-//					fw.append(val);
-//					fw.append(",");
-//				}
 				fw.append("\n");
 			}
 
