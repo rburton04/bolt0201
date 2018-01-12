@@ -3,8 +3,14 @@ package com.swatsolutions.bolt.utils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class library {
@@ -42,6 +48,41 @@ public class library {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static void writeMapToFile (Map<String, List<String>> data, String fileLocation){
+		if(data.isEmpty() || fileLocation.isEmpty())
+			return;
+	    FileWriter fw = null;
+	    try{
+			//ensure file does not exist
+			try {
+				Path file = Paths.get(System.getProperty("user.dir") + "/" + fileLocation);
+				Files.deleteIfExists(file);
+			} catch (Exception e){ //handles an exeption if the file doesn't exist. No action needed.
+			}
+			fw = new FileWriter(System.getProperty("user.dir") + "/" + fileLocation);
+
+			for(Map.Entry<String, List<String>> entry: data.entrySet()){
+				int entrySize = entry.getValue().size();
+				for(int i = 0; i < entrySize; i++){
+					fw.append(entry.getValue().get(i));
+					if((i+1) < entrySize)
+						fw.append(",");
+				}
+				fw.append("\n");
+			}
+
+		} catch (Exception e){
+			System.out.println("Error in writeMapToFile: " + e.getMessage());
+		} finally{
+			try{
+				fw.flush();
+				fw.close();
+			} catch (IOException e){
+				System.out.println(e.getMessage());
+			}
+		}
     }
 
 }
