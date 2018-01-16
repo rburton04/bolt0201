@@ -7,4 +7,4 @@
 *some standards on writing specs*
 *some standards on writing concepts*
 *follow standard java naming conventions* http://www.oracle.com/technetwork/java/codeconventions-135099.html
-
+*no spaces in the spec title*

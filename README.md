@@ -33,11 +33,40 @@ A step by step guide to run BOLT Test locally
 Say what the step will be
 
 
+## Writing tests
 
+Tests are written in files called specification (spec) files. A spec file will contain the tests for either a single page or a single feature. To cover negative tests,
+a second spec should be written for each page or feature and the title should end with "-NEGATIVE" to identify it as a negative test. This will disable much of the default
+validation that is built into BOLT Test to help prevent unintended test failures.
+
+Often, there will be a series of steps that is the same for many different tests. To reduce the risk for boredom, carpal tunnel, and to reduce the number of steps, there are
+a few ways that this repetition can be reduced. The first is by using setup and teardown steps. Setup steps are written before the first test in a spec file. These steps will
+be run before every test in that spec. Teardown steps are written at the end of a spec file after a line containing only "---" and these steps will be run after every test in
+the given spec. In addition to setup and teardown steps, multiple steps can be combined using a concept file. A concept file can contain many groupings of steps within one file.
+Concepts can take in variables and need to be given unique names. When using a concept in a test case, simply start writing the step as any other and just use the unique name
+for the concept instead of a step.
+
+When writing tests, tags can be added to a spec file, or to just a specific test to mark it as a particular type of test. When running tests via command line, a single (or multiple)
+tags can be defined and only tests with the given tag(s) will be run. This can be very helpful for marking tests as regression tests, smoke tests, performance tests, etc.
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+Tests can be run in two ways, through command line or through IntelliJ (or whichever IDE is being used). To run a test via the IDE, the run button can be selected for either a
+complete spec file, or for just a single test in a given spec file. To run via command line, navigate to the home directory for BOLT Test. To determine the exact command, use the
+following table:
+
+Command/configuration	    Description
+---------------------------|------------------
+mvn gauge:execute	        Primary Command
+-DspecsDir=	                A specific spec or folder of specs can be specified to run
+-DinParallel=	            “true or false”, specifies to run in parallel or not.
+-Dnodes=	                The maximum number of nodes to use. Uses all nodes if not included.
+-Dtags=	                    “tag1 & tag2” Run tests only with the given tag(s).
+-Denv=	                    How to specify what environment to run the tests against.
+-Ddir=	                    Working directory for gauge. Default is project.base.dir
+-Dflags=””	                Add additional flags to the execution
+
+
 
 ### Break down into end to end tests
 
@@ -90,7 +119,7 @@ This project is licensed under the ... For the full version of BOLT Test, please
 * etc
 
 * Selenium
-* Gauge
+* [Gauge](https://gauge.org)
 * JMeter
 * Java
 * RedHat
