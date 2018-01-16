@@ -1,0 +1,19 @@
+Command line instructions:
+
+Command/configuration	    Description
+---------------------------|------------------
+mvn gauge:execute	        Primary Command
+-DspecsDir=	                A specific spec or folder of specs can be specified to run
+-DinParallel=	            “true or false”, specifies to run in parallel or not.
+-Dnodes=	                The maximum number of nodes to use. Uses all nodes if not included.
+-Dtags=	                    “tag1 & tag2” Run tests only with the given tag(s).
+-Denv=	                    How to specify what environment to run the tests against.
+-Ddir=	                    Working directory for gauge. Default is project.base.dir
+-Dflags=””	                Add additional flags to the execution
+
+
+*very short overview*
+*help with property files*
+*help with element definitions*
+*help with remote/cloud*
+*help with setup/installation*

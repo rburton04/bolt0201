@@ -1,0 +1,8 @@
+Description
+BOLT Test is a unique framework built by Swat Solutions (insert link here)....
+
+BOLT Test is designed to work independently or integrated into a CI/CD environment.
+
+This is a demo version that is restricted to two parallel runs, four total tests, and only includes some of the pre-built steps that BOLT Test includes.
+Building custom actions and steps are also not included in this demo version.
+This version is also restricted to running in a Chrome environment.
