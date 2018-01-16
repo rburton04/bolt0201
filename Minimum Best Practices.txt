@@ -1,0 +1,10 @@
+*some standard for writing steps*
+*some standard on where selenium code goes*
+*some standard on adding a util*
+*some coding standard(s)*
+*some commenting standard(s)*
+*some standards on adding elements to element_definition*
+*some standards on writing specs*
+*some standards on writing concepts*
+*follow standard java naming conventions* http://www.oracle.com/technetwork/java/codeconventions-135099.html
+
