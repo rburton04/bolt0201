@@ -163,6 +163,7 @@ public class GeneralSteps extends SeleniumSmartActions {
 	}
 
 	//ENTER TEXT
+	//TODO some sites have labels that are not marked as labels...
 
 	@Step("Enter text <text> in field <index>")
 	public void enterText (String text, int index) {
@@ -199,6 +200,8 @@ public class GeneralSteps extends SeleniumSmartActions {
 	public void enterTextViaDefaultVal(String text, String label, int index){
 		enterTextByDefaultValuesAndIndex(text, label, index);
 	}
+
+	//TODO add steps to enter text into textarea with default values
 
 	//TODO add step(s) to add text instead of replacing all of the text in the box
 

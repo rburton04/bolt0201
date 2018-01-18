@@ -8,6 +8,7 @@ import com.thoughtworks.gauge.*;
 import com.swatsolutions.bolt.utils.fileReader;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class Driver extends SeleniumSetup{
 
@@ -35,11 +37,16 @@ public class Driver extends SeleniumSetup{
     protected static String storedUrl = "";
     protected static int elementWaitTime = 5;
 
+    //TODO possibly make a map of all propery data or just get the data when needed?
+
     // Initialize a webDriver instance of required browser
     // Since this does not have a significance in the application's business domain, the BeforeSuite hook is used to instantiate the webDriver
-    @BeforeSuite
+
+	@BeforeSuite
     public void initializeDriver(){
         //This removes an old jmeter results file if it exists
+		//Map <String, String> temp = System.getenv(); //gets all environmental properties
+
         try{
             File f = new File(System.getProperty("user.dir") + "/jmeter/results");
             if(f.isDirectory())
