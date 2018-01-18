@@ -1,9 +1,17 @@
 # BOLT Test Example
 
-This is an example project for doing web automation testing with [BOLT Test](http://www.boltiq.io).
+This is an example project for starting web automation testing with [BOLT Test](http://www.boltiq.io).
 
 There are some default spec files to start from and some demo specs to gain a better understanding of how it works.
 
+## Features
+* Pre-Built library of selenium actions
+* Pre-Built library of test steps
+* Pre-Built spec files
+* Support for adding custom actions and steps
+* Property files for different environments
+* Support for negative testing
+* Organized way to manage element definitions if needed
 
 ## Getting Started
 
@@ -16,7 +24,7 @@ What things you need to install the software and how to install them
 1. Java 8 [Install instructions](https://www3.ntu.edu.sg/home/ehchua/programming/howto/JDK_Howto.html)
 2. Intellij (community edition) [Install instructions](https://www.jetbrains.com/idea/download/)
 3.	Gauge [Install instructions](https://gauge.org/get-started.html)
-4.	Add the Gauge plugin to Intellij [Install instructions](https://docs.gauge.org/using.html#intellij-idea)
+4.	Gauge plugin for Intellij [Install instructions](https://docs.gauge.org/using.html#intellij-idea)
 
 
 ### Installing
@@ -49,24 +57,31 @@ for the concept instead of a step.
 When writing tests, tags can be added to a spec file, or to just a specific test to mark it as a particular type of test. When running tests via command line, a single (or multiple)
 tags can be defined and only tests with the given tag(s) will be run. This can be very helpful for marking tests as regression tests, smoke tests, performance tests, etc.
 
+To get a better understanding of how to write tests, please look at the demo spec files designed to show all of these features.
+
 ## Running the tests
 
 Tests can be run in two ways, through command line or through IntelliJ (or whichever IDE is being used). To run a test via the IDE, the run button can be selected for either a
 complete spec file, or for just a single test in a given spec file. To run via command line, navigate to the home directory for BOLT Test. To determine the exact command, use the
 following table:
 
-Command/configuration	    Description
----------------------------|------------------
-mvn gauge:execute	        Primary Command
--DspecsDir=	                A specific spec or folder of specs can be specified to run
--DinParallel=	            “true or false”, specifies to run in parallel or not.
--Dnodes=	                The maximum number of nodes to use. Uses all nodes if not included.
--Dtags=	                    “tag1 & tag2” Run tests only with the given tag(s).
--Denv=	                    How to specify what environment to run the tests against.
--Ddir=	                    Working directory for gauge. Default is project.base.dir
--Dflags=””	                Add additional flags to the execution
+|Command/configuration	    |Description
+|---------------------------|------------------
+|mvn gauge:execute	        |Primary Command
+|-DspecsDir=	            |A specific spec or folder of specs can be specified to run
+|-DinParallel=	            |“true or false”, specifies to run in parallel or not.
+|-Dnodes=	                |The maximum number of nodes to use. Uses all nodes if not included.
+|-Dtags=	                |“tag1 & tag2” Run tests only with the given tag(s).
+|-Denv=	                    |How to specify what environment to run the tests against.
+|-Ddir=	                    |Working directory for gauge. Default is project.base.dir
+|-Dflags=””	                |Add additional flags to the execution
 
 
+## Runtime Report
+While BOLT Test is executing, there is a flash report that can be monitored to see where the tests are and how they have run so far. It does not contain the detailed information of the HTML Report, but it can provide an idea of what stage the tests are at and how they are running.
+
+## HTML Report
+After each execution of tests on BOLT Test is completed, an HTML report is generated with the results. This report opens to a summary page showing the number of specs that passed or had failures. By selecting a spec, the step-by-step results can be observed for each test. In the case of data-driven tests, a table will be displayed and by selecting each row, the step-by-step results can be observed. When a step fails, a screenshot will be attached to the failed step along with the reason for the failure.
 
 ### Break down into end to end tests
 
@@ -84,15 +99,40 @@ Explain what these tests test and why
 Give an example
 ```
 
+## Building custom actions
+
+BOLT Test is designed to be expanded and customized by each client as it is impossible to predict every situation that needs to be tested. If an action does not currently
+exist in BOLT Test, a custom action can easily be built to do anything. There is a folder named "CustomSteps" which contains a starting point/example for adding custom actions
+and steps.
+
+At the start of the new Java class, two objects will need to be created. The first object is a "Driver" object to get the webdriver for intacting with the browser. The second
+object to be created is a "SeleniumSmartActions" object to gain access to all of the existing building blocks for Selenium.
+
+//TODO this could also be built to extend SelemniumSmartActions (probably a better idea)
+
+From this point, new methods can be created that use the webdriver and existing methods from SeleniumSmartActions to complete any task required.
+
+## Building custom steps
+
+BOLT Test is designed to be expanded upon and customized for each client as it is impossible to predict every situation that needs to be tested. If a step is needed that does
+not already exist, a custom step can easily be built for the task. There is a folder named "CustomSteps" which contains a starting point/example for adding custom steps.
+
+At the start of the new Java class, an object will need to be created for either "SeleniumSmartActions" and/or whatever custom action classes which have been built. From this point,
+a method for the new step can be built to complete whatever task is needed. As a note, it is not recommended to use webdriver in this class. All direct interactions with the browser
+using Selenium webdriver should be contained within an existing or custom action method/class. After creating the method to complete the task that is needed, the method needs to be
+turned into a step. This is done by adding "@Step("insert step here with a <variable>")" directly before the method. Variables are surrounded by '<>' and are passed into the
+method. It is recommended to keep the same variable names and order from the step definition and the method parameters.
+
 ## Deployment
 
 This system is designed for use with a CI/CD development process to aid in testing software and catching bugs before software is released. BOLT Test is able to run locally or on a fully automated CI/CD pipeline.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Gauge](http://gauge.org) - The test building framework
+* [Selenium](http://www.seleniumhq.org) - The tool to directly interact with a browser
+* [JMeter](http://jmeter.apache.org) - The primary API and Performance testing tool
 * [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
 ## Contributing
 N/A
@@ -101,7 +141,8 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+We use a private Maven server for versioning. To pull the BOLT Test Library from this server, there is a username and password already provided for the free version.
+To use the full version, please go to the [BOLT Website](http://www.boltiq.io) for purchasing information.
 
 ## Authors
 

@@ -15,7 +15,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
 
-public class SeleniumSetup {
+public class DriverFactory {
 
     protected static boolean remoteRun = false;
     protected static String remoteUrl = "";
@@ -158,5 +158,13 @@ public class SeleniumSetup {
 
             }
         }
+    }
+
+    public static boolean getRemoteRun(){
+    	return remoteRun;
+    }
+
+    public static String getRemoteUrl(){
+    	return remoteUrl;
     }
 }

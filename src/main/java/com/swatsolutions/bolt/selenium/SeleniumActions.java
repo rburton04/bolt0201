@@ -1,6 +1,6 @@
 package com.swatsolutions.bolt.selenium;
 
-import com.swatsolutions.bolt.utils.library;
+import com.swatsolutions.bolt.utils.BoltLibrary;
 
 import org.junit.Assert;
 import org.openqa.selenium.*;
@@ -217,7 +217,7 @@ public class SeleniumActions extends Driver{
 	 * @param dropdown Select of the specific dropdown to select values from
 	 */
 	protected void selectDropdown(String desiredOption, Select dropdown){
-		if(library.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption.toUpperCase())){
+		if(BoltLibrary.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption.toUpperCase())){
 			dropdown.selectByValue(desiredOption);
 		} else{
 			//TODO error
@@ -309,7 +309,7 @@ public class SeleniumActions extends Driver{
 			dropdown = new Select(getElements(elementDef).get(index));
 		} catch (Exception e){fail("Issue getting dropdown values, element: " + elementDef + " index: " + index);}
 		if(dropdown != null)
-			return library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
+			return BoltLibrary.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
 		else
 			return new ArrayList<String>();
 	}
@@ -357,7 +357,7 @@ public class SeleniumActions extends Driver{
 			}
 
 			if (positiveTest)
-				assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
+				assertTrue(BoltLibrary.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
 		} catch (Exception e){fail("Issue selecting multiple dropdown options: " + elementDef);}
 	}
 
@@ -517,7 +517,7 @@ public class SeleniumActions extends Driver{
 		try{
 			Actions action = new Actions (webDriver);
 			action.moveToElement(getElementsByTypeAndValue("LINKTEXT", text).get(0)).build().perform();
-			library.implicitWait(webDriver,250);
+			BoltLibrary.implicitWait(webDriver,250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
 
@@ -525,7 +525,7 @@ public class SeleniumActions extends Driver{
 		try{
 			Actions action = new Actions (webDriver);
 			action.moveToElement(getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0)).build().perform();
-			library.implicitWait(webDriver, 250);
+			BoltLibrary.implicitWait(webDriver, 250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
 
@@ -966,7 +966,7 @@ public class SeleniumActions extends Driver{
 		Actions action = new Actions(webDriver);
 
 		action.moveToElement(getElementsByTypeAndValue("LINKTEXT", "WEATHER").get(0)).build().perform();
-		library.hardDelay(250);
+		BoltLibrary.hardDelay(250);
 
 		int xDiff = going.x - starting.x;
 		int yDiff = going.y - starting.y;
@@ -974,7 +974,7 @@ public class SeleniumActions extends Driver{
 		if(Math.abs(xDiff) > 20 || Math.abs(yDiff) > 20){
 			for(int i = 0; i < 10; i++){
 				action.moveByOffset((xDiff/10),(yDiff/10)).build().perform();
-				library.hardDelay(80);
+				BoltLibrary.hardDelay(80);
 			}
 		}
 

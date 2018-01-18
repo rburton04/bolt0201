@@ -7,7 +7,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
-public class apiCall { //TODO possibly throw all errors to what called this
+public class ApiCall { //TODO possibly throw all errors to what called this
 
     private String callURL, response = "", callType;
     private Map<String, Object> parameters;
@@ -23,7 +23,7 @@ public class apiCall { //TODO possibly throw all errors to what called this
      * @param callType
      * @param params
      */
-    public apiCall(String url, String callType, Map<String, Object> params){
+    public ApiCall(String url, String callType, Map<String, Object> params){
         this.callType = callType;
         callURL = url;
         parameters = params;
@@ -67,7 +67,7 @@ public class apiCall { //TODO possibly throw all errors to what called this
                     break;
                 } else if(attempts > 0){
                     //10 second delay between attemped calls against the API
-                    library.hardDelay(10000);
+                    BoltLibrary.hardDelay(10000);
                 }
                 HttpURLConnection connection = (HttpURLConnection) postURL.openConnection();
                 connection.setRequestMethod(callType);

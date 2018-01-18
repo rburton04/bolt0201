@@ -3,7 +3,7 @@ package com.swatsolutions.bolt.utils;
 import java.sql.*;
 import java.util.*;
 
-public class databaseConnection {
+public class DatabaseConnection {
     //use .clone() if a copy of the map is needed as compared to a reference
     //TODO handle errors correctly
 
@@ -11,7 +11,7 @@ public class databaseConnection {
     private Connection connection;
     private Map<String, List<String>> queryResponse = new HashMap<String, List<String>>();
 
-    public databaseConnection(String url, String username, String password, String type){
+    public DatabaseConnection(String url, String username, String password, String type){
         dbUrl = url;
         this.username = username;
         this.password = password;
