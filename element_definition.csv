@@ -1,2 +1,4 @@
 Page,Object,Type,Value
 SYMBOL,logo,class,logo
+,SYMBOLTEST,class, glyphicon-search
+SEARCHPAGE,textField,name,j_id0:j_id1:atsForm:j_id77

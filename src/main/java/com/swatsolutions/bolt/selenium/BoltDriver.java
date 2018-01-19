@@ -4,7 +4,7 @@ import com.swatsolutions.bolt.utils.BoltLibrary;
 import com.swatsolutions.bolt.utils.DatabaseConnection;
 import com.thoughtworks.gauge.*;
 
-import com.swatsolutions.bolt.utils.FileReader;
+import com.swatsolutions.bolt.utils.ProcessFiles;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
@@ -15,12 +15,12 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-public class Driver {
+public class BoltDriver {
 
     protected String SWAT_URL = System.getenv("SWAT_URL");
     protected String BBC_URL = System.getenv("BBC_URL");
-    protected WebElement lastElement;
-    protected List<WebElement> lastElements;
+    protected static WebElement lastElement;
+    protected static List<WebElement> lastElements;
 
     // Holds the WebDriver instance
     public static WebDriver webDriver;
@@ -56,7 +56,7 @@ public class Driver {
         	elementWaitTime = Integer.valueOf(System.getenv("ELEMENT_WAIT_TIME"));
         }
 
-        elementDefinitions = FileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
+        elementDefinitions = ProcessFiles.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
 
         //query and setup csv files from a database based on the db.properties properties
 	    int counter = 1;

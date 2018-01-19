@@ -35,9 +35,11 @@ A step by step guide to run BOLT Test locally
 2.	Open Intellij and create a new project from an existing source.
 3.	Select the BOLT Test sample project folder as the source.
 4.	Select “Import project from external model” and select “Maven”, then click “Next”.
-5.	Continue clicking “Next” until prompted to select the project SDK. At this point, if “1.8” is not already displayed, click the “+” in the top left corner, navigate to where java was installed, and select the folder for java 8 (1.8). Once that is complete, click “Next” and then “Finish”.
+5.	Continue clicking “Next” until prompted to select the project SDK. At this point, if “1.8” is not already displayed, click the “+” in the top left corner, navigate to where java was
+installed, and select the folder for java 8 (1.8). Once that is complete, click “Next” and then “Finish”.
 6.	At this point, it will take a few minutes for Intellij to download all of the maven dependencies. 
-7.	Once that is completed, go to the pom.xml file, find the com.swatsolutions.bolt dependency, and add your username and password. It is recommended to use a hashed version of the password for security reasons. [Hashing instructions](https://maven.apache.org/guides/mini/guide-encryption.html)
+7.	Once that is completed, go to the pom.xml file, find the com.swatsolutions.bolt dependency, and add your username and password. It is recommended to use a hashed version of the password
+for security reasons. [Hashing instructions](https://maven.apache.org/guides/mini/guide-encryption.html)
 Say what the step will be
 
 
@@ -78,26 +80,13 @@ following table:
 
 
 ## Runtime Report
-While BOLT Test is executing, there is a flash report that can be monitored to see where the tests are and how they have run so far. It does not contain the detailed information of the HTML Report, but it can provide an idea of what stage the tests are at and how they are running.
+While BOLT Test is executing, there is a flash report that can be monitored to see where the tests are and how they have run so far. It does not contain the detailed information
+of the HTML Report, but it can provide an idea of what stage the tests are at and how they are running.
 
 ## HTML Report
-After each execution of tests on BOLT Test is completed, an HTML report is generated with the results. This report opens to a summary page showing the number of specs that passed or had failures. By selecting a spec, the step-by-step results can be observed for each test. In the case of data-driven tests, a table will be displayed and by selecting each row, the step-by-step results can be observed. When a step fails, a screenshot will be attached to the failed step along with the reason for the failure.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+After each execution of tests on BOLT Test is completed, an HTML report is generated with the results. This report opens to a summary page showing the number of specs that
+passed or had failures. By selecting a spec, the step-by-step results can be observed for each test. In the case of data-driven tests, a table will be displayed and by selecting
+each row, the step-by-step results can be observed. When a step fails, a screenshot will be attached to the failed step along with the reason for the failure.
 
 ## Building custom actions
 

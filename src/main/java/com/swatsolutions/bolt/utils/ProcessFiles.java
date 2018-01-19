@@ -2,11 +2,10 @@ package com.swatsolutions.bolt.utils;
 
 import com.opencsv.CSVReader;
 
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileReader {
+public class ProcessFiles {
 
     public static Map<String,String> processCsv (String fileName){
         //TODO setup to return a map with key "PAGE:OBJECT" and value "TYPE:value"

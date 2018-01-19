@@ -2,6 +2,7 @@ package com.swatsolutions.bolt.selenium;
 
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
+import org.apache.commons.lang.RandomStringUtils;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -9,7 +10,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GeneralSteps extends SeleniumSmartActions {
+public class GeneralSteps {
+	private String spec = BoltDriver.spec;
+	private SeleniumSmartActions smartActions = new SeleniumSmartActions();
 
 	//TODO start a video?
 	//TODO check if a video is there
@@ -34,23 +37,23 @@ public class GeneralSteps extends SeleniumSmartActions {
 
 	@Step("Click element with attribute <att> and value <val>")
 	public void clickElementWithAttribute(String att, String val){
-		clickByAttributeAndValue(att, val);
+		smartActions.clickByAttributeAndValue(att, val);
 	}
 
 	@Step("Click defined symbol <symbol>")
 	public void clickDefinedSymbol(String symbol){
-		click("SYMBOL:" + symbol);
+		smartActions.click("SYMBOL:" + symbol);
 	}
 
 	@Step("Click <button> button by element definition")
 	public void clickButtonElementDefinition(String button){
-		clickByText(spec + ":button", button);
+		smartActions.clickByText(spec + ":button", button);
 	}
 
 	@Step("Click on the <index> <button> button by element definition")
 	public void clickButtonElementDefinition(int index, String button){
 		//the -1 is used to move the index to a 0-based indexing as compared to a 1 based
-		clickByTextAndIndex(spec+":button", button, index - 1);
+		smartActions.clickByTextAndIndex(spec+":button", button, index - 1);
 	}
 
 	//HOVERING STEPS
@@ -63,25 +66,25 @@ public class GeneralSteps extends SeleniumSmartActions {
 
 	@Step("Hover over <tab> tab")
 	public void hover (String tab){
-		hoverOverElement(tab);
+		smartActions.hoverOverElement(tab);
 	}
 
 	@Step("Hover over tab with partial text <tab>")
 	public void hoverPartialText (String tab){
-		hoverOverElementPartialText(tab);
+		smartActions.hoverOverElementPartialText(tab);
 	}
 
 	//VERIFICATION STEPS
 	@ContinueOnFailure
 	@Step("Verify current page is <url>")
 	public void verifyPage(String url){
-		verifyCurrentPage(url);
+		smartActions.verifyCurrentPage(url);
 	}
 
 	@ContinueOnFailure
 	@Step("Verify <option> is an option in dropdown")
 	public void verifyOptionInDropdown(String option){
-		checkOptionExistsInDropdown(spec + ":dropdown", option);
+		smartActions.checkOptionExistsInDropdown(spec + ":dropdown", option);
 	}
 
 	//TODO verify <option> is an active option in the dropdown
@@ -90,23 +93,22 @@ public class GeneralSteps extends SeleniumSmartActions {
 	//URL STEPS
 	@Step("Go to AUT")
 	public void navigateToAUT(){
-		goToSite(aut);
+		smartActions.goToSite(BoltDriver.aut);
 	}
 
 	@Step({"Navigate to <tab> tab", "Navigate to <tab>", "Click on <text> text"})
 	public void navigateToTab(String tab) {
-		clickByLinkedText(tab);
+		smartActions.clickByLinkedText(tab);
 	}
 
 	@Step("Navigate to tab with partial text <tab>")
 	public void navigateToTabPartialText(String tab) {
-		clickByLinkedTextPartialText(tab);
+		smartActions.clickByLinkedTextPartialText(tab);
 	}
 
 	@Step({"Go to <website> website", "Go to <website>"})
 	public void navToWebsite(String website){
-		goToSite(website);
-
+		smartActions.goToSite(website);
 	}
 
 	//DROPDOWN STEPS
@@ -115,17 +117,17 @@ public class GeneralSteps extends SeleniumSmartActions {
 
 	@Step("Select <value> from dropdown with <defaultVal> default value")
 	public void selectDefaultDropdownValue(String value, String defaultVal){
-		selectValueFromDropdownWithDefaultValue(defaultVal, value);
+		smartActions.selectValueFromDropdownWithDefaultValue(defaultVal, value);
 	}
 
 	@Step("Select <value> from the <label> dropdown")
 	public void selectDropdownLabel(String value, String label){
-		selectValueFromDropdownByLabel(label, value);
+		smartActions.selectValueFromDropdownByLabel(label, value);
 	}
 
 	@Step("Select <dropdown> from dropdown")
 	public void selectDropdown (String dropdown){
-		selectDropdown(spec + ":dropdown", dropdown);
+		smartActions.selectDropdown(spec + ":dropdown", dropdown);
 	}
 
 	@Step("Select <dropdown1>, <dropdown2> from dropdown")
@@ -133,72 +135,48 @@ public class GeneralSteps extends SeleniumSmartActions {
 		List<String> selections = new LinkedList<String>();
 		selections.add(dw1);
 		selections.add(dw2);
-		multiSelectDropdown(spec + ":dropdown",selections);
+		smartActions.multiSelectDropdown(spec + ":dropdown",selections);
 	}
 
 	@Step("Select value <value> on dropdown <index>")
 	public void selectDropdown (String value, int index) {
 		//-1 is used as people don't count with 0-based indexing
-		selectDropdownByIndex(spec + ":dropdown", value, index - 1);
+		smartActions.selectDropdownByIndex(spec + ":dropdown", value, index - 1);
 	}
 
 	@Step("Select the <optionIndex> option from dropdown")
 	public void selectDropdown(int optionIndex){
-		selectDropdownOptionByIndex(spec + ":dropdown", optionIndex-1);
+		smartActions.selectDropdownOptionByIndex(spec + ":dropdown", optionIndex-1);
 	}
 
 	@Step("Select the <optionIndex> option from dropdown <index>")
 	public void selectDropdown(int optionIndex, int index){
-		selectDropdownAndOptionByIndex(spec + ":dropdown", index, optionIndex-1);
+		smartActions.selectDropdownAndOptionByIndex(spec + ":dropdown", index, optionIndex-1);
 	}
 
-	@Step("Select the <optionIndex> option from the <label> dropdown")
-	public void selectDropdownLabel(int optionIndex, String label){
-		selectIndexFromDropdownByLabel(label, optionIndex-1);
+	@Step("Select a random value from the dropdown")
+	public void selectDropdownRandom(){
+		smartActions.selectDropdownOptionRandom(spec + ":dropdown");
 	}
 
-	@Step("Select the <optionIndex> option from dropdown with <defaultVal> default value")
-	public void selectDefaultDropdownValue(int optionIndex, String defaultVal){
-		selectIndexFromDropdownWithDefaultValue(defaultVal, optionIndex-1);
+	@Step("Select a random value from the <index> dropdown")
+	public void selectDropdownRandom(int index){
+		smartActions.selectDropdownOptionRandom(spec + ":dropdown", index);
 	}
 
 	//ENTER TEXT
 	//TODO some sites have labels that are not marked as labels...
 
+	@Step("Enter <num> chars in field <index>")
+	public void enterManyCharsBasic(int num, int index){
+		String generatedString = RandomStringUtils.randomAlphanumeric(num);
+		enterText(generatedString, index);
+	}
+
 	@Step("Enter text <text> in field <index>")
 	public void enterText (String text, int index) {
 		//-1 is used as people don't count with 0-based indexing
-		enterTextByIndex(spec + ":textField", text, index - 1);
-	}
-
-	@Step("Enter text <text> into input field labeled <label>")
-	public void enterTextViaLabelInput(String text, String label){
-		enterTextByLabel(text, label, "input");
-	}
-
-	@Step("Enter text <text> into input field labeled <label> and index <index>")
-	public void enterTextViaLabelInput(String text, String label, int index){
-		enterTextByLabelAndIndex(text, label, "input", index);
-	}
-
-	@Step("Enter text <text> into textarea labeled <label>")
-	public void enterTextViaLabelTextarea(String text, String label){
-		enterTextByLabel(text, label, "textarea");
-	}
-
-	@Step("Enter text <text> into textarea labeled <label> and index <index>")
-	public void enterTextViaLabelTextarea(String text, String label, int index){
-		enterTextByLabelAndIndex(text, label, "textarea", index);
-	}
-
-	@Step("Enter text <text> into field with default value <value>")
-	public void enterTextViaDefaultVal(String text, String value){
-		enterTextByDefaultValues(text, value);
-	}
-
-	@Step("Enter text <text> into field with default value <value> and index <index>")
-	public void enterTextViaDefaultVal(String text, String label, int index){
-		enterTextByDefaultValuesAndIndex(text, label, index);
+		smartActions.enterTextByIndex(spec + ":textField", text, index - 1);
 	}
 
 	//TODO add steps to enter text into textarea with default values
@@ -209,13 +187,13 @@ public class GeneralSteps extends SeleniumSmartActions {
 
 	@Step("Press <key> key")
 	public void pressKey(String key){
-		keyPress(key);
+		smartActions.keyPress(key);
 	}
 
 	@Step("Press many keys (seperate each with a comma) <keys>")
 	public void pressManyKeys(String key){
 		ArrayList<String> keys = new ArrayList<String>(Arrays.asList(key.split(",")));
-		multiKeyPress(keys);
+		smartActions.multiKeyPress(keys);
 	}
 
 	//TABLES
@@ -223,7 +201,7 @@ public class GeneralSteps extends SeleniumSmartActions {
 	//TODO modify this step as this is only for testing
 	@Step("Get data from table <table>")
 	public void getTableData(String table){
-		readTableTo2DArray(table);
+		smartActions.readTableTo2DArray(table);
 	}
 
 	//CHECKBOX AND RADIO BUTTONS
@@ -232,24 +210,24 @@ public class GeneralSteps extends SeleniumSmartActions {
 	@Step("<check> checkbox")
 	public void checkbox(String selection){
 		if(selection.toUpperCase().equals("UNCHECK"))
-			setCheckboxToValue(spec + ":checkbox", false);
+			smartActions.setCheckboxToValue(spec + ":checkbox", false);
 		else
-			setCheckboxToValue(spec + ":checkbox", true);
+			smartActions.setCheckboxToValue(spec + ":checkbox", true);
 	}
 
 	@Step("Click <text> checkbox")
 	public void checkboxClick(String text){
-		smartClickCheckbox(text);
+		smartActions.smartClickCheckbox(text);
 	}
 
 	@Step({"Check the <text> checkbox","Select the <text> radio button"})
 	public void checkboxSelection(String text){
-		smartSetCheckboxToValue(text, true);
+		smartActions.smartSetCheckboxToValue(text, true);
 	}
 
 	@Step("Uncheck the <text> checkbox")
 	public void uncheckboxSelection(String text){
-		smartSetCheckboxToValue(text, false);
+		smartActions.smartSetCheckboxToValue(text, false);
 	}
 
 //TODO radial buttons
@@ -264,8 +242,8 @@ public class GeneralSteps extends SeleniumSmartActions {
 	@Step("Scroll <direction>")
 	public void scroll(String direction){
 		if(direction.toUpperCase().equals("UP"))
-			scrollUp();
+			smartActions.scrollUp();
 		else
-			scrollDown();
+			smartActions.scrollDown();
 	}
 }

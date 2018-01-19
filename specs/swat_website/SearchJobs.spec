@@ -7,9 +7,9 @@ SearchPage
      |DevOps        |Portland, OR   |Trial2 |0      |
 
 
-* Go to swat solutions website
+* Go to "http://www.swatsolutions.com" website
 * Navigate to "WORK HERE" tab
-* Click "View Open Positions" button
+* Click button with text "View Open Positions"
 
 Search For Jobs
 ---------------
@@ -21,8 +21,3 @@ Sample Second Run
 -----------------
 * Search openings "" "" ""
 * Verify "8" results
-
-Sample Negative Test
---------------------
-* Verify value "BEN" doesn't exist in dropdown "1"
-* Verify value "BEN" doesn't exist in dropdown "2"
