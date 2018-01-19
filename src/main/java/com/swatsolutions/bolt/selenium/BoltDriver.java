@@ -1,14 +1,12 @@
 package com.swatsolutions.bolt.selenium;
 
-import com.sun.jna.Library;
-import com.swatsolutions.bolt.utils.databaseConnection;
-import com.swatsolutions.bolt.utils.library;
+import com.swatsolutions.bolt.utils.BoltLibrary;
+import com.swatsolutions.bolt.utils.DatabaseConnection;
 import com.thoughtworks.gauge.*;
 
-import com.swatsolutions.bolt.utils.fileReader;
+import com.swatsolutions.bolt.utils.ProcessFiles;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -16,19 +14,20 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-public class Driver extends SeleniumSetup{
+public class BoltDriver {
 
     protected String SWAT_URL = System.getenv("SWAT_URL");
     protected String BBC_URL = System.getenv("BBC_URL");
-    protected WebElement lastElement;
-    protected List<WebElement> lastElements;
+    protected static WebElement lastElement;
+    protected static List<WebElement> lastElements;
 
     // Holds the WebDriver instance
     public static WebDriver webDriver;
     protected static boolean positiveTest = true;
     protected static Map<String,String> elementDefinitions;
+    protected static String remoteUrl = "";
+    protected static boolean remoteRun = false;
     protected static String ip = System.getenv("IP");
     protected static String port = System.getenv("PORT");
     protected static String aut = System.getenv("AUT_URL");
@@ -57,7 +56,7 @@ public class Driver extends SeleniumSetup{
         	elementWaitTime = Integer.valueOf(System.getenv("ELEMENT_WAIT_TIME"));
         }
 
-        elementDefinitions = fileReader.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
+        elementDefinitions = ProcessFiles.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
 
         //query and setup csv files from a database based on the db.properties properties
 	    int counter = 1;
@@ -89,9 +88,9 @@ public class Driver extends SeleniumSetup{
 			    continue;
 		    }
 
-		    databaseConnection dbConnection = new databaseConnection(url, username, password, dbType);
+		    DatabaseConnection dbConnection = new DatabaseConnection(url, username, password, dbType);
 		    dbConnection.querySelect(query);
-		    library.writeMapToFile(dbConnection.getQueryResponse(), fileName);
+		    BoltLibrary.writeMapToFile(dbConnection.getQueryResponse(), fileName);
 		    dbConnection.closeConnection();
 
 		    counter++;
@@ -104,9 +103,11 @@ public class Driver extends SeleniumSetup{
 
         //Identifies tests as positive or negative
         if(!spec.toUpperCase().contains("JMETER")){
-            webDriver = getDriver();
+            webDriver = DriverFactory.getDriver();
             webDriver.manage().window().maximize();
             webDriver.switchTo().window(webDriver.getWindowHandle());
+            remoteRun = DriverFactory.getRemoteRun();
+            remoteUrl = DriverFactory.getRemoteUrl();
         } else{
             if(System.getenv("REMOTE").equalsIgnoreCase("TRUE"))
                 remoteRun = true;

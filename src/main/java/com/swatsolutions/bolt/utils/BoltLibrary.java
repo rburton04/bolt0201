@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class library {
+public class BoltLibrary {
 
     /**
      * @param elementList List of elements that text values are needed from.

@@ -2,11 +2,10 @@ package com.swatsolutions.bolt.utils;
 
 import com.opencsv.CSVReader;
 
-import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class fileReader {
+public class ProcessFiles {
 
     public static Map<String,String> processCsv (String fileName){
         //TODO setup to return a map with key "PAGE:OBJECT" and value "TYPE:value"
@@ -19,7 +18,7 @@ public class fileReader {
         fileName = System.getProperty("user.dir") + "/" + fileName;
 
         try{
-            reader = new CSVReader (new FileReader(fileName));
+            reader = new CSVReader (new java.io.FileReader(fileName));
             while((csvLine = reader.readNext()) != null){
                 if(csvLine.length == 4){
                     if(headerRowFound){
