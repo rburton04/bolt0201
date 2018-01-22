@@ -1,37 +1,31 @@
-pipeline {
-
-    agent {
-
-        docker {
-
-            image 'rburton04/bolt-build' 
-
-            args '-v /root/.m2:/root/.m2' 
-
+try {
+   timeout(time: 20, unit: 'MINUTES') {
+      def appName="openshift-bolt-sample"
+      def project=""
+      node {
+        stage("Initialize Bolt Node") {
+          project = env.PROJECT_NAME
         }
-
-    }
-
-    stages {
-
-        stage('BOLT TESTS') { 
-
-            steps {
-
-                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/conference_app_jmeter.spec -Denv=dev' 
- 
-           
-           // publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
-
-             perfReport modePerformancePerTestCase: true, modeThroughput: true, sourceDataFiles: '**/results*.xml'
-
-
-        }
-
       }
-
-    }
-
-   
-
+      node("bolt3") {
+        stage("Checkout") {
+          git url: "https://github.com/rburton04/bolt1128", branch: "demo"
+        }
+        stage("Run Bolt Tests") {
+         // sh "curl -SsL https://downloads.getgauge.io/stable | sh -s -- --location=/usr/bin"
+         // sh "gauge install java"
+         // sh "mvn clean install"
+          sh "mvn gauge:execute -DspecsDir=specs/conference_app/conference_app_jmeter.spec"
+            //publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
+            perfReport modePerformancePerTestCase: true, modeThroughput: true, sourceDataFiles: '**/results*.xml'
+          
+        }
+      }
+      
+   }
+} catch (err) {
+   echo "in catch block"
+   echo "Caught: ${err}"
+   currentBuild.result = 'FAILURE'
+   throw err
 }
