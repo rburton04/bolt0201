@@ -513,11 +513,11 @@ public class SeleniumActions {
 	}
 
 	protected void scrollUp(){
-		scroll(250);
+		scroll(-1000);
 	}
 
 	protected void scrollDown(){
-		scroll(-250);
+		scroll(1000);
 	}
 
 	/**
@@ -526,8 +526,11 @@ public class SeleniumActions {
 	protected void scroll(int amount){
 		try {
 			JavascriptExecutor jse = (JavascriptExecutor) webDriver;
-			jse.executeScript("scroll(0," + amount);
-		} catch (Exception e){fail("Issue scrolling: " + amount);}
+			jse.executeScript("scroll(0," + amount + ");");
+			//jse.executeScript("window.scrollBy(0," + amount, "");
+		} catch (Exception e){
+			fail("Issue scrolling: " + amount);
+		}
 	}
 
 	/**

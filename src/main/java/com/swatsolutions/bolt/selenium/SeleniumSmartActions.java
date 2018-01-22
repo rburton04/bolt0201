@@ -210,7 +210,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		List<WebElement> elements = getAllElementsOfGivenType(type);
 		int numFound = 0;
 		for(WebElement element:elements){
-			if(element.getText().equalsIgnoreCase(text)){
+			if(element.getText().equalsIgnoreCase(text) || element.getAttribute("value").equalsIgnoreCase(text)){
 				if(numFound == index)
 					return element;
 				else
@@ -538,15 +538,15 @@ public class SeleniumSmartActions extends SeleniumActions{
 					placeholder = "";
 				if(ariaLabel == null)
 					ariaLabel = "";
-				if ((placeholder.equalsIgnoreCase(defaultVal) ||
-						ariaLabel.equalsIgnoreCase(defaultVal)) &&
-						numFound == index) {
-					//TODO verify if this is even correct. Might change with different applications
-					//TODO verify if .getText would work instead
-					element.sendKeys(text);
-					break;
-				} else
-					numFound++;
+				if (placeholder.equalsIgnoreCase(defaultVal) ||
+						ariaLabel.equalsIgnoreCase(defaultVal)) {
+					if(numFound == index) {
+						element.sendKeys(text);
+						break;
+					} else{
+						numFound++;
+					}
+				}
 			}
 
 			if(numFound != index)

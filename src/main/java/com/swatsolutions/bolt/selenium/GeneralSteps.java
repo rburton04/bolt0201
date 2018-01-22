@@ -1,5 +1,6 @@
 package com.swatsolutions.bolt.selenium;
 
+import com.swatsolutions.bolt.utils.BoltLibrary;
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
 import org.apache.commons.lang.RandomStringUtils;
@@ -32,6 +33,12 @@ public class GeneralSteps {
 
 	//TODO build a step to handle multiple input boxes after a label
 	// or multiple drop downs
+
+	//ASSORTED STEPS
+	@Step("Delay <ms> milliseconds")
+	public void delayMilliseconds(int ms){
+		BoltLibrary.hardDelay(ms);
+	}
 
 	//CLICKING STEPS
 
@@ -245,5 +252,13 @@ public class GeneralSteps {
 			smartActions.scrollUp();
 		else
 			smartActions.scrollDown();
+	}
+
+	@Step("Scroll <direction> <amount>")
+	public void scroll(String direction, int amount){
+		if(direction.toUpperCase().equals("UP"))
+			smartActions.scroll(-Math.abs(amount));
+		else
+			smartActions.scroll(Math.abs(amount));
 	}
 }
