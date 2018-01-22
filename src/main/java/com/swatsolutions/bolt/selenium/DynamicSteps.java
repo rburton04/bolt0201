@@ -23,7 +23,7 @@ public class DynamicSteps {
 
 	@Step("Click <button> button")
 	public void clickButton(String button){
-		smartActions.clickDynamicallyByType(button, "button");
+		smartActions.clickDynamicallyByType(button, "input");
 	}
 
 	@Step({"Click button with text <text> and index <index>", "Click text <text> with index <index>"})

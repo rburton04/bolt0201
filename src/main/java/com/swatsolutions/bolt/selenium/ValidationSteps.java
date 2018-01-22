@@ -44,7 +44,7 @@ public class ValidationSteps {
 			index ++;
 		}
 
-		Assert.assertTrue("Page title failed to match.", title.equalsIgnoreCase(pageTitle));
+		Assert.assertTrue("Page title failed to match. Found: " + pageTitle, title.equalsIgnoreCase(pageTitle));
 	}
 
 	//Check page changed
