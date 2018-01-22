@@ -9,7 +9,7 @@ try {
       }
       node("bolt3") {
         stage("Checkout") {
-          git url: "https://github.com/rburton04/bolt1128", branch: "demo"
+          git url: "https://rburton04@bitbucket.org/gaugeTestForSwat/gaugetest.git", branch: "demo"
         }
         stage("Run Bolt Tests") {
          // sh "curl -SsL https://downloads.getgauge.io/stable | sh -s -- --location=/usr/bin"
