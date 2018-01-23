@@ -17,8 +17,8 @@ pipeline {
         stage('BOLT Dev API TESTS') { 
 
             steps {
-
-                sh 'mvn gauge:execute -DspecsDir=specs/conference_app/conference_app_jmeter.spec -Denv=dev' 
+                sh 'clean install'
+                //sh 'mvn gauge:execute -DspecsDir=specs/conference_app/conference_app_jmeter.spec -Denv=dev' 
  
            
            // publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'reports/html-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: ''])
