@@ -105,7 +105,7 @@ public class BoltDriver {
         if(!spec.toUpperCase().contains("JMETER")){
             webDriver = DriverFactory.getDriver();
             //webDriver.manage().window().maximize();
-            webDriver.switchTo().window(webDriver.getWindowHandle());
+            //webDriver.switchTo().window(webDriver.getWindowHandle());
             remoteRun = DriverFactory.getRemoteRun();
             remoteUrl = DriverFactory.getRemoteUrl();
         } else{
