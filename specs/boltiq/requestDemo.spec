@@ -4,7 +4,7 @@ Created by aenoksen on 1/22/18
 
 table:specs/boltiq/requestDemoData.csv
 
-* Go to "http://www.boltiq.io"
+* Go to AUT
 
 Submit Request For Demo Top of Home Page
 ----------------------------------------
