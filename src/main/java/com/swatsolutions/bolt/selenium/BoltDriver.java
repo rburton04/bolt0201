@@ -104,7 +104,7 @@ public class BoltDriver {
         //Identifies tests as positive or negative
         if(!spec.toUpperCase().contains("JMETER")){
             webDriver = DriverFactory.getDriver();
-            webDriver.manage().window().maximize();
+            //webDriver.manage().window().maximize();
             webDriver.switchTo().window(webDriver.getWindowHandle());
             remoteRun = DriverFactory.getRemoteRun();
             remoteUrl = DriverFactory.getRemoteUrl();
