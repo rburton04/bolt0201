@@ -1,6 +1,6 @@
 package com.swatsolutions.bolt.selenium;
 
-import com.swatsolutions.bolt.utils.library;
+import com.swatsolutions.bolt.utils.BoltLibrary;
 
 import org.junit.Assert;
 import org.openqa.selenium.*;
@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,7 +19,35 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
-public class SeleniumActions extends Driver{
+public class SeleniumActions {
+	protected WebDriver webDriver = null;
+	protected int elementWaitTime = 0;
+	protected WebElement lastElement = null;
+	protected List<WebElement> lastElements = null;
+	protected Map<String, String> elementDefinitions = new HashMap<String, String>();
+	protected boolean positiveTest = true;
+	/*
+	elementWaitTime
+	lastElement
+	lastElements
+	elementDefinitions
+	positiveTest
+
+	send in the driver object instead of the webdriver object, and all values can be set
+
+	 */
+
+	protected enum relativeTypes {PARENT, AUNT, CHILD, SIBLING};
+	protected enum elementTypes {CLASS, NAME, ID, XPATH, LINKTEXT, PARTIAL_LINKTEXT, TAG};
+
+	public SeleniumActions(){
+		webDriver = BoltDriver.getWebDriver();
+		elementWaitTime = BoltDriver.elementWaitTime;
+		lastElement = BoltDriver.lastElement;
+		lastElements = BoltDriver.lastElements;
+		elementDefinitions = BoltDriver.elementDefinitions;
+		positiveTest = BoltDriver.positiveTest;
+	}
 
 	/**
 	 * @param elementDef
@@ -217,7 +245,7 @@ public class SeleniumActions extends Driver{
 	 * @param dropdown Select of the specific dropdown to select values from
 	 */
 	protected void selectDropdown(String desiredOption, Select dropdown){
-		if(library.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption.toUpperCase())){
+		if(BoltLibrary.elementListToUppercaseStringList(dropdown.getOptions()).contains(desiredOption.toUpperCase())){
 			dropdown.selectByValue(desiredOption);
 		} else{
 			//TODO error
@@ -309,7 +337,7 @@ public class SeleniumActions extends Driver{
 			dropdown = new Select(getElements(elementDef).get(index));
 		} catch (Exception e){fail("Issue getting dropdown values, element: " + elementDef + " index: " + index);}
 		if(dropdown != null)
-			return library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
+			return BoltLibrary.elementListToUppercaseStringList(dropdown.getAllSelectedOptions());
 		else
 			return new ArrayList<String>();
 	}
@@ -357,7 +385,7 @@ public class SeleniumActions extends Driver{
 			}
 
 			if (positiveTest)
-				assertTrue(library.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
+				assertTrue(BoltLibrary.elementListToUppercaseStringList(dropdown.getAllSelectedOptions()).containsAll(desiredOptions));
 		} catch (Exception e){fail("Issue selecting multiple dropdown options: " + elementDef);}
 	}
 
@@ -485,11 +513,11 @@ public class SeleniumActions extends Driver{
 	}
 
 	protected void scrollUp(){
-		scroll(250);
+		scroll(-1000);
 	}
 
 	protected void scrollDown(){
-		scroll(-250);
+		scroll(1000);
 	}
 
 	/**
@@ -498,8 +526,11 @@ public class SeleniumActions extends Driver{
 	protected void scroll(int amount){
 		try {
 			JavascriptExecutor jse = (JavascriptExecutor) webDriver;
-			jse.executeScript("scroll(0," + amount);
-		} catch (Exception e){fail("Issue scrolling: " + amount);}
+			jse.executeScript("scroll(0," + amount + ");");
+			//jse.executeScript("window.scrollBy(0," + amount, "");
+		} catch (Exception e){
+			fail("Issue scrolling: " + amount);
+		}
 	}
 
 	/**
@@ -516,16 +547,16 @@ public class SeleniumActions extends Driver{
 	protected void hoverOverElement(String text){
 		try{
 			Actions action = new Actions (webDriver);
-			action.moveToElement(getElementsByTypeAndValue("LINKTEXT", text).get(0)).build().perform();
-			library.implicitWait(webDriver,250);
+			action.moveToElement(getElementsByTypeAndValue(elementTypes.LINKTEXT, text).get(0)).build().perform();
+			BoltLibrary.implicitWait(webDriver,250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
 
 	protected void hoverOverElementPartialText(String text){
 		try{
 			Actions action = new Actions (webDriver);
-			action.moveToElement(getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0)).build().perform();
-			library.implicitWait(webDriver, 250);
+			action.moveToElement(getElementsByTypeAndValue(elementTypes.PARTIAL_LINKTEXT, text).get(0)).build().perform();
+			BoltLibrary.implicitWait(webDriver, 250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
 
@@ -655,21 +686,21 @@ public class SeleniumActions extends Driver{
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
 	 */
-	protected List<WebElement> getElementRelatives(WebElement initialElement, String relationship){
+	protected List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship){//String relationship){
 		List<WebElement> desiredElements = new ArrayList<>();
 		try {
-			switch (relationship.toUpperCase()) {
-				case "PARENT":
+			switch (relationship) {
+				case PARENT:
 					desiredElements.add(initialElement.findElement(By.xpath("./..")));
 					break;
-				case "AUNT":
+				case AUNT:
 					desiredElements = initialElement.findElement(By.xpath("./../..")).findElements(By.xpath(".//*"));
 					desiredElements.remove(initialElement.findElement(By.xpath("./..")));
 					break;
-				case "CHILD":
+				case CHILD:
 					desiredElements = initialElement.findElements(By.xpath(".//*"));
 					break;
-				case "SIBLING":
+				case SIBLING:
 					desiredElements = initialElement.findElement(By.xpath("./..")).findElements(By.xpath(".//*"));
 					desiredElements.remove(initialElement);
 					break;
@@ -687,23 +718,23 @@ public class SeleniumActions extends Driver{
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
 	 */
-	protected List<WebElement> getElementRelatives(WebElement initialElement, String relationship, boolean beforeElement){
+	protected List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship, boolean beforeElement){
 		List<WebElement> desiredElements = new ArrayList<>();
 		boolean initialElementFound = false;
 		try {
-			switch (relationship.toUpperCase()) {
-				case "PARENT":
+			switch (relationship) {
+				case PARENT:
 					desiredElements.add(initialElement.findElement(By.xpath("./..")));
 					break;
-				case "AUNT":
+				case AUNT:
 					desiredElements = initialElement.findElement(By.xpath("./../..")).findElements(By.xpath(".//*"));
 					//reset the initialElement for the search for elements before or after the initial
 					initialElement = initialElement.findElement(By.xpath("./.."));
 					break;
-				case "CHILD":
+				case CHILD:
 					desiredElements = initialElement.findElements(By.xpath(".//*"));
 					break;
-				case "SIBLING":
+				case SIBLING:
 					desiredElements = initialElement.findElement(By.xpath("./..")).findElements(By.xpath(".//*"));
 					break;
 			}
@@ -732,18 +763,21 @@ public class SeleniumActions extends Driver{
 	 * @param relativeDefinition String of the reference to identify what element to refer to
 	 * @return WebElement of the related element
 	 */
-	protected WebElement getElementRelative(String elementDefinition, String relationship, String relativeDefinition){
+	protected WebElement getElementRelative(String elementDefinition, relativeTypes relationship, String relativeDefinition){
 		WebElement initialElement = getElement(elementDefinition);
 		WebElement desiredElement = initialElement;
 		try {
-			switch (relationship.toUpperCase()) {
-				case "PARENT":
+			switch (relationship) {
+				case PARENT:
 					desiredElement = initialElement.findElement(By.xpath("./.."));
 					break;
-				case "CHILD":
+				case AUNT:
+					desiredElement = getRelativeElements(initialElement.findElement(By.xpath("./../..")), relativeDefinition).get(0);
+					break;
+				case CHILD:
 					desiredElement = getRelativeElements(initialElement, relativeDefinition).get(0);
 					break;
-				case "SIBLING":
+				case SIBLING:
 					desiredElement = getRelativeElements(initialElement.findElement(By.xpath("./..")), relativeDefinition).get(0);
 					break;
 			}
@@ -766,23 +800,26 @@ public class SeleniumActions extends Driver{
 			if(elementDefinitions.containsKey(relativeDefinition)) {
 				elementData = elementDefinitions.get(relativeDefinition).split("~");
 				if(elementData.length == 2){
-					switch (elementData[0].toUpperCase()) {
-						case "CLASS":
+					switch (elementTypes.valueOf(elementData[0].toUpperCase(Locale.ENGLISH))) {
+						case CLASS:
 							elements = startingElement.findElements(By.className(elementData[1]));// webDriver.findElements(By.className(value));
 							break;
-						case "NAME":
+						case NAME:
 							elements = startingElement.findElements(By.name(elementData[1]));
 							break;
-						case "ID":
+						case ID:
 							elements = startingElement.findElements(By.id(elementData[1]));
 							break;
-						case "XPATH":
+						case XPATH:
 							elements = startingElement.findElements(By.xpath(elementData[1]));
 							break;
-						case "LINKTEXT":
+						case LINKTEXT:
 							elements = startingElement.findElements(By.linkText(elementData[1]));
 							break;
-						case "TAG":
+						case PARTIAL_LINKTEXT:
+							elements = startingElement.findElements(By.partialLinkText(elementData[1]));
+							break;
+						case TAG:
 							elements = startingElement.findElements(By.tagName(elementData[1]));
 							break;
 					}
@@ -816,7 +853,7 @@ public class SeleniumActions extends Driver{
 			if (elementDefinitions.containsKey(elementDefinition)) {
 				elementData = elementDefinitions.get(elementDefinition).split("~");
 				if (elementData.length == 2) {
-					elements = getElementsByTypeAndValue(elementData[0].toUpperCase(), elementData[1]);
+					elements = getElementsByTypeAndValue(elementTypes.valueOf(elementData[0].toUpperCase(Locale.ENGLISH)), elementData[1]);
 					//TODO check for null
 					assertTrue("Element(s) " + elementDefinition + " were not found on this page", elements != null && elements.size() > 0);
 				} else {
@@ -841,55 +878,55 @@ public class SeleniumActions extends Driver{
 	 * @param value Value to search for
 	 * @return List of WebElements that match the given type and value
 	 */
-	protected List<WebElement> getElementsByTypeAndValue(String type, String value){
+	protected List<WebElement> getElementsByTypeAndValue(elementTypes type, String value){
 		List<WebElement> elements = new ArrayList<WebElement>();
 		WebDriverWait wait = new WebDriverWait(webDriver, elementWaitTime); //TODO make this variable
 		//TODO add wait for the element and possibly loop a couple times
 		try {
 				switch (type) {
-					case "CLASS":
+					case CLASS:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className(value)));// webDriver.findElements(By.className(value));
 						break;
-					case "NAME":
+					case NAME:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.name(value)));
 						break;
-					case "ID":
+					case ID:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(value)));
 						break;
-					case "XPATH":
+					case XPATH:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(value)));
 						break;
-					case "LINKTEXT":
+					case LINKTEXT:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.linkText(value)));
 						break;
-					case "PARTIAL_LINKTEXT":
+					case PARTIAL_LINKTEXT:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.partialLinkText(value)));
 						break;
-					case "TAG":
+					case TAG:
 						elements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.tagName(value)));
 						break;
 				}
 		} catch(TimeoutException e) {
 			switch (type) {
-				case "CLASS":
+				case CLASS:
 					elements = webDriver.findElements(By.className(value));
 					break;
-				case "NAME":
+				case NAME:
 					elements = webDriver.findElements(By.name(value));
 					break;
-				case "ID":
+				case ID:
 					elements = webDriver.findElements(By.id(value));
 					break;
-				case "XPATH":
+				case XPATH:
 					elements = webDriver.findElements(By.xpath(value));
 					break;
-				case "LINKTEXT":
+				case LINKTEXT:
 					elements = webDriver.findElements(By.linkText(value));
 					break;
-				case "PARTIAL_LINKTEXT":
+				case PARTIAL_LINKTEXT:
 					elements = webDriver.findElements(By.partialLinkText(value));
 					break;
-				case "TAG":
+				case TAG:
 					elements = webDriver.findElements(By.tagName(value));
 					break;
 			}
@@ -938,7 +975,7 @@ public class SeleniumActions extends Driver{
 		//add interactions to the video
 
 		//TODO likely need to wait for more advancements in finding elements
-		List<WebElement> iframes = getElementsByTypeAndValue("TAG","iframe");
+		List<WebElement> iframes = getElementsByTypeAndValue(elementTypes.TAG,"iframe");
 
 
 		//TODO sort through the iframes to see if the desired video exists.
@@ -966,7 +1003,7 @@ public class SeleniumActions extends Driver{
 		Actions action = new Actions(webDriver);
 
 		action.moveToElement(getElementsByTypeAndValue("LINKTEXT", "WEATHER").get(0)).build().perform();
-		library.hardDelay(250);
+		BoltLibrary.hardDelay(250);
 
 		int xDiff = going.x - starting.x;
 		int yDiff = going.y - starting.y;
@@ -974,7 +1011,7 @@ public class SeleniumActions extends Driver{
 		if(Math.abs(xDiff) > 20 || Math.abs(yDiff) > 20){
 			for(int i = 0; i < 10; i++){
 				action.moveByOffset((xDiff/10),(yDiff/10)).build().perform();
-				library.hardDelay(80);
+				BoltLibrary.hardDelay(80);
 			}
 		}
 

@@ -3,4 +3,6 @@ This is a concept file with following syntax for each concept.
 * Select <jobFunction> from the "Job Function:" dropdown
 * Select <location> from the "Location:" dropdown
 * Enter text <keyword> in field "1"
-* Click Search button
+ Click "SEARCH" button
+ Click "SEARCH"
+* Click element with attribute "value" and value "Search"
