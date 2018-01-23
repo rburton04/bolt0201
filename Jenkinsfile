@@ -17,7 +17,7 @@ pipeline {
         stage('BOLT Dev API TESTS') { 
 
             steps {
-                sh 'clean install'
+                sh 'mvn clean install'
                 //sh 'mvn gauge:execute -DspecsDir=specs/conference_app/conference_app_jmeter.spec -Denv=dev' 
  
            
