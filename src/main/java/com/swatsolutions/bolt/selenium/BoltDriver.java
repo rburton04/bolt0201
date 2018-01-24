@@ -6,6 +6,8 @@ import com.thoughtworks.gauge.*;
 
 import com.swatsolutions.bolt.utils.ProcessFiles;
 
+import gauge.messages.Messages;
+import gauge.messages.Spec;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,8 +19,7 @@ import java.util.Map;
 
 public class BoltDriver {
 
-    protected String SWAT_URL = System.getenv("SWAT_URL");
-    protected String BBC_URL = System.getenv("BBC_URL");
+
     protected static WebElement lastElement;
     protected static List<WebElement> lastElements;
 
@@ -28,18 +29,64 @@ public class BoltDriver {
     protected static Map<String,String> elementDefinitions;
     protected static String remoteUrl = "";
     protected static boolean remoteRun = false;
-    protected static String ip = System.getenv("IP");
-    protected static String port = System.getenv("PORT");
-    protected static String aut = System.getenv("AUT_URL");
+    protected static String ip = "";
+    protected static String port = "";
+    protected static String aut = "";
     protected static String spec = "";
     protected static String scenario = "";
     protected static String storedUrl = "";
     protected static int elementWaitTime = 5;
 
+	protected static String buttonType = "button";
+	protected static String labelType = "label";
+	protected static String specialTextAttribute = "value";
+	protected static String pageHeadingLevel = "";
+	protected static String textFieldType = "input";
+	protected static String textAreaType = "textarea";
+	protected static String checkboxType = "input";
+	protected static String fieldDefaultType = "";
+	protected static String textareaDefaultType = "";
+	//potentially add customization for dropdowns, tables, and internal table parts
+	protected static int initialAutLoadTimeMs = 0;
+
     //TODO possibly make a map of all propery data or just get the data when needed?
 
     // Initialize a webDriver instance of required browser
     // Since this does not have a significance in the application's business domain, the BeforeSuite hook is used to instantiate the webDriver
+
+	private void setSystemVars(){
+		if(System.getenv("ELEMENT_WAIT_TIME") != null)
+			elementWaitTime = Integer.valueOf(System.getenv("ELEMENT_WAIT_TIME"));
+
+		if (System.getenv("IP") != null)
+			ip = System.getenv("IP");
+		if (System.getenv("PORT") != null)
+			port = System.getenv("PORT");
+		if (System.getenv("AUT_URL") != null)
+			aut = System.getenv("AUT_URL");
+		if (System.getenv("BUTTON_TYPE") != null)
+			buttonType = System.getenv("BUTTON_TYPE");
+		if (System.getenv("LABEL_TYPE") != null)
+			labelType = System.getenv("LABEL_TYPE");
+		if (System.getenv("SPECIAL_TEXT_ATTRIBUTE") != null)
+			specialTextAttribute = System.getenv("SPECIAL_TEXT_ATTRIBUTE");
+		if (System.getenv("PAGE_HEADING_LEVEL") != null)
+			pageHeadingLevel = System.getenv("PAGE_HEADING_LEVEL");
+		if (System.getenv("TEXT_FIELD_TYPE") != null)
+			textFieldType = System.getenv("TEXT_FIELD_TYPE");
+		if (System.getenv("TEXT_AREA_TYPE") != null)
+			textAreaType = System.getenv("TEXT_AREA_TYPE");
+		if (System.getenv("CHECKBOX_TYPE") != null)
+			checkboxType = System.getenv("CHECKBOX_TYPE");
+		if (System.getenv("FIELD_DEFAULT_FIELD_TYPE") != null)
+			fieldDefaultType = System.getenv("FIELD_DEFAULT_FIELD_TYPE");
+		if (System.getenv("TEXTAREA_DEFAULT_FIELD_TYPE") != null)
+			textareaDefaultType = System.getenv("TEXTAREA_DEFAULT_FIELD_TYPE");
+		if (System.getenv("INITIAL_AUT_LOAD_TIME_MS") != null)
+			initialAutLoadTimeMs = Integer.valueOf(System.getenv("INITIAL_AUT_LOAD_TIME_MS"));
+
+		elementDefinitions = ProcessFiles.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
+	}
 
 	@BeforeSuite
     public void initializeDriver(){
@@ -52,11 +99,7 @@ public class BoltDriver {
                 FileUtils.cleanDirectory(f);
         } catch (Exception e){}
 
-        if(!System.getenv("ELEMENT_WAIT_TIME").isEmpty()){
-        	elementWaitTime = Integer.valueOf(System.getenv("ELEMENT_WAIT_TIME"));
-        }
-
-        elementDefinitions = ProcessFiles.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
+        setSystemVars();
 
         //query and setup csv files from a database based on the db.properties properties
 	    int counter = 1;
@@ -104,8 +147,11 @@ public class BoltDriver {
         //Identifies tests as positive or negative
         if(!spec.toUpperCase().contains("JMETER")){
             webDriver = DriverFactory.getDriver();
-            webDriver.manage().window().maximize();
-            webDriver.switchTo().window(webDriver.getWindowHandle());
+            //TODO the next 2 lines should only run if running locally
+	        if(!DriverFactory.remoteRun) {
+		        webDriver.manage().window().maximize();
+		        webDriver.switchTo().window(webDriver.getWindowHandle());
+	        }
             remoteRun = DriverFactory.getRemoteRun();
             remoteUrl = DriverFactory.getRemoteUrl();
         } else{
@@ -128,6 +174,11 @@ public class BoltDriver {
 
         //System.setProperty("SPEC", context.getCurrentSpecification().getName());
         //scenario = context.getCurrentScenario().getName();
+    }
+
+    @AfterScenario
+    public void afterScenario(ExecutionContext context){
+
     }
 
     @BeforeScenario

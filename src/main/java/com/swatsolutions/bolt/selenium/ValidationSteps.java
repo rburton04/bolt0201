@@ -12,22 +12,22 @@ public class ValidationSteps {
 	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> matches <text>")
 	public void verifyText(String label, String text){
-		Assert.assertTrue("Textbox text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "input")));
+		Assert.assertTrue("Textbox text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textFieldType)));
 	}
 	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> index <index> matches <text>")
 	public void verifyText(String label, int index, String text){
-		Assert.assertTrue("Textbox text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "input", index)));
+		Assert.assertTrue("Textbox text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textFieldType, index)));
 	}
 	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> matches <text>")
 	public void verifyTextArea(String label, String text){
-		Assert.assertTrue("Textarea text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "textarea")));
+		Assert.assertTrue("Textarea text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textAreaType)));
 	}
 	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> index <index> matches <text>")
 	public void verifyTextArea(String label, int index, String text){
-		Assert.assertTrue("Textarea text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "textarea", index)));
+		Assert.assertTrue("Textarea text did not match the expected value", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textAreaType, index)));
 	}
 
 	//check page title
@@ -35,7 +35,8 @@ public class ValidationSteps {
 	@Step("Verify page title matches <title>")
 	public void verifyTitle(String title){
 		//TODO decrease wait time for the page title??
-		String pageTitle = "";
+		String pageTitle = smartActions.getText(BoltDriver.pageHeadingLevel, "TAG");
+
 		int index = 1;
 		while(pageTitle.isEmpty()){
 			if(index > 6)
@@ -75,22 +76,22 @@ public class ValidationSteps {
 	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> does not match <text>")
 	public void verifyTextMismatch(String label, String text){
-		Assert.assertFalse("Textbox text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "input")));
+		Assert.assertFalse("Textbox text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textFieldType)));
 	}
 	@ContinueOnFailure
 	@Step("Verify text in textbox labeled <label> index <index> does not match <text>")
 	public void verifyTextMismatch(String label, int index, String text){
-		Assert.assertFalse("Textbox text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "input", index)));
+		Assert.assertFalse("Textbox text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textFieldType, index)));
 	}
 	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> does not match <text>")
 	public void verifyTextAreaMismatch(String label, String text){
-		Assert.assertFalse("Textarea text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "textarea")));
+		Assert.assertFalse("Textarea text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textAreaType)));
 	}
 	@ContinueOnFailure
 	@Step("Verify text in textarea labeled <label> index <index> does not match <text>")
 	public void verifyTextAreaMismatch(String label, int index, String text){
-		Assert.assertFalse("Textarea text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, "textarea", index)));
+		Assert.assertFalse("Textarea text matched when it should not have", text.equalsIgnoreCase(smartActions.getTextByLabel(label, BoltDriver.textAreaType, index)));
 	}
 
 	//Check error message text exists
