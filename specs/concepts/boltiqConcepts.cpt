@@ -6,7 +6,7 @@ This is a concept file with following syntax for each concept.
 * Enter text <name> into field with default value "Name"
 * Enter text <email> into field with default value "Email Address"
 * Enter text <company> into field with default value "Company Name"
-* Click "Send" button
+  Click "Send" button
 
 
 # Request Demo on Footer <name> <email> <company> <index>
@@ -14,4 +14,4 @@ This is a concept file with following syntax for each concept.
 * Enter text <name> into field with default value "Name" and index <index>
 * Enter text <email> into field with default value "Email Address" and index <index>
 * Enter text <company> into field with default value "Company Name" and index <index>
-* Click "Sign up" button
+  Click "Sign up" button
