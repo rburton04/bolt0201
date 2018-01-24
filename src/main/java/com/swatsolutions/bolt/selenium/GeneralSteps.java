@@ -101,6 +101,8 @@ public class GeneralSteps {
 	@Step("Go to AUT")
 	public void navigateToAUT(){
 		smartActions.goToSite(BoltDriver.aut);
+		int temp = BoltDriver.initialAutLoadTimeMs;
+		delayMilliseconds(BoltDriver.initialAutLoadTimeMs);
 	}
 
 	@Step({"Navigate to <tab> tab", "Navigate to <tab>", "Click on <text> text"})

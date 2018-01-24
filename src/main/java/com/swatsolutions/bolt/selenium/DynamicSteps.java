@@ -13,7 +13,7 @@ public class DynamicSteps {
 	//Click Button
 	@Step("Click button with label <label>")
 	public void clickButtonByLabel(String label){
-		smartActions.clickDynamicallyByLabel(label, "button");
+		smartActions.clickDynamicallyByLabel(label, BoltDriver.buttonType);
 	}
 
 	@Step({"Click button with text <text>","Click text <text>"})
@@ -23,7 +23,7 @@ public class DynamicSteps {
 
 	@Step("Click <button> button")
 	public void clickButton(String button){
-		smartActions.clickDynamicallyByType(button, "input");
+		smartActions.clickDynamicallyByType(button, BoltDriver.buttonType);
 	}
 
 	@Step({"Click button with text <text> and index <index>", "Click text <text> with index <index>"})
@@ -41,7 +41,7 @@ public class DynamicSteps {
 	@Step("Click the <index> <button> button")
 	public void clickButton(int index, String button){
 		//converting 1-based counting to 0-based
-		smartActions.clickDynamicallyByIndexAndType(button, "button", index-1);
+		smartActions.clickDynamicallyByIndexAndType(button, BoltDriver.buttonType, index-1);
 	}
 
 	//Enter Text
@@ -67,32 +67,32 @@ public class DynamicSteps {
 
 	@Step("Enter text <text> into input field labeled <label>")
 	public void enterTextViaLabelInput(String text, String label){
-		smartActions.enterTextByLabel(text, label, "input");
+		smartActions.enterTextByLabel(text, label, BoltDriver.textFieldType);
 	}
 
 	@Step("Enter text <text> into input field labeled <label> and index <index>")
 	public void enterTextViaLabelInput(String text, String label, int index){
-		smartActions.enterTextByLabelAndIndex(text, label, "input", index);
+		smartActions.enterTextByLabelAndIndex(text, label, BoltDriver.textFieldType, index);
 	}
 
 	@Step("Enter text <text> into textarea labeled <label>")
 	public void enterTextViaLabelTextarea(String text, String label){
-		smartActions.enterTextByLabel(text, label, "textarea");
+		smartActions.enterTextByLabel(text, label, BoltDriver.textAreaType);
 	}
 
 	@Step("Enter text <text> into textarea labeled <label> and index <index>")
 	public void enterTextViaLabelTextarea(String text, String label, int index){
-		smartActions.enterTextByLabelAndIndex(text, label, "textarea", index);
+		smartActions.enterTextByLabelAndIndex(text, label, BoltDriver.textAreaType, index);
 	}
 
 	@Step("Enter text <text> into field with default value <value>")
 	public void enterTextViaDefaultVal(String text, String value){
-		smartActions.enterTextByDefaultValues(text, value);
+		smartActions.enterTextByDefaultValues(text, value, BoltDriver.textFieldType);
 	}
 
 	@Step("Enter text <text> into field with default value <value> and index <index>")
 	public void enterTextViaDefaultVal(String text, String label, int index){
-		smartActions.enterTextByDefaultValuesAndIndex(text, label, index);
+		smartActions.enterTextByDefaultValuesAndIndex(text, label, BoltDriver.textFieldType, index);
 	}
 
 	//TODO step that takes in a table?
