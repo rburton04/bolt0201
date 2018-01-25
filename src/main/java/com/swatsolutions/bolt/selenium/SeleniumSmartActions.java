@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertTrue;
@@ -21,6 +22,15 @@ public class SeleniumSmartActions extends SeleniumActions{
 	//TODO radial button(s)
 
 	protected enum verifyButtonStatus {DISABLED, NONEXISTANT, ENABLED, EXISTS};
+
+	public SeleniumSmartActions(){
+//		webDriver = BoltDriver.getWebDriver();
+//		elementWaitTime = BoltDriver.elementWaitTime;
+//		lastElement = BoltDriver.lastElement;
+//		lastElements = BoltDriver.lastElements;
+//		elementDefinitions = BoltDriver.elementDefinitions;
+//		positiveTest = BoltDriver.positiveTest;
+	}
 
 	/**
 	 * @param status enum for the status to verify
@@ -44,7 +54,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void verifyButtonStatusByLabel(verifyButtonStatus status, String label, int index){
 		//TODO not yet built/supported
-		List<WebElement> foundElements = getElementsWithLabel(label, "button");
+		List<WebElement> foundElements = getElementsWithLabel(label, BoltDriver.buttonType);
 		if(foundElements == null)
 			verifyElementStatus(status, null);
 		else if (foundElements.size() <= index)
@@ -58,7 +68,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param text text tied to the button
 	 */
 	protected void verifyButtonStatusDynamically(verifyButtonStatus status, String text){
-		verifyElementStatus(status, findElementDynamicallyByIndexAndType("button", text, 0, true));
+		verifyElementStatus(status, findElementDynamicallyByIndexAndType(BoltDriver.buttonType, text, 0, true));
 	}
 
 	/**
@@ -102,7 +112,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @return the text of the element found
 	 */
 	protected String getText(String identifier, String type){
-		List<WebElement> elements = getElementsByTypeAndValue(type, identifier);
+		List<WebElement> elements = getElementsByTypeAndValue(elementTypes.valueOf(type.toUpperCase(Locale.ENGLISH)), identifier);
 		String elementText = "";
 		if(elements.size() > 0){
 			if(elements.get(0) != null){
@@ -116,7 +126,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param label The label next to the checkbox
 	 */
 	protected void smartClickCheckbox(String label){
-		WebElement element = getElementWithLabel(label, "input");
+		WebElement element = getElementWithLabel(label, BoltDriver.checkboxType);
 		if(element != null)
 			element.click();
 	}
@@ -126,7 +136,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void clickByLinkedText(String text){
 		try{
-			getElementsByTypeAndValue("LINKTEXT", text).get(0).click();
+			getElementsByTypeAndValue(elementTypes.LINKTEXT, text).get(0).click();
 		} catch (Exception e){fail("Unable to click linked text: " + text);}
 	}
 
@@ -135,7 +145,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void clickByLinkedTextPartialText(String text){
 		try{
-			getElementsByTypeAndValue("PARTIAL_LINKTEXT", text).get(0).click();
+			getElementsByTypeAndValue(elementTypes.PARTIAL_LINKTEXT, text).get(0).click();
 		} catch (Exception e){fail("Unable to click linked text: " + text);}
 	}
 
@@ -144,7 +154,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param index index of the element to click
 	 */
 	protected void clickByIndexDynamically(String text, int index){
-		List<WebElement> elements = getElementsByTypeAndValue("LINKTEXT", text);
+		List<WebElement> elements = getElementsByTypeAndValue(elementTypes.LINKTEXT, text);
 
 		if(elements.size() > index){
 			elements.get(index).click();
@@ -156,9 +166,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param value true to select the checkbox, false to uncheck it
 	 */
 	protected void smartSetCheckboxToValue(String label, boolean value){
-		WebElement element = getElementWithLabel(label, "input");
+		WebElement element = getElementWithLabel(label, BoltDriver.checkboxType);
 		WebElement element3 = null;
-		List<WebElement> temp = getElementsByTypeAndValue("LINKTEXT", label);
+		List<WebElement> temp = getElementsByTypeAndValue(elementTypes.LINKTEXT, label);
 		for(WebElement element2:temp){
 			if(elementIsVisible(element2)){
 				element3 = element2;
@@ -166,7 +176,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			}
 		}
 
-		element = findElementRelativeByType(element3,"input");
+		element = findElementRelativeByType(element3,BoltDriver.labelType);
 
 		if(element != null) {
 
@@ -200,7 +210,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		List<WebElement> elements = getAllElementsOfGivenType(type);
 		int numFound = 0;
 		for(WebElement element:elements){
-			if(element.getText().equalsIgnoreCase(text)){
+			if(element.getText().equalsIgnoreCase(text) || element.getAttribute(BoltDriver.specialTextAttribute).equalsIgnoreCase(text)){
 				if(numFound == index)
 					return element;
 				else
@@ -275,7 +285,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected List<WebElement> findElementsWithText(String text, boolean ignoreFailure){
 		try{
-			return getElementsByTypeAndValue("XPATH", "//*[text()[contains(.,'" + text + "')]]");
+			return getElementsByTypeAndValue(elementTypes.XPATH, "//*[text()[contains(.,'" + text + "')]]");
 			//for non case-sensitive:
 			//"//*[text() = 'text']"
 		} catch (Exception e){
@@ -432,6 +442,8 @@ public class SeleniumSmartActions extends SeleniumActions{
 						text = elements.get(index).getAttribute("value");
 					if(text.isEmpty())
 						text = elements.get(index).getAttribute("innerHTML");
+					if(text.isEmpty())
+						text = elements.get(index).getAttribute(BoltDriver.specialTextAttribute);
 				}
 			} else
 				fail("Failed to get text by the label: " + label);
@@ -489,17 +501,25 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param text text to be entered
 	 * @param defaultVal the default value that exists in an element
 	 */
-	protected void enterTextByDefaultValues(String text, String defaultVal){
+	protected void enterTextByDefaultValues(String text, String defaultVal, String fieldType){
 		try {
-			List<WebElement> elements = getAllElementsOfGivenType("input");
+			List<WebElement> elements = getAllElementsOfGivenType(fieldType);
 			for (WebElement element : elements) {
+				String customIdentifier;
+				if(fieldType.equalsIgnoreCase(BoltDriver.textFieldType))
+					customIdentifier = BoltDriver.fieldDefaultAttribute;
+				else
+					customIdentifier = BoltDriver.textareaDefaultAttribute;
+
 				String placeholder = element.getAttribute("placeholder");
 				String ariaLabel = element.getAttribute("aria-label");
+				if(customIdentifier == null)
+					customIdentifier = "";
 				if(placeholder == null)
 					placeholder = "";
 				if(ariaLabel == null)
 					ariaLabel = "";
-				if (placeholder.equalsIgnoreCase(defaultVal) ||
+				if (customIdentifier.equalsIgnoreCase(defaultVal) || placeholder.equalsIgnoreCase(defaultVal) ||
 						ariaLabel.equalsIgnoreCase(defaultVal)) {
 					//TODO verify if this is even correct. Might change with different applications
 					//TODO verify if .getText would work instead
@@ -517,26 +537,34 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param defaultVal the default value that exists in an element
 	 * @param index the index of the element to enter text into
 	 */
-	protected void enterTextByDefaultValuesAndIndex(String text, String defaultVal, int index){
+	protected void enterTextByDefaultValuesAndIndex(String text, String defaultVal, String fieldType, int index){
 		try {
-			List<WebElement> elements = getAllElementsOfGivenType("input");
+			List<WebElement> elements = getAllElementsOfGivenType(fieldType);
 			int numFound = 0;
 			for (WebElement element : elements) {
+				String customIdentifier;
+				if(fieldType.equalsIgnoreCase(BoltDriver.textFieldType))
+					customIdentifier = BoltDriver.fieldDefaultAttribute;
+				else
+					customIdentifier = BoltDriver.textareaDefaultAttribute;
+
 				String placeholder = element.getAttribute("placeholder");
 				String ariaLabel = element.getAttribute("aria-label");
+				if(customIdentifier == null)
+					customIdentifier = "";
 				if(placeholder == null)
 					placeholder = "";
 				if(ariaLabel == null)
 					ariaLabel = "";
-				if ((placeholder.equalsIgnoreCase(defaultVal) ||
-						ariaLabel.equalsIgnoreCase(defaultVal)) &&
-						numFound == index) {
-					//TODO verify if this is even correct. Might change with different applications
-					//TODO verify if .getText would work instead
-					element.sendKeys(text);
-					break;
-				} else
-					numFound++;
+				if (customIdentifier.equalsIgnoreCase(defaultVal) || placeholder.equalsIgnoreCase(defaultVal) ||
+						ariaLabel.equalsIgnoreCase(defaultVal)) {
+					if(numFound == index) {
+						element.sendKeys(text);
+						break;
+					} else{
+						numFound++;
+					}
+				}
 			}
 
 			if(numFound != index)
@@ -643,7 +671,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		WebElement desiredTable = null;
 		WebElement heading = null;
 		List<WebElement> elements;//getAllElementsOfGivenType("table");
-		List <WebElement> titles = getElementsByTypeAndValue("LINKTEXT",tableName);
+		List <WebElement> titles = getElementsByTypeAndValue(elementTypes.LINKTEXT,tableName);
 
 		for(WebElement element : titles) {
 			if (elementIsVisible(element)) {
@@ -651,7 +679,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 				heading = element;
 
 //check siblings
-				elements = getElementRelatives(heading, "SIBLING", false); //TODO not working right
+				elements = getElementRelatives(heading, relativeTypes.SIBLING, false); //TODO not working right
 				for (WebElement sibling : elements) {
 					if (sibling.getTagName().equalsIgnoreCase("table")) {
 						return sibling;
@@ -661,7 +689,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 //check for the first and second aunt after the tableName and the given sibblings
 				int count;
 
-				elements = getElementRelatives(heading, "AUNT", false); //TODO not working right
+				elements = getElementRelatives(heading, relativeTypes.AUNT, false); //TODO not working right
 				if (elements.size() > 2)
 					count = 2;
 				else
@@ -672,7 +700,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 						return elements.get(index);
 					}
 //check the aunts' children
-					List<WebElement> children = getElementRelatives(elements.get(index), "CHILD");
+					List<WebElement> children = getElementRelatives(elements.get(index), relativeTypes.CHILD);
 					for (WebElement child : children) {
 						if (child.getTagName().equalsIgnoreCase("table")) {
 							return child;
@@ -696,7 +724,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
 			//TODO break out some parts to helper methods
 			//TODO handle ':' and other types of potential chars at the end of the label string
-			List<WebElement> elements = getAllElementsOfGivenType("label");
+			List<WebElement> elements = getAllElementsOfGivenType(BoltDriver.labelType);
 			WebElement labelElement = null;
 			//List<WebElement> elements = getAllElementsOfGivenType("select");
 
@@ -722,7 +750,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
 			//TODO break out some parts to helper methods
 			//TODO handle ':' and other types of potential chars at the end of the label string
-			List<WebElement> elements = getAllElementsOfGivenType("label");
+			List<WebElement> elements = getAllElementsOfGivenType(BoltDriver.labelType);
 			List<WebElement> labelElement = new ArrayList<>();
 			//List<WebElement> elements = getAllElementsOfGivenType("select");
 
@@ -753,14 +781,14 @@ public class SeleniumSmartActions extends SeleniumActions{
 	private WebElement findElementRelativeByType(WebElement baseElement, String elementType){
 		try{
 			//check for a sibbling that is a dropdown
-			List<WebElement> sibblings = getElementRelatives(baseElement, "SIBLING");
+			List<WebElement> sibblings = getElementRelatives(baseElement, relativeTypes.SIBLING);
 			for(WebElement element: sibblings){
 				if(element.getTagName().equalsIgnoreCase(elementType)){
 					return element;
 				}
 			}
 
-			List<WebElement> aunts = getElementRelatives(baseElement, "AUNT");
+			List<WebElement> aunts = getElementRelatives(baseElement, relativeTypes.AUNT);
 			//check the aunts
 			for(WebElement element: aunts){
 				if(element.getTagName().equalsIgnoreCase(elementType)){
@@ -770,7 +798,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 
 			//check the cousins
 			for(WebElement element: aunts){
-				List<WebElement> cousins = getElementRelatives(element, "CHILD");
+				List<WebElement> cousins = getElementRelatives(element, relativeTypes.CHILD);
 				for(WebElement element2: cousins) {
 					if (element.getTagName().equalsIgnoreCase(elementType)) {
 						return element;

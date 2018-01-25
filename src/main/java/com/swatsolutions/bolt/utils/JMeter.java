@@ -14,7 +14,7 @@ import com.googlecode.jmeter.plugins.webdriver.config.RemoteCapability;
 import java.io.*;
 import java.util.*;
 
-public class jMeter{
+public class JMeter {
 
 	private boolean success = false;
 
@@ -157,7 +157,7 @@ public class jMeter{
 //			distributedRunner.start();
 			jmeter.run();
 			//a delay just for good measure
-            library.hardDelay(5000);
+            BoltLibrary.hardDelay(5000);
 //			distributedRunner.stop();
 		} else
 			jmeter.run();
