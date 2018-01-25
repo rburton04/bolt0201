@@ -6,8 +6,6 @@ import com.thoughtworks.gauge.*;
 
 import com.swatsolutions.bolt.utils.ProcessFiles;
 
-import gauge.messages.Messages;
-import gauge.messages.Spec;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,22 +18,22 @@ import java.util.Map;
 public class BoltDriver {
 
 
-    protected static WebElement lastElement;
-    protected static List<WebElement> lastElements;
+	public static WebElement lastElement;
+	public static List<WebElement> lastElements;
 
     // Holds the WebDriver instance
     public static WebDriver webDriver;
-    protected static boolean positiveTest = true;
-    protected static Map<String,String> elementDefinitions;
-    protected static String remoteUrl = "";
-    protected static boolean remoteRun = false;
-    protected static String ip = "";
-    protected static String port = "";
+	public static boolean positiveTest = true;
+	public static Map<String,String> elementDefinitions;
+	public static String remoteUrl = "";
+	public static boolean remoteRun = false;
+	public static String ip = "";
+	public static String port = "";
     protected static String aut = "";
-    protected static String spec = "";
-    protected static String scenario = "";
-    protected static String storedUrl = "";
-    protected static int elementWaitTime = 5;
+	public static String spec = "";
+	public static String scenario = "";
+	public static String storedUrl = "";
+	public static int elementWaitTime = 5;
 
 	protected static String buttonType = "button";
 	protected static String labelType = "label";
@@ -44,8 +42,8 @@ public class BoltDriver {
 	protected static String textFieldType = "input";
 	protected static String textAreaType = "textarea";
 	protected static String checkboxType = "input";
-	protected static String fieldDefaultType = "";
-	protected static String textareaDefaultType = "";
+	protected static String fieldDefaultAttribute = "";
+	protected static String textareaDefaultAttribute = "";
 	//potentially add customization for dropdowns, tables, and internal table parts
 	protected static int initialAutLoadTimeMs = 0;
 
@@ -78,10 +76,10 @@ public class BoltDriver {
 			textAreaType = System.getenv("TEXT_AREA_TYPE");
 		if (System.getenv("CHECKBOX_TYPE") != null)
 			checkboxType = System.getenv("CHECKBOX_TYPE");
-		if (System.getenv("FIELD_DEFAULT_FIELD_TYPE") != null)
-			fieldDefaultType = System.getenv("FIELD_DEFAULT_FIELD_TYPE");
-		if (System.getenv("TEXTAREA_DEFAULT_FIELD_TYPE") != null)
-			textareaDefaultType = System.getenv("TEXTAREA_DEFAULT_FIELD_TYPE");
+		if (System.getenv("FIELD_DEFAULT_FIELD_ATTRIBUTE") != null)
+			fieldDefaultAttribute = System.getenv("FIELD_DEFAULT_FIELD_ATTRIBUTE");
+		if (System.getenv("TEXTAREA_DEFAULT_FIELD_ATTRIBUTE") != null)
+			textareaDefaultAttribute = System.getenv("TEXTAREA_DEFAULT_FIELD_ATTRIBUTE");
 		if (System.getenv("INITIAL_AUT_LOAD_TIME_MS") != null)
 			initialAutLoadTimeMs = Integer.valueOf(System.getenv("INITIAL_AUT_LOAD_TIME_MS"));
 
@@ -178,7 +176,12 @@ public class BoltDriver {
 
     @AfterScenario
     public void afterScenario(ExecutionContext context){
-
+    	if(context.getCurrentScenario().getIsFailing()){
+    		System.out.println("Scenario Failed! :o!");
+    		//create a bug
+	    } else{
+    		System.out.println("Scenario Passed! :D");
+	    }
     }
 
     @BeforeScenario

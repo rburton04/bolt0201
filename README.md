@@ -5,6 +5,7 @@ This is an example project for starting web automation testing with [BOLT Test](
 There are some default spec files to start from and some demo specs to gain a better understanding of how it works.
 
 ## Features
+
 * Pre-Built library of selenium actions
 * Pre-Built library of test steps
 * Pre-Built spec files

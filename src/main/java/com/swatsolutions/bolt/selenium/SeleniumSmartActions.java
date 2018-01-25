@@ -507,9 +507,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 			for (WebElement element : elements) {
 				String customIdentifier;
 				if(fieldType.equalsIgnoreCase(BoltDriver.textFieldType))
-					customIdentifier = BoltDriver.fieldDefaultType;
+					customIdentifier = BoltDriver.fieldDefaultAttribute;
 				else
-					customIdentifier = BoltDriver.textareaDefaultType;
+					customIdentifier = BoltDriver.textareaDefaultAttribute;
 
 				String placeholder = element.getAttribute("placeholder");
 				String ariaLabel = element.getAttribute("aria-label");
@@ -544,9 +544,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 			for (WebElement element : elements) {
 				String customIdentifier;
 				if(fieldType.equalsIgnoreCase(BoltDriver.textFieldType))
-					customIdentifier = BoltDriver.fieldDefaultType;
+					customIdentifier = BoltDriver.fieldDefaultAttribute;
 				else
-					customIdentifier = BoltDriver.textareaDefaultType;
+					customIdentifier = BoltDriver.textareaDefaultAttribute;
 
 				String placeholder = element.getAttribute("placeholder");
 				String ariaLabel = element.getAttribute("aria-label");
