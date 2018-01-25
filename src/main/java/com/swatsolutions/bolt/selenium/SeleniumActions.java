@@ -527,7 +527,6 @@ public class SeleniumActions {
 		try {
 			JavascriptExecutor jse = (JavascriptExecutor) webDriver;
 			jse.executeScript("scroll(0," + amount + ");");
-			//jse.executeScript("window.scrollBy(0," + amount, "");
 		} catch (Exception e){
 			fail("Issue scrolling: " + amount);
 		}

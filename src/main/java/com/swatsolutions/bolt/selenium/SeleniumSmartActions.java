@@ -54,7 +54,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void verifyButtonStatusByLabel(verifyButtonStatus status, String label, int index){
 		//TODO not yet built/supported
-		List<WebElement> foundElements = getElementsWithLabel(label, "button");
+		List<WebElement> foundElements = getElementsWithLabel(label, BoltDriver.buttonType);
 		if(foundElements == null)
 			verifyElementStatus(status, null);
 		else if (foundElements.size() <= index)
@@ -68,7 +68,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param text text tied to the button
 	 */
 	protected void verifyButtonStatusDynamically(verifyButtonStatus status, String text){
-		verifyElementStatus(status, findElementDynamicallyByIndexAndType("button", text, 0, true));
+		verifyElementStatus(status, findElementDynamicallyByIndexAndType(BoltDriver.buttonType, text, 0, true));
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param label The label next to the checkbox
 	 */
 	protected void smartClickCheckbox(String label){
-		WebElement element = getElementWithLabel(label, "input");
+		WebElement element = getElementWithLabel(label, BoltDriver.checkboxType);
 		if(element != null)
 			element.click();
 	}
@@ -166,7 +166,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param value true to select the checkbox, false to uncheck it
 	 */
 	protected void smartSetCheckboxToValue(String label, boolean value){
-		WebElement element = getElementWithLabel(label, "input");
+		WebElement element = getElementWithLabel(label, BoltDriver.checkboxType);
 		WebElement element3 = null;
 		List<WebElement> temp = getElementsByTypeAndValue(elementTypes.LINKTEXT, label);
 		for(WebElement element2:temp){
@@ -176,7 +176,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			}
 		}
 
-		element = findElementRelativeByType(element3,"input");
+		element = findElementRelativeByType(element3,BoltDriver.labelType);
 
 		if(element != null) {
 
@@ -210,7 +210,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		List<WebElement> elements = getAllElementsOfGivenType(type);
 		int numFound = 0;
 		for(WebElement element:elements){
-			if(element.getText().equalsIgnoreCase(text) || element.getAttribute("value").equalsIgnoreCase(text)){
+			if(element.getText().equalsIgnoreCase(text) || element.getAttribute(BoltDriver.specialTextAttribute).equalsIgnoreCase(text)){
 				if(numFound == index)
 					return element;
 				else
@@ -442,6 +442,8 @@ public class SeleniumSmartActions extends SeleniumActions{
 						text = elements.get(index).getAttribute("value");
 					if(text.isEmpty())
 						text = elements.get(index).getAttribute("innerHTML");
+					if(text.isEmpty())
+						text = elements.get(index).getAttribute(BoltDriver.specialTextAttribute);
 				}
 			} else
 				fail("Failed to get text by the label: " + label);
@@ -499,17 +501,25 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param text text to be entered
 	 * @param defaultVal the default value that exists in an element
 	 */
-	protected void enterTextByDefaultValues(String text, String defaultVal){
+	protected void enterTextByDefaultValues(String text, String defaultVal, String fieldType){
 		try {
-			List<WebElement> elements = getAllElementsOfGivenType("input");
+			List<WebElement> elements = getAllElementsOfGivenType(fieldType);
 			for (WebElement element : elements) {
+				String customIdentifier;
+				if(fieldType.equalsIgnoreCase(BoltDriver.textFieldType))
+					customIdentifier = BoltDriver.fieldDefaultAttribute;
+				else
+					customIdentifier = BoltDriver.textareaDefaultAttribute;
+
 				String placeholder = element.getAttribute("placeholder");
 				String ariaLabel = element.getAttribute("aria-label");
+				if(customIdentifier == null)
+					customIdentifier = "";
 				if(placeholder == null)
 					placeholder = "";
 				if(ariaLabel == null)
 					ariaLabel = "";
-				if (placeholder.equalsIgnoreCase(defaultVal) ||
+				if (customIdentifier.equalsIgnoreCase(defaultVal) || placeholder.equalsIgnoreCase(defaultVal) ||
 						ariaLabel.equalsIgnoreCase(defaultVal)) {
 					//TODO verify if this is even correct. Might change with different applications
 					//TODO verify if .getText would work instead
@@ -527,18 +537,26 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param defaultVal the default value that exists in an element
 	 * @param index the index of the element to enter text into
 	 */
-	protected void enterTextByDefaultValuesAndIndex(String text, String defaultVal, int index){
+	protected void enterTextByDefaultValuesAndIndex(String text, String defaultVal, String fieldType, int index){
 		try {
-			List<WebElement> elements = getAllElementsOfGivenType("input");
+			List<WebElement> elements = getAllElementsOfGivenType(fieldType);
 			int numFound = 0;
 			for (WebElement element : elements) {
+				String customIdentifier;
+				if(fieldType.equalsIgnoreCase(BoltDriver.textFieldType))
+					customIdentifier = BoltDriver.fieldDefaultAttribute;
+				else
+					customIdentifier = BoltDriver.textareaDefaultAttribute;
+
 				String placeholder = element.getAttribute("placeholder");
 				String ariaLabel = element.getAttribute("aria-label");
+				if(customIdentifier == null)
+					customIdentifier = "";
 				if(placeholder == null)
 					placeholder = "";
 				if(ariaLabel == null)
 					ariaLabel = "";
-				if (placeholder.equalsIgnoreCase(defaultVal) ||
+				if (customIdentifier.equalsIgnoreCase(defaultVal) || placeholder.equalsIgnoreCase(defaultVal) ||
 						ariaLabel.equalsIgnoreCase(defaultVal)) {
 					if(numFound == index) {
 						element.sendKeys(text);
@@ -706,7 +724,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
 			//TODO break out some parts to helper methods
 			//TODO handle ':' and other types of potential chars at the end of the label string
-			List<WebElement> elements = getAllElementsOfGivenType("label");
+			List<WebElement> elements = getAllElementsOfGivenType(BoltDriver.labelType);
 			WebElement labelElement = null;
 			//List<WebElement> elements = getAllElementsOfGivenType("select");
 
@@ -732,7 +750,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
 			//TODO break out some parts to helper methods
 			//TODO handle ':' and other types of potential chars at the end of the label string
-			List<WebElement> elements = getAllElementsOfGivenType("label");
+			List<WebElement> elements = getAllElementsOfGivenType(BoltDriver.labelType);
 			List<WebElement> labelElement = new ArrayList<>();
 			//List<WebElement> elements = getAllElementsOfGivenType("select");
 
