@@ -1,5 +1,6 @@
 package CustomSteps;
 
+import com.swatsolutions.bolt.selenium.BoltDriver;
 import com.swatsolutions.bolt.selenium.SeleniumSmartActions;
 import com.thoughtworks.gauge.ContinueOnFailure;
 import com.thoughtworks.gauge.Step;
@@ -92,7 +93,7 @@ public class CustomClientSteps extends CustomActions {
         }
     }
 
-
+*/
     @Step ("Run JMeter Conference Script <index> <name> <feedback> <threadCount> <rampUpPeriod> <loopCount> <hostCount>")
     public void jmeterConferenceDemo (String index, String name, String feedback, String threadCount, String rampUpPeriod, String loopCount, String hostCount){
         try {
@@ -101,17 +102,17 @@ public class CustomClientSteps extends CustomActions {
             vars.put("index", index);
             vars.put("name", name);
             vars.put("feedback", feedback);
-            vars.put("ip", ip);
-            vars.put("port", port);
+            vars.put("ip", BoltDriver.ip);
+            vars.put("port", BoltDriver.port);
             vars.put("threadCount", threadCount);
             vars.put("rampUpPeriod", rampUpPeriod);
             vars.put("loopCount", loopCount);
-            jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, remoteRun, remoteUrl, scenario, Integer.valueOf(hostCount));
+            jmeter.runJMeterTest("jmeter/jmeter-confapp.jmx", vars, BoltDriver.remoteRun, BoltDriver.remoteUrl, BoltDriver.scenario, Integer.valueOf(hostCount));
             if(!jmeter.getSuccess())
                 fail("Failure in the JMeter test run. Please investigate");
         } catch (Exception e){
             System.out.println("error");
         }
     }
-    */
+
 }
