@@ -6,6 +6,27 @@
     <artifactId>bolt-test</artifactId>
     <version>0.0.1</version>
 
+    <repositories>
+        <repository>
+            <id>smartbear-sweden-plugin-repository</id>
+            <url>http://www.soapui.org/repository/maven2/</url>
+        </repository>
+    </repositories>
+
+    <!-- Spring rest API demo test
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.9.RELEASE</version>
+        <exclusions>
+                <exclusion>
+                must exclude the chrome options dependency
+                    <groupId>org.openqa.</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+    </parent> -->
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -44,6 +65,8 @@
             <artifactId>opencsv</artifactId>
             <version>3.8</version>
         </dependency>
+
+        <!-- JMeter dependencies -->
         <!-- https://mvnrepository.com/artifact/org.apache.jmeter/ApacheJMeter_core -->
         <dependency>
             <groupId>org.apache.jmeter</groupId>
@@ -85,6 +108,21 @@
             <artifactId>httpcore</artifactId>
             <version>4.4.4</version>
         </dependency>
+
+
+        <!-- SoapUI dependencies -->
+        <!--<dependency>
+            <groupId>com.github.redfish4ktc.soapui</groupId>
+            <artifactId>maven-soapui-extension-plugin</artifactId>
+            <version>4.6.4.2</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>com.smartbear.soapui</groupId>
+            <artifactId>soapui-maven-plugin</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
@@ -95,6 +133,17 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>15.0</version>
+        </dependency>
+
+        <!-- Spring rest API demo test
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency> -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>1.5.9.RELEASE</version>
         </dependency>
     </dependencies>
 

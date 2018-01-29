@@ -12,6 +12,9 @@ import org.openqa.selenium.WebElement;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +89,8 @@ public class BoltDriver {
 		elementDefinitions = ProcessFiles.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
 	}
 
+
+
 	@BeforeSuite
     public void initializeDriver(){
         //This removes an old jmeter results file if it exists
@@ -148,6 +153,7 @@ public class BoltDriver {
             //TODO the next 2 lines should only run if running locally
 	        if(!DriverFactory.remoteRun) {
 		        webDriver.manage().window().maximize();
+		        //webDriver.manage().window().fullscreen();
 		        webDriver.switchTo().window(webDriver.getWindowHandle());
 	        }
             remoteRun = DriverFactory.getRemoteRun();
@@ -175,9 +181,41 @@ public class BoltDriver {
     }
 
     @AfterScenario
-    public void afterScenario(ExecutionContext context){
+    public void afterScenario(ExecutionContext context){//}, String[] args){
+	    Scenario currScenario = context.getCurrentScenario();
+	    System.out.println("Spec: " + context.getCurrentSpecification().getName());
+	    System.out.println("Scenario: " + currScenario.getName());
+	    System.out.println("Tags: " + currScenario.getTags().toString());
+
     	if(context.getCurrentScenario().getIsFailing()){
     		System.out.println("Scenario Failed! :o!");
+/*
+
+Code to handle calling a method to run cleanup if a test fails
+
+		    try {
+			    Class<?> c = Class.forName("className");
+			    Class[] argTypes = new Class[]{};
+			    Method method = c.getDeclaredMethod("methodName", argTypes);
+			    String[] methodArgs = {};//Arrays.copyOfRange(args, 0, 0);
+			    method.invoke(null, methodArgs);
+
+		    } catch(ClassNotFoundException e){
+
+		    }catch(NoSuchMethodException e){
+
+		    }catch(IllegalAccessException e){
+
+		    }catch(InvocationTargetException e){
+
+		    }
+    		/*
+
+
+
+    		 */
+
+
     		//create a bug
 	    } else{
     		System.out.println("Scenario Passed! :D");

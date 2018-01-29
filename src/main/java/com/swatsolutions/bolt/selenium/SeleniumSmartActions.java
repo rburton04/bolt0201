@@ -111,8 +111,11 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param type type of identifier to use to find the element (tag, name, id, etc.)
 	 * @return the text of the element found
 	 */
-	protected String getText(String identifier, String type){
-		List<WebElement> elements = getElementsByTypeAndValue(elementTypes.valueOf(type.toUpperCase(Locale.ENGLISH)), identifier);
+	public String getText(String identifier, String type){
+		return getTextByType(identifier, type);
+	}
+	private String getTextByType(String identifier, String type){
+		List<WebElement> elements = getElementsByTypeAndValue(elementTypes.valueOf(type.toUpperCase(Locale.ENGLISH)), identifier, 1);
 		String elementText = "";
 		if(elements.size() > 0){
 			if(elements.get(0) != null){
@@ -302,7 +305,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	protected void checkIfTextExists(String text, int index){
 		List<WebElement> elements = findElementsWithText(text);
 
-		if(elements == null || elements.size() < index)
+		if(elements == null || elements.size() <= index)
 			fail("Failed to find text: " + text);
 	}
 
@@ -645,7 +648,10 @@ public class SeleniumSmartActions extends SeleniumActions{
 	/**
 	 * @param tableName header of the table that is found above the given table
 	 */
-	protected ArrayList<ArrayList<String>> readTableTo2DArray (String tableName){
+	public ArrayList<ArrayList<String>> getTableAsArray(String tableName){
+		return readTableTo2DArray(tableName);
+	}
+	private ArrayList<ArrayList<String>> readTableTo2DArray (String tableName){
 
 		ArrayList<ArrayList<String>> results = new ArrayList<ArrayList<String>>();
 		WebElement table = getTable(tableName);
@@ -667,6 +673,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param tableName The title for the desired table
 	 * @return the whole table element else null;
 	 */
+	public WebElement getTableByName(String tableName){
+		return getTable(tableName);
+	}
 	private WebElement getTable(String tableName){
 		WebElement desiredTable = null;
 		WebElement heading = null;
@@ -718,7 +727,10 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param elementType The type of element that is desired
 	 * @return WebElement of the desired type with the given label
 	 */
-	protected WebElement getElementWithLabel(String label, String elementType){
+	public WebElement getElemnetWithGivenLabel(String label, String elementType){
+		return getElementWithLabel(label, elementType);
+	}
+	private WebElement getElementWithLabel(String label, String elementType){
 		WebElement desiredElement = null;
 		try{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
@@ -744,7 +756,10 @@ public class SeleniumSmartActions extends SeleniumActions{
 		return desiredElement;
 	}
 
-	protected List<WebElement> getElementsWithLabel(String label, String elementType){
+	public List<WebElement> getElementsWithGivenLabel(String label, String elementType){
+		return getElementsWithLabel(label, elementType);
+	}
+	private List<WebElement> getElementsWithLabel(String label, String elementType){
 		List<WebElement> desiredElements = new ArrayList<>();
 		try{
 			//TODO may need more intelegence to start looking from the starting place, not just from the start of all the elements found.
@@ -778,6 +793,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param elementType Type of the desired element (tagname)
 	 * @return WebElement of the found element, else null
 	 */
+	public WebElement findElementRelativeByGivenType(WebElement baseElement, String elementType){
+		return findElementRelativeByType(baseElement, elementType);
+	}
 	private WebElement findElementRelativeByType(WebElement baseElement, String elementType){
 		try{
 			//check for a sibbling that is a dropdown
@@ -815,6 +833,9 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param type the type of the elements desired
 	 * @return all elements of the given type that are visible
 	 */
+	public List<WebElement> getAllElementsOfAGivenType(String type){
+		return getAllElementsOfGivenType(type);
+	}
 	private List<WebElement> getAllElementsOfGivenType(String type){
 		List<WebElement> elements = new ArrayList();
 		try{

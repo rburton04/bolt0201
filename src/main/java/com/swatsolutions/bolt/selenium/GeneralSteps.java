@@ -210,7 +210,7 @@ public class GeneralSteps {
 	//TODO modify this step as this is only for testing
 	@Step("Get data from table <table>")
 	public void getTableData(String table){
-		smartActions.readTableTo2DArray(table);
+		smartActions.getTableAsArray(table);
 	}
 
 	//CHECKBOX AND RADIO BUTTONS

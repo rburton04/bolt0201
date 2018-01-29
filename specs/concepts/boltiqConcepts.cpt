@@ -2,16 +2,31 @@ Created by aenoksen on 1/22/18
 
 This is a concept file with following syntax for each concept.
 # Request Demo <name> <email> <company>
-* Delay "500" milliseconds
+* Enter text <name> into field with default value "Name"
+* Enter text <email> into field with default value "Email Address"
+* Enter text <company> into field with default value "Company Name"
+ Click "Send" button
+ - sends emails to production
+
+
+# Request Demo on Footer <name> <email> <company>
+* Enter text <name> into field with default value "Name" and index "1"
+* Enter text <email> into field with default value "Email Address" and index "1"
+* Enter text <company> into field with default value "Company Name" and index "1"
+ Click "Sign up" button
+ - sends emails to production
+
+# Request Negative Demo <name> <email> <company>
 * Enter text <name> into field with default value "Name"
 * Enter text <email> into field with default value "Email Address"
 * Enter text <company> into field with default value "Company Name"
 * Click "Send" button
+* Verify text "There was a problem with your submission. Errors are marked below." exists
 
-
-# Request Demo on Footer <name> <email> <company> <index>
-* Delay "500" milliseconds
-* Enter text <name> into field with default value "Name" and index <index>
-* Enter text <email> into field with default value "Email Address" and index <index>
-* Enter text <company> into field with default value "Company Name" and index <index>
+# Request Negative Demo on Footer <name> <email> <company>
+* Enter text <name> into field with default value "Name" and index "1"
+* Enter text <email> into field with default value "Email Address" and index "1"
+* Enter text <company> into field with default value "Company Name" and index "1"
 * Click "Sign up" button
+* Verify text "There was a problem with your submission. Errors are marked below." exists
+

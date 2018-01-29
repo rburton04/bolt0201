@@ -35,7 +35,9 @@ public class ValidationSteps {
 	@Step("Verify page title matches <title>")
 	public void verifyTitle(String title){
 		//TODO decrease wait time for the page title??
-		String pageTitle = smartActions.getText(BoltDriver.pageHeadingLevel, "TAG");
+		String pageTitle = "";
+		if(!BoltDriver.pageHeadingLevel.isEmpty())
+			pageTitle = smartActions.getText(BoltDriver.pageHeadingLevel, "TAG");
 
 		int index = 1;
 		while(pageTitle.isEmpty()){
@@ -138,6 +140,12 @@ public class ValidationSteps {
 	@Step("Verify button with text <text> and index <index> does not exist")
 	public void verifyButtonDoesntExistText(String text, int index){
 		smartActions.verifyButtonStatusByText(SeleniumSmartActions.verifyButtonStatus.NONEXISTANT, text, index);
+	}
+
+	@ContinueOnFailure
+	@Step("Verify text <text> exists")
+	public void verifyTextExists(String text){
+		smartActions.checkIfTextExists(text, 0);
 	}
 
 	//Verify text does not exist

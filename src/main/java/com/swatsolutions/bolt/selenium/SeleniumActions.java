@@ -54,7 +54,7 @@ public class SeleniumActions {
 	 * @param expectedResult
 	 * @param index
 	 */
-	protected void checkElementExists (String elementDef, boolean expectedResult, int index){
+	public void checkElementExists (String elementDef, boolean expectedResult, int index){
 		try {
 			boolean passed = false;
 			int tempWaitTime = elementWaitTime;
@@ -155,7 +155,7 @@ public class SeleniumActions {
 	 * @param elementDef String of the reference to identify what element to click
 	 * @param index Index (0-based) of the element to click
 	 */
-	protected void clickByIndex(String elementDef, int index){
+	public void clickByIndex(String elementDef, int index){
 		try {
 			getElements(elementDef).get(index).click();
 		} catch (Exception e){fail("Unable to click element: " + elementDef + " index: " + index);}
@@ -176,7 +176,7 @@ public class SeleniumActions {
 	/**
 	 * @param elementDef String of the reference to identify what element to click
 	 */
-	protected void rightClick(String elementDef){
+	public void rightClick(String elementDef){
 		//TODO future expantion due to using the mouse for this action
 	}
 
@@ -184,7 +184,7 @@ public class SeleniumActions {
 	 * @param elementDef String of the reference to identify the element to use
 	 * @param text Text to be entered into the given element
 	 */
-	protected void enterText(String elementDef, String text) {
+	public void enterText(String elementDef, String text) {
 		WebElement element = getElement(elementDef);
 		element.clear();
 		element.sendKeys(text);
@@ -209,7 +209,7 @@ public class SeleniumActions {
 	 * Separate method to validate only when applicable as textareas do not work well
 	 * @param expectedText the text that is expected in the last element
 	 */
-	protected void validateTextEntry(String expectedText){
+	public void validateTextEntry(String expectedText){
 		try {
 			assertTrue(lastElement.getText().equals(expectedText));
 		} catch (Exception e){fail("Failed to validate text entry.");}
@@ -322,7 +322,7 @@ public class SeleniumActions {
 	 * @param option dropdown option to check (case sensitive)
 	 * @return true if the option exists, else false
 	 */
-	protected boolean checkOptionExistsInDropdown(String elementDef, int index, String option){
+	public boolean checkOptionExistsInDropdown(String elementDef, int index, String option){
 		return getSelectedDropdownValues(elementDef, index).contains(option);
 	}
 
@@ -366,7 +366,7 @@ public class SeleniumActions {
 	 * @param enabledOptions true to get enabled options
 	 * @return List String of all options in the dropdown
 	 */
-	protected List<String> getDropdownOptions(String elementDef, int index, boolean enabledOptions){ //possibly just get select instead
+	public List<String> getDropdownOptions(String elementDef, int index, boolean enabledOptions){ //possibly just get select instead
 		return getDropdownOptions(new Select(getElements(elementDef).get(index)), enabledOptions);
 	}
 
@@ -434,7 +434,7 @@ public class SeleniumActions {
 	 * @param elementStartDef String of the reference to identify what element to start dragging from
 	 * @param elementEndDef String of the reference to identify what element to stop dragging at
 	 */
-	protected void dragAndDrop(String elementStartDef, String elementEndDef){
+	public void dragAndDrop(String elementStartDef, String elementEndDef){
 		try {
 			Actions action = new Actions(webDriver);
 			action.dragAndDrop(getElement(elementStartDef), getElement(elementEndDef));
@@ -447,7 +447,7 @@ public class SeleniumActions {
 	 * @param x2 x-coordinate to stop dragging from
 	 * @param y2 y-coordinate to stop dragging from
 	 */
-	protected void dragAndDrop(int x1, int y1, int x2, int y2){
+	public void dragAndDrop(int x1, int y1, int x2, int y2){
 		try {
 			Robot robo = new Robot();
 			robo.mouseMove(x1, y1);
@@ -464,7 +464,7 @@ public class SeleniumActions {
 	 * @param x The distance to drag in the x plane
 	 * @param y The distance to drag in the y plane
 	 */
-	protected void dragAndDrop(String elementDef, int x, int y){
+	public void dragAndDrop(String elementDef, int x, int y){
 		try {
 			Actions action = new Actions(webDriver);
 			action.dragAndDropBy(getElement(elementDef), x, y);
@@ -482,7 +482,7 @@ public class SeleniumActions {
 	 * @param elementDef String of the reference to identify the element to get text from
 	 * @return String of the elements' text
 	 */
-	protected String getText(String elementDef){
+	public String getText(String elementDef){
 		return getElement(elementDef).getText();
 	}
 
@@ -562,7 +562,7 @@ public class SeleniumActions {
 	/**
 	 * @param elementDef String of the reference to identify the element to focus on
 	 */
-	protected void focusOnElement(String elementDef){
+	public void focusOnElement(String elementDef){
 		focusOnElement(elementDef, 0);
 	}
 
@@ -570,14 +570,14 @@ public class SeleniumActions {
 	 * @param elementDef String of the reference to identify the element to focus on
 	 * @param index Index of the given element
 	 */
-	protected void focusOnElement(String elementDef, int index){
+	public void focusOnElement(String elementDef, int index){
 		focusOnElement(getElements(elementDef).get(index));
 	}
 
 	/**
 	 * @param element WebElement to focus on
 	 */
-	protected void focusOnElement(WebElement element){
+	public void focusOnElement(WebElement element){
 		try{
 			new Actions(webDriver).moveToElement(element).perform();
 		} catch (Exception e){fail("Issue focusing on the provided element.");}
@@ -591,7 +591,7 @@ public class SeleniumActions {
 	 * @param elementDefinition String of the reference to identify the element to use
 	 * @return true if the element is enabled
 	 */
-	protected boolean isEnabled(String elementDefinition){
+	public boolean isEnabled(String elementDefinition){
 		return getElement(elementDefinition).isEnabled();
 	}
 
@@ -599,7 +599,7 @@ public class SeleniumActions {
 	 * @param elementDefinition String of the reference to identify the element to get
 	 * @return Desired WebElement
 	 */
-	protected WebElement getElement(String elementDefinition){
+	public WebElement getElement(String elementDefinition){
 		lastElement = getElements(elementDefinition).get(0);
 		return lastElement;
 		//TODO handle nulls and add focus to the element?
@@ -610,7 +610,7 @@ public class SeleniumActions {
 	 * @param text Text of the element to get
 	 * @return Desired WebElement
 	 */
-	protected WebElement getElementByText(String elementDefinition, String text){
+	public WebElement getElementByText(String elementDefinition, String text){
 		List<WebElement> elements = getElements(elementDefinition);
 		WebElement foundElement = elements.get(0);
 		text = text.toUpperCase();
@@ -627,7 +627,7 @@ public class SeleniumActions {
 		return foundElement;
 	}
 
-	protected List<WebElement> getElementsByText(String elementDefinition, String text){
+	public List<WebElement> getElementsByText(String elementDefinition, String text){
 		List<WebElement> elements = getElements(elementDefinition);
 		List<WebElement> foundElements = new ArrayList<>();
 		text = text.toUpperCase();
@@ -647,7 +647,7 @@ public class SeleniumActions {
 	 * @param attribute String of the attribute to get from the element
 	 * @return String of the attributes' value
 	 */
-	protected String getElementAttribute(String elementDef, String attribute){
+	public String getElementAttribute(String elementDef, String attribute){
 		return getElementAttribute(getElement(elementDef), attribute);
 	}
 
@@ -656,7 +656,7 @@ public class SeleniumActions {
 	 * @param attribute Name of the attribute to get
 	 * @return Value of the attribute
 	 */
-	protected String getElementAttribute(WebElement element, String attribute){
+	public String getElementAttribute(WebElement element, String attribute){
 		return element.getAttribute(attribute);
 	}
 
@@ -664,7 +664,7 @@ public class SeleniumActions {
 	 * @param elementDefinition String of the reference to identify what element to check
 	 * @return true if the element is visible
 	 */
-	protected boolean elementIsVisible(String elementDefinition){
+	public boolean elementIsVisible(String elementDefinition){
 		return elementIsVisible(getElement(elementDefinition));
 	}
 
@@ -672,7 +672,7 @@ public class SeleniumActions {
 	 * @param element WebElement of the element to check
 	 * @return true if the element is visible
 	 */
-	protected boolean elementIsVisible(WebElement element){
+	public boolean elementIsVisible(WebElement element){
 		return element.isDisplayed();
 	}
 
@@ -685,7 +685,7 @@ public class SeleniumActions {
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
 	 */
-	protected List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship){//String relationship){
+	public List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship){//String relationship){
 		List<WebElement> desiredElements = new ArrayList<>();
 		try {
 			switch (relationship) {
@@ -717,7 +717,7 @@ public class SeleniumActions {
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
 	 */
-	protected List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship, boolean beforeElement){
+	public List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship, boolean beforeElement){
 		List<WebElement> desiredElements = new ArrayList<>();
 		boolean initialElementFound = false;
 		try {
@@ -762,7 +762,7 @@ public class SeleniumActions {
 	 * @param relativeDefinition String of the reference to identify what element to refer to
 	 * @return WebElement of the related element
 	 */
-	protected WebElement getElementRelative(String elementDefinition, relativeTypes relationship, String relativeDefinition){
+	public WebElement getElementRelative(String elementDefinition, relativeTypes relationship, String relativeDefinition){
 		WebElement initialElement = getElement(elementDefinition);
 		WebElement desiredElement = initialElement;
 		try {
@@ -791,7 +791,7 @@ public class SeleniumActions {
 	 * @param relativeDefinition String of the reference to identify the related element
 	 * @return List of all WebElements that are children of the startingElement and match the relativeDefinition description
 	 */
-	protected List<WebElement> getRelativeElements(WebElement startingElement, String relativeDefinition){
+	public List<WebElement> getRelativeElements(WebElement startingElement, String relativeDefinition){
 		List<WebElement> elements = new ArrayList<WebElement>();
 		String[] elementData;
 
@@ -834,7 +834,7 @@ public class SeleniumActions {
 		return elements;
 	}
 
-	protected List<WebElement> getElements(String elementDefinition){
+	public List<WebElement> getElements(String elementDefinition){
 		return getElements(elementDefinition, false);
 	}
 
@@ -844,7 +844,7 @@ public class SeleniumActions {
 	 * @param elementDefinition page:object
 	 * @return WebElements of the desired elementDefinition
 	 */
-	protected List<WebElement> getElements(String elementDefinition, boolean ignoreFailure){
+	public List<WebElement> getElements(String elementDefinition, boolean ignoreFailure){
 		List<WebElement> elements = new ArrayList<WebElement>();
 		String[] elementData;
 
@@ -870,6 +870,9 @@ public class SeleniumActions {
 		return elements;
 	}
 
+	public List<WebElement> getElementsByTypeAndValue(elementTypes type, String value){
+		return getElementsByTypeAndValue(type, value, -1);
+	}
 	/**
 	 * Get all elements with a type of attribute and given value
 	 *
@@ -877,9 +880,11 @@ public class SeleniumActions {
 	 * @param value Value to search for
 	 * @return List of WebElements that match the given type and value
 	 */
-	protected List<WebElement> getElementsByTypeAndValue(elementTypes type, String value){
+	public List<WebElement> getElementsByTypeAndValue(elementTypes type, String value, int waitTime){
 		List<WebElement> elements = new ArrayList<WebElement>();
-		WebDriverWait wait = new WebDriverWait(webDriver, elementWaitTime); //TODO make this variable
+		if(waitTime < 0)
+			waitTime = elementWaitTime;
+		WebDriverWait wait = new WebDriverWait(webDriver, waitTime); //TODO make this variable
 		//TODO add wait for the element and possibly loop a couple times
 		try {
 				switch (type) {
@@ -942,7 +947,7 @@ public class SeleniumActions {
 	 * @param value value of the attribute
 	 * @return webelement of the first element found with the given attribute and value
 	 */
-	protected WebElement getElementByAttributeAndValue(String attribute, String value){
+	public WebElement getElementByAttributeAndValue(String attribute, String value){
 		WebElement element = null;
 		try {
 			element = webDriver.findElement(By.xpath("//*[@" + attribute + "='" + value + "']"));
@@ -956,7 +961,7 @@ public class SeleniumActions {
 	 * @param key Key to identify the needed values from local storage
 	 * @return String of the value for the given key
 	 */
-	protected String getValuesFromLocalStorage(String key) {
+	public String getValuesFromLocalStorage(String key) {
 		JavascriptExecutor js = ((JavascriptExecutor) webDriver);
 		return (String) js.executeScript(String.format("return window.localStorage.getItem('%s');", key));
 	}
