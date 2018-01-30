@@ -153,8 +153,8 @@ public class DriverFactory {
 		            return new ChromeDriver(options);
                 default:
                     ChromeDriverManager.getInstance().setup();
-                    ChromeOptions cOption = new ChromeOptions().addArguments("disable-infobars");
-                    return new ChromeDriver(cOption);
+                    //ChromeOptions cOption = new ChromeOptions().addArguments("disable-infobars");
+                    return new ChromeDriver();//cOption);
 
             }
         }
