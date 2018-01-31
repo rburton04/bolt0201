@@ -37,8 +37,8 @@ public class SeleniumActions {
 
 	 */
 
-	protected enum relativeTypes {PARENT, AUNT, CHILD, SIBLING};
-	protected enum elementTypes {CLASS, NAME, ID, XPATH, LINKTEXT, PARTIAL_LINKTEXT, TAG};
+	protected enum RelativeTypes {PARENT, AUNT, CHILD, SIBLING};
+	protected enum ElementTypes {CLASS, NAME, ID, XPATH, LINKTEXT, PARTIAL_LINKTEXT, TAG};
 
 	public SeleniumActions(){
 		webDriver = BoltDriver.getWebDriver();
@@ -546,7 +546,7 @@ public class SeleniumActions {
 	protected void hoverOverElement(String text){
 		try{
 			Actions action = new Actions (webDriver);
-			action.moveToElement(getElementsByTypeAndValue(elementTypes.LINKTEXT, text).get(0)).build().perform();
+			action.moveToElement(getElementsByTypeAndValue(ElementTypes.LINKTEXT, text).get(0)).build().perform();
 			BoltLibrary.implicitWait(webDriver,250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
@@ -554,7 +554,7 @@ public class SeleniumActions {
 	protected void hoverOverElementPartialText(String text){
 		try{
 			Actions action = new Actions (webDriver);
-			action.moveToElement(getElementsByTypeAndValue(elementTypes.PARTIAL_LINKTEXT, text).get(0)).build().perform();
+			action.moveToElement(getElementsByTypeAndValue(ElementTypes.PARTIAL_LINKTEXT, text).get(0)).build().perform();
 			BoltLibrary.implicitWait(webDriver, 250);
 		} catch (Exception e){fail("Unable to hover on element with text: " + text);}
 	}
@@ -685,7 +685,7 @@ public class SeleniumActions {
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
 	 */
-	public List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship){//String relationship){
+	public List<WebElement> getElementRelatives(WebElement initialElement, RelativeTypes relationship){//String relationship){
 		List<WebElement> desiredElements = new ArrayList<>();
 		try {
 			switch (relationship) {
@@ -717,7 +717,7 @@ public class SeleniumActions {
 	 * @param relationship Type of relationship between the given elementDefinition and the relativeDefinition
 	 * @return WebElement of the related element
 	 */
-	public List<WebElement> getElementRelatives(WebElement initialElement, relativeTypes relationship, boolean beforeElement){
+	public List<WebElement> getElementRelatives(WebElement initialElement, RelativeTypes relationship, boolean beforeElement){
 		List<WebElement> desiredElements = new ArrayList<>();
 		boolean initialElementFound = false;
 		try {
@@ -762,7 +762,7 @@ public class SeleniumActions {
 	 * @param relativeDefinition String of the reference to identify what element to refer to
 	 * @return WebElement of the related element
 	 */
-	public WebElement getElementRelative(String elementDefinition, relativeTypes relationship, String relativeDefinition){
+	public WebElement getElementRelative(String elementDefinition, RelativeTypes relationship, String relativeDefinition){
 		WebElement initialElement = getElement(elementDefinition);
 		WebElement desiredElement = initialElement;
 		try {
@@ -799,7 +799,7 @@ public class SeleniumActions {
 			if(elementDefinitions.containsKey(relativeDefinition)) {
 				elementData = elementDefinitions.get(relativeDefinition).split("~");
 				if(elementData.length == 2){
-					switch (elementTypes.valueOf(elementData[0].toUpperCase(Locale.ENGLISH))) {
+					switch (ElementTypes.valueOf(elementData[0].toUpperCase(Locale.ENGLISH))) {
 						case CLASS:
 							elements = startingElement.findElements(By.className(elementData[1]));// webDriver.findElements(By.className(value));
 							break;
@@ -852,7 +852,7 @@ public class SeleniumActions {
 			if (elementDefinitions.containsKey(elementDefinition)) {
 				elementData = elementDefinitions.get(elementDefinition).split("~");
 				if (elementData.length == 2) {
-					elements = getElementsByTypeAndValue(elementTypes.valueOf(elementData[0].toUpperCase(Locale.ENGLISH)), elementData[1]);
+					elements = getElementsByTypeAndValue(ElementTypes.valueOf(elementData[0].toUpperCase(Locale.ENGLISH)), elementData[1]);
 					//TODO check for null
 					assertTrue("Element(s) " + elementDefinition + " were not found on this page", elements != null && elements.size() > 0);
 				} else {
@@ -870,7 +870,7 @@ public class SeleniumActions {
 		return elements;
 	}
 
-	public List<WebElement> getElementsByTypeAndValue(elementTypes type, String value){
+	public List<WebElement> getElementsByTypeAndValue(ElementTypes type, String value){
 		return getElementsByTypeAndValue(type, value, -1);
 	}
 	/**
@@ -880,7 +880,7 @@ public class SeleniumActions {
 	 * @param value Value to search for
 	 * @return List of WebElements that match the given type and value
 	 */
-	public List<WebElement> getElementsByTypeAndValue(elementTypes type, String value, int waitTime){
+	public List<WebElement> getElementsByTypeAndValue(ElementTypes type, String value, int waitTime){
 		List<WebElement> elements = new ArrayList<WebElement>();
 		if(waitTime < 0)
 			waitTime = elementWaitTime;
@@ -979,7 +979,7 @@ public class SeleniumActions {
 		//add interactions to the video
 
 		//TODO likely need to wait for more advancements in finding elements
-		List<WebElement> iframes = getElementsByTypeAndValue(elementTypes.TAG,"iframe");
+		List<WebElement> iframes = getElementsByTypeAndValue(ElementTypes.TAG,"iframe");
 
 
 		//TODO sort through the iframes to see if the desired video exists.

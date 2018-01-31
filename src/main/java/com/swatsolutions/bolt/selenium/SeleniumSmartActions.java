@@ -115,7 +115,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		return getTextByType(identifier, type);
 	}
 	private String getTextByType(String identifier, String type){
-		List<WebElement> elements = getElementsByTypeAndValue(elementTypes.valueOf(type.toUpperCase(Locale.ENGLISH)), identifier, 1);
+		List<WebElement> elements = getElementsByTypeAndValue(ElementTypes.valueOf(type.toUpperCase(Locale.ENGLISH)), identifier, 1);
 		String elementText = "";
 		if(elements.size() > 0){
 			if(elements.get(0) != null){
@@ -139,7 +139,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void clickByLinkedText(String text){
 		try{
-			getElementsByTypeAndValue(elementTypes.LINKTEXT, text).get(0).click();
+			getElementsByTypeAndValue(ElementTypes.LINKTEXT, text).get(0).click();
 		} catch (Exception e){fail("Unable to click linked text: " + text);}
 	}
 
@@ -148,7 +148,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected void clickByLinkedTextPartialText(String text){
 		try{
-			getElementsByTypeAndValue(elementTypes.PARTIAL_LINKTEXT, text).get(0).click();
+			getElementsByTypeAndValue(ElementTypes.PARTIAL_LINKTEXT, text).get(0).click();
 		} catch (Exception e){fail("Unable to click linked text: " + text);}
 	}
 
@@ -157,7 +157,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 * @param index index of the element to click
 	 */
 	protected void clickByIndexDynamically(String text, int index){
-		List<WebElement> elements = getElementsByTypeAndValue(elementTypes.LINKTEXT, text);
+		List<WebElement> elements = getElementsByTypeAndValue(ElementTypes.LINKTEXT, text);
 
 		if(elements.size() > index){
 			elements.get(index).click();
@@ -171,7 +171,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	protected void smartSetCheckboxToValue(String label, boolean value){
 		WebElement element = getElementWithLabel(label, BoltDriver.checkboxType);
 		WebElement element3 = null;
-		List<WebElement> temp = getElementsByTypeAndValue(elementTypes.LINKTEXT, label);
+		List<WebElement> temp = getElementsByTypeAndValue(ElementTypes.LINKTEXT, label);
 		for(WebElement element2:temp){
 			if(elementIsVisible(element2)){
 				element3 = element2;
@@ -288,7 +288,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 	 */
 	protected List<WebElement> findElementsWithText(String text, boolean ignoreFailure){
 		try{
-			return getElementsByTypeAndValue(elementTypes.XPATH, "//*[text()[contains(.,'" + text + "')]]");
+			return getElementsByTypeAndValue(ElementTypes.XPATH, "//*[text()[contains(.,'" + text + "')]]");
 			//for non case-sensitive:
 			//"//*[text() = 'text']"
 		} catch (Exception e){
@@ -680,7 +680,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 		WebElement desiredTable = null;
 		WebElement heading = null;
 		List<WebElement> elements;//getAllElementsOfGivenType("table");
-		List <WebElement> titles = getElementsByTypeAndValue(elementTypes.LINKTEXT,tableName);
+		List <WebElement> titles = getElementsByTypeAndValue(ElementTypes.LINKTEXT,tableName);
 
 		for(WebElement element : titles) {
 			if (elementIsVisible(element)) {
@@ -688,7 +688,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 				heading = element;
 
 //check siblings
-				elements = getElementRelatives(heading, relativeTypes.SIBLING, false); //TODO not working right
+				elements = getElementRelatives(heading, RelativeTypes.SIBLING, false); //TODO not working right
 				for (WebElement sibling : elements) {
 					if (sibling.getTagName().equalsIgnoreCase("table")) {
 						return sibling;
@@ -698,7 +698,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 //check for the first and second aunt after the tableName and the given sibblings
 				int count;
 
-				elements = getElementRelatives(heading, relativeTypes.AUNT, false); //TODO not working right
+				elements = getElementRelatives(heading, RelativeTypes.AUNT, false); //TODO not working right
 				if (elements.size() > 2)
 					count = 2;
 				else
@@ -709,7 +709,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 						return elements.get(index);
 					}
 //check the aunts' children
-					List<WebElement> children = getElementRelatives(elements.get(index), relativeTypes.CHILD);
+					List<WebElement> children = getElementRelatives(elements.get(index), RelativeTypes.CHILD);
 					for (WebElement child : children) {
 						if (child.getTagName().equalsIgnoreCase("table")) {
 							return child;
@@ -799,14 +799,14 @@ public class SeleniumSmartActions extends SeleniumActions{
 	private WebElement findElementRelativeByType(WebElement baseElement, String elementType){
 		try{
 			//check for a sibbling that is a dropdown
-			List<WebElement> sibblings = getElementRelatives(baseElement, relativeTypes.SIBLING);
+			List<WebElement> sibblings = getElementRelatives(baseElement, RelativeTypes.SIBLING);
 			for(WebElement element: sibblings){
 				if(element.getTagName().equalsIgnoreCase(elementType)){
 					return element;
 				}
 			}
 
-			List<WebElement> aunts = getElementRelatives(baseElement, relativeTypes.AUNT);
+			List<WebElement> aunts = getElementRelatives(baseElement, RelativeTypes.AUNT);
 			//check the aunts
 			for(WebElement element: aunts){
 				if(element.getTagName().equalsIgnoreCase(elementType)){
@@ -816,7 +816,7 @@ public class SeleniumSmartActions extends SeleniumActions{
 
 			//check the cousins
 			for(WebElement element: aunts){
-				List<WebElement> cousins = getElementRelatives(element, relativeTypes.CHILD);
+				List<WebElement> cousins = getElementRelatives(element, RelativeTypes.CHILD);
 				for(WebElement element2: cousins) {
 					if (element.getTagName().equalsIgnoreCase(elementType)) {
 						return element;

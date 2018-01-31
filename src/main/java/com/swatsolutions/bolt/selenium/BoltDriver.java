@@ -1,7 +1,9 @@
 package com.swatsolutions.bolt.selenium;
 
+import com.swatsolutions.bolt.apiObjects.createJiraIssue.JiraIssue;
 import com.swatsolutions.bolt.utils.BoltLibrary;
 import com.swatsolutions.bolt.utils.DatabaseConnection;
+import com.swatsolutions.bolt.utils.SpringApiCall;
 import com.thoughtworks.gauge.*;
 
 import com.swatsolutions.bolt.utils.ProcessFiles;
@@ -47,6 +49,7 @@ public class BoltDriver {
 	protected static String checkboxType = "input";
 	protected static String fieldDefaultAttribute = "";
 	protected static String textareaDefaultAttribute = "";
+	protected static String jiraProjectId = "";
 	//potentially add customization for dropdowns, tables, and internal table parts
 	protected static int initialAutLoadTimeMs = 0;
 
@@ -85,6 +88,9 @@ public class BoltDriver {
 			textareaDefaultAttribute = System.getenv("TEXTAREA_DEFAULT_FIELD_ATTRIBUTE");
 		if (System.getenv("INITIAL_AUT_LOAD_TIME_MS") != null)
 			initialAutLoadTimeMs = Integer.valueOf(System.getenv("INITIAL_AUT_LOAD_TIME_MS"));
+
+		if (System.getenv("JIRA_PROJECT_ID") != null)
+			jiraProjectId = System.getenv("JIRA_PROJECT_ID");
 
 		elementDefinitions = ProcessFiles.processCsv(System.getenv("ELEMENT_DEFINITIONS"));
 	}
@@ -189,6 +195,26 @@ public class BoltDriver {
 
     	if(context.getCurrentScenario().getIsFailing()){
     		System.out.println("Scenario Failed! :o!");
+
+    		//create jira issue
+
+		    String env = System.getenv("ENV");
+		    String env2 = System.getenv("env");
+		    String description = "BOLT Test failed attempting to run test:\n\'" + context.getCurrentScenario().getName() + "\' \nPlease review this issue.";
+		    String summary = "BOLT Test Failure spec: " + context.getCurrentSpecification().getName();
+
+		    JiraIssue jiraIssue = new JiraIssue(JiraIssue.PriorityOptions.Highest, JiraIssue.IssueTypeOptions.Bug, jiraProjectId, summary, new String[]{"ui_test"}, "demo", description);
+
+		    //jiraIssue.populateObject();
+
+		    SpringApiCall springApiCall = new SpringApiCall();
+
+		    springApiCall.addHeaderLine("Content-Type", "application/json");
+		    springApiCall.addHeaderLine("Accept","application/json");
+		    springApiCall.addHeaderLine("Authorization", "Basic  YWVub2tzZW5Ac3dhdHNvbHV0aW9ucy5jb206ZmdVLXBLNC1jZHotTkZw");
+
+		    System.out.println(springApiCall.postWithHeaders("https://swatsolutions.atlassian.net/rest/api/2/issue", jiraIssue));
+
 /*
 
 Code to handle calling a method to run cleanup if a test fails
