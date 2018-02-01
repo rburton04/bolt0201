@@ -16,8 +16,3 @@ Add User Feedback
 * Enter text <name> into input field labeled "Name"
 * Enter text <feedback> into textarea labeled "Feedback"
 * Click "Send Feedback" button
-
-
-Fail Test
----------
-* Navigate to "nonexistant" tab
