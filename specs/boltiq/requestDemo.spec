@@ -54,7 +54,7 @@ Verify page title matches "We�re here to help"
 Submit Request For Demo on the Connect Page
 -------------------------------------------
 * Navigate to "Contact" tab
-* Verify page title matches "Contact Us Today"
+Verify page title matches "Contact Us Today"
 * Scroll "down" "250"
 * Request Demo <name> <email> <company>
 
@@ -98,6 +98,6 @@ Verify page title matches "We�re here to help"
 Sign up for Personalized Demo Footer of Contact Page
 ----------------------------------------------------
 * Navigate to "Contact" tab
-* Verify page title matches "Contact Us Today"
+ Verify page title matches "Contact Us Today"
 * Scroll "down" "5000"
 * Request Demo on Footer <name> <email> <company> "1"
