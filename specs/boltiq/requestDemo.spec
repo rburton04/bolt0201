@@ -2,7 +2,7 @@ RequestDemo
 ===========
 Created by aenoksen on 1/22/18
 
-table:specs/boltiq/requestDemoData.csv
+table:specs/boltiq/requestdemodata.csv
 
 * Go to AUT
 
